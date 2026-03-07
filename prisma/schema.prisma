@@ -47,6 +47,9 @@ model Task {
   title       String
   description String?
   status      String   @default("TODO") // TODO, IN_PROGRESS, DONE
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  dueDate     DateTime?
+  companyType String   @default("BOTH") // KNIGHT_WOLF, COMMERCE_AGENT, BOTH
   assigneeId  String?
   assignee    User?    @relation(fields: [assigneeId], references: [id])
   companyId   String

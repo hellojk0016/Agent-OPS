@@ -184,51 +184,6 @@ export default function DashboardLayout({
                         {children}
                     </div>
                 </main>
-
-                <AnimatePresence>
-                    {isModalOpen && (
-                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                onClick={() => setIsModalOpen(false)}
-                                className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
-                            />
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                                className="relative w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-[2.5rem] shadow-2xl overflow-hidden glass"
-                            >
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-neon-blue/5 blur-3xl rounded-full -mr-32 -mt-32 pointer-events-none" />
-
-                                <div className="p-8 lg:p-10">
-                                    <div className="flex items-center justify-between mb-8">
-                                        <div className="space-y-1">
-                                            <h2 className="text-2xl font-bold text-white tracking-tight">Create New Task</h2>
-                                            <p className="text-zinc-400 text-sm">Assign a mission to your team member.</p>
-                                        </div>
-                                        <button
-                                            onClick={() => setIsModalOpen(false)}
-                                            className="p-2 rounded-lg text-neon-blue hover:text-white hover:bg-zinc-800 transition-colors"
-                                        >
-                                            <X className="w-5 h-5 text-neon-blue" />
-                                        </button>
-                                    </div>
-                                    <TaskForm
-                                        employees={employees}
-                                        onSuccess={() => {
-                                            setIsModalOpen(false);
-                                            router.refresh();
-                                        }}
-                                        onCancel={() => setIsModalOpen(false)}
-                                    />
-                                </div>
-                            </motion.div>
-                        </div>
-                    )}
-                </AnimatePresence>
             </div>
         </div>
     );

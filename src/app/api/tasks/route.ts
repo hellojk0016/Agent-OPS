@@ -46,7 +46,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Forbidden - Admins only" }, { status: 403 });
         }
 
-        const { title, description, assigneeId, displayId } = await req.json();
+        const { title, description, assigneeId, displayId, priority, dueDate, companyType } = await req.json();
 
         if (!title) {
             return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -59,6 +59,9 @@ export async function POST(req: Request) {
                 description,
                 assigneeId: assigneeId || null,
                 companyId: session.user.activeCompanyId,
+                priority: priority || "MEDIUM",
+                dueDate: dueDate ? new Date(dueDate) : null,
+                companyType: companyType || "BOTH",
             },
             include: {
                 assignee: true,
