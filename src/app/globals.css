@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 9, 9, 11;
+  --background-end-rgb: 0, 0, 0;
+
+  /* Design System Tokens */
+  --sidebar-width: 280px;
+  --header-height: 72px;
+
+  /* Colors - High-end Zinc Palette */
+  --bg-primary: #09090b;
+  --bg-secondary: #0e0e11;
+  --bg-tertiary: #18181b;
+  --border-subtle: #27272a;
+  --border-muted: #3f3f46;
+  --accent-primary: #3b82f6;
+  --accent-secondary: #60a5fa;
+
+  /* Text */
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --neon-blue-rgb: 0, 245, 255;
+  --neon-blue: rgb(var(--neon-blue-rgb));
+}
+
+@layer base {
+  body {
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    @apply antialiased scroll-smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-zinc-900/50 backdrop-blur-md border border-zinc-800/50;
+  }
+
+  .glass-hover {
+    @apply hover:bg-zinc-800/50 transition-colors duration-200;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-white to-zinc-500;
+  }
+
+  .border-gradient {
+    border-image: linear-gradient(to bottom right, #3f3f46, transparent) 1;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .hover-lift:hover {
+    @apply -translate-y-1.5 scale-[1.01] shadow-2xl border-zinc-700/50;
+    --tw-shadow-color: rgb(var(--neon-blue-rgb) / 0.1);
+  }
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border: 3px solid var(--bg-primary);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-muted);
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  @apply transition-opacity duration-700;
+}
+
+/* Custom Component Defaults */
+@layer components {
+
+  input,
+  select,
+  textarea {
+    @apply bg-zinc-900/50 border-zinc-800 transition-all outline-none;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    @apply border-neon-blue/50 ring-4 ring-neon-blue/20;
+  }
+}

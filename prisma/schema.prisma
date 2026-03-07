@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id         String   @id @default(uuid())
+  name       String   @unique
+  logo       String?
+  themeColor String?
+  companyMembership CompanyMembership[]
+  tasks      Task[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email       String              @unique
+  name        String?
+  phone       String?             @unique
+  password    String
+  role        String              @default("MEMBER") // ADMIN or MEMBER
+  companyMembership CompanyMembership[]
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CompanyMembership {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companyId]) // A user can only have one membership per company
+}
+
+model Task {
+  id          String   @id @default(uuid())
+  displayId   String?  @unique
+  title       String
+  description String?
+  status      String   @default("TODO") // TODO, IN_PROGRESS, DONE
+  assigneeId  String?
+  assignee    User?    @relation(fields: [assigneeId], references: [id])
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
