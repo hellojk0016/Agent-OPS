@@ -49,11 +49,6 @@ export default async function DashboardPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl glass text-xs font-bold uppercase tracking-widest text-zinc-500">
-                        <TrendingUp className="w-4 h-4 text-emerald-500" />
-                        Live Sprint
-                    </div>
-
                     {session.user.role === "ADMIN" && (
                         <a
                             href="/dashboard/tasks/new"
