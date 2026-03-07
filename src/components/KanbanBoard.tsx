@@ -2,14 +2,8 @@
 
 import { useState, useEffect } from "react";
 import TaskCard from "./TaskCard";
-import { Plus, Lock } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
+import { Circle, Zap, Eye, CheckCircle2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Task {
     id: string;
@@ -29,41 +23,35 @@ interface KanbanBoardProps {
 }
 
 const COLUMNS = [
-    { id: 'TODO', title: 'To Do', color: 'bg-zinc-500/20 text-zinc-400' },
-    { id: 'IN_PROGRESS', title: 'In Progress', color: 'bg-amber-500/20 text-amber-500' },
-    { id: 'REVIEW', title: 'Review', color: 'bg-indigo-500/20 text-indigo-400' },
-    { id: 'DONE', title: 'Done', color: 'bg-emerald-500/20 text-emerald-500' },
+    { id: 'TODO', title: 'To Do', icon: Circle, hue: "zinc" },
+    { id: 'IN_PROGRESS', title: 'In Progress', icon: Zap, hue: "neon" },
+    { id: 'REVIEW', title: 'Review', icon: Eye, hue: "neon" },
+    { id: 'DONE', title: 'Done', icon: CheckCircle2, hue: "neon-dim" },
 ];
 
 export default function KanbanBoard({ tasks: initialTasks, userId, userRole }: KanbanBoardProps) {
     const router = useRouter();
-    const pathname = usePathname();
     const [tasks, setTasks] = useState<Task[]>(initialTasks);
     const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
     const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
-    useEffect(() => {
-        setTasks(initialTasks);
-    }, [initialTasks]);
+    useEffect(() => { setTasks(initialTasks); }, [initialTasks]);
 
     const handleDragStart = (e: React.DragEvent, taskId: string) => {
         setDraggedTaskId(taskId);
-        // Set data transfer for firefox support
         e.dataTransfer.setData('text/plain', taskId);
         e.dataTransfer.effectAllowed = 'move';
-
-        // Small delay to prevent the dragged image from being transparent
         setTimeout(() => {
-            const element = document.getElementById(`task-${taskId}`);
-            if (element) element.style.opacity = '0.5';
+            const el = document.getElementById(`task-${taskId}`);
+            if (el) el.style.opacity = '0.4';
         }, 0);
     };
 
     const handleDragEnd = (e: React.DragEvent, taskId: string) => {
         setDraggedTaskId(null);
         setDragOverColumn(null);
-        const element = document.getElementById(`task-${taskId}`);
-        if (element) element.style.opacity = '1';
+        const el = document.getElementById(`task-${taskId}`);
+        if (el) el.style.opacity = '1';
     };
 
     const handleDragOver = (e: React.DragEvent, columnId: string) => {
@@ -80,16 +68,12 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole }: K
     const handleDrop = async (e: React.DragEvent, targetStatus: string) => {
         e.preventDefault();
         const taskId = e.dataTransfer.getData('text/plain') || draggedTaskId;
-
         setDragOverColumn(null);
         setDraggedTaskId(null);
-
         if (!taskId) return;
-
         const task = tasks.find(t => t.id === taskId);
         if (!task || task.status === targetStatus) return;
 
-        // Optimistic update
         const originalStatus = task.status;
         setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: targetStatus } : t));
 
@@ -99,108 +83,118 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole }: K
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: taskId, status: targetStatus }),
             });
-
-            if (!res.ok) {
-                throw new Error("Failed to update status");
-            }
+            if (!res.ok) throw new Error("Failed to update status");
             router.refresh();
         } catch (error) {
             console.error("Status update error:", error);
-            // Revert on error
             setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: originalStatus } : t));
         }
     };
 
-    const getTasksByStatus = (status: string) => {
-        return tasks.filter(task => task.status === status);
+    const getTasksByStatus = (s: string) => tasks.filter(t => t.status === s);
+
+    const getColumnStyle = (hue: string, isDragOver: boolean) => {
+        if (isDragOver) return {
+            background: "rgba(0, 245, 255, 0.06)",
+            border: "1.5px dashed rgba(0, 245, 255, 0.4)",
+        };
+        if (hue === "zinc") return {
+            background: "rgba(24, 24, 27, 0.4)",
+            border: "1px solid rgba(39, 39, 42, 0.6)",
+        };
+        if (hue === "neon-dim") return {
+            background: "rgba(0, 245, 255, 0.02)",
+            border: "1px solid rgba(0, 245, 255, 0.06)",
+        };
+        return {
+            background: "rgba(0, 245, 255, 0.03)",
+            border: "1px solid rgba(0, 245, 255, 0.1)",
+        };
+    };
+
+    const getIconColor = (hue: string) => {
+        if (hue === "zinc") return "rgba(113, 113, 122, 0.6)";
+        if (hue === "neon-dim") return "rgba(0, 245, 255, 0.3)";
+        return "rgba(0, 245, 255, 0.6)";
     };
 
     return (
         <div className="flex flex-col h-full overflow-hidden">
-            {userRole === 'ADMIN' && (
-                <div className="px-2 mb-6">
-                    <button
-                        onClick={() => router.push(pathname + '?addTask=true')}
-                        className="group flex items-center justify-center gap-3 w-full py-4 rounded-[2rem] border border-dashed border-zinc-800/60 hover:border-neon-blue/40 hover:bg-neon-blue/5 transition-all cursor-pointer hover-lift relative overflow-hidden"
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-r from-neon-blue/0 via-neon-blue/5 to-neon-blue/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <Plus className="w-4 h-4 text-neon-blue" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400 group-hover:text-neon-blue transition-colors">
-                            Add Task
-                        </span>
-                    </button>
-                </div>
-            )}
-
-            <div className="flex gap-4 overflow-hidden h-full -mx-2 px-2 pb-6">
-                {COLUMNS.map((column) => {
-                    const columnTasks = getTasksByStatus(column.id);
-                    const isDragOver = dragOverColumn === column.id;
+            <div className="flex gap-3 overflow-hidden h-full -mx-2 px-2 pb-6">
+                {COLUMNS.map((col) => {
+                    const columnTasks = getTasksByStatus(col.id);
+                    const isDragOver = dragOverColumn === col.id;
+                    const colStyle = getColumnStyle(col.hue, isDragOver);
 
                     return (
-                        <div
-                            key={column.id}
-                            className="flex-1 min-w-0 flex flex-col h-full"
-                        >
+                        <div key={col.id} className="flex-1 min-w-0 flex flex-col h-full">
                             {/* Column Header */}
-                            <div className="flex items-center justify-between px-2 mb-2">
-                                <div className="flex items-center gap-3">
-                                    <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
-                                        {column.title}
-                                    </h3>
-                                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-zinc-800 border border-zinc-700 text-[9px] font-bold text-zinc-500">
-                                        {columnTasks.length}
-                                    </span>
-                                </div>
+                            <div className="flex items-center gap-2 px-1 mb-3">
+                                <col.icon
+                                    style={{ width: 14, height: 14, color: getIconColor(col.hue), flexShrink: 0 }}
+                                />
+                                <h3 className="text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-500 flex-1">
+                                    {col.title}
+                                </h3>
+                                <span
+                                    className="text-[9px] font-bold flex items-center justify-center rounded-full"
+                                    style={{
+                                        width: 20, height: 20,
+                                        background: "rgba(0, 245, 255, 0.08)",
+                                        border: "1px solid rgba(0, 245, 255, 0.15)",
+                                        color: "#00F5FF",
+                                    }}
+                                >
+                                    {columnTasks.length}
+                                </span>
                             </div>
 
-                            {/* Column Content Area (Drop Target) — only this scrolls */}
+                            {/* Drop Zone */}
                             <div
-                                onDragOver={(e) => handleDragOver(e, column.id)}
+                                onDragOver={(e) => handleDragOver(e, col.id)}
                                 onDragLeave={handleDragLeave}
-                                onDrop={(e) => handleDrop(e, column.id)}
-                                className={cn(
-                                    "flex-1 flex flex-col gap-4 p-2 rounded-2xl border transition-colors duration-200 overflow-y-auto min-h-0",
-                                    isDragOver ? "bg-zinc-800/40 border-neon-blue/40" : "bg-zinc-900/30 border-zinc-800/30"
-                                )}
+                                onDrop={(e) => handleDrop(e, col.id)}
+                                className="flex-1 flex flex-col gap-3 p-2.5 rounded-2xl transition-all duration-200 overflow-y-auto min-h-0 custom-scrollbar"
+                                style={colStyle}
                             >
+                                {columnTasks.map((task) => (
+                                    <div
+                                        key={task.id}
+                                        id={`task-${task.id}`}
+                                        draggable
+                                        onDragStart={(e) => handleDragStart(e, task.id)}
+                                        onDragEnd={(e) => handleDragEnd(e, task.id)}
+                                        style={{ borderRadius: 16, cursor: "grab" }}
+                                        className="relative transition-opacity"
+                                    >
+                                        <TaskCard task={task} userId={userId} userRole={userRole} isKanban />
+                                    </div>
+                                ))}
 
-                                <div className="flex flex-col gap-4">
-                                    {columnTasks.map((task) => (
-                                        <div
-                                            key={task.id}
-                                            id={`task-${task.id}`}
-                                            draggable
-                                            onDragStart={(e) => handleDragStart(e, task.id)}
-                                            onDragEnd={(e) => handleDragEnd(e, task.id)}
-                                            className={cn(
-                                                "relative shadow-sm rounded-3xl cursor-grab active:cursor-grabbing",
-                                                draggedTaskId === task.id ? 'opacity-50 z-50' : ''
-                                            )}
-                                        >
-                                            <TaskCard
-                                                task={task}
-                                                userId={userId}
-                                                userRole={userRole}
-                                                isKanban={true}
-                                            />
-                                        </div>
-                                    ))}
+                                {/* Empty state */}
+                                {columnTasks.length === 0 && !isDragOver && (
+                                    <div className="flex-1 flex flex-col items-center justify-center py-10 opacity-30">
+                                        <col.icon style={{ width: 20, height: 20, color: "#00F5FF", marginBottom: 8 }} />
+                                        <p className="text-[9px] font-bold uppercase tracking-[0.2em]" style={{ color: "#00F5FF" }}>
+                                            Idle
+                                        </p>
+                                    </div>
+                                )}
 
-                                    {columnTasks.length === 0 && !isDragOver && (
-                                        <div className="py-10 flex flex-col items-center justify-center text-center opacity-40">
-                                            <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-600">
-                                                Idle
-                                            </p>
-                                        </div>
-                                    )}
-
-                                    {isDragOver && (
-                                        <div className="h-24 rounded-3xl border-2 border-dashed border-neon-blue/30 bg-neon-blue/5 flex items-center justify-center">
-                                            <span className="text-[10px] font-bold uppercase tracking-widest text-neon-blue/50">Drop Here</span>
-                                        </div>
-                                    )}
-                                </div>
+                                {/* Drop target indicator */}
+                                {isDragOver && (
+                                    <div
+                                        className="h-20 rounded-2xl flex items-center justify-center"
+                                        style={{
+                                            border: "2px dashed rgba(0, 245, 255, 0.4)",
+                                            background: "rgba(0, 245, 255, 0.04)",
+                                        }}
+                                    >
+                                        <span className="text-[9px] font-bold uppercase tracking-[0.15em]" style={{ color: "rgba(0,245,255,0.5)" }}>
+                                            Drop Here
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     );

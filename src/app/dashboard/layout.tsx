@@ -3,25 +3,19 @@
 import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import {
-    PenTool,
     LayoutDashboard,
-    PlusSquare,
+    Users,
     LogOut,
     User,
+    PlusSquare,
     ChevronRight,
-    X,
+    Zap,
 } from "lucide-react";
-import { useState, useEffect, useMemo } from "react";
-import TaskForm from "./tasks/new/TaskForm";
+import { useState, useEffect } from "react";
 import WorkspaceSwitcher from "@/components/WorkspaceSwitcher";
+import CreateTaskModal from "@/components/CreateTaskModal";
 import { motion, AnimatePresence } from "framer-motion";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 import Image from "next/image";
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
 
 export default function DashboardLayout({
     children,
@@ -43,21 +37,24 @@ export default function DashboardLayout({
         }
     }, [session]);
 
-    // Handle query param for adding task
     useEffect(() => {
         const searchParams = new URLSearchParams(window.location.search);
         if (searchParams.get('addTask') === 'true') {
             setIsModalOpen(true);
-            // Optionally clear the param without reload
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, '', newUrl);
+            window.history.replaceState({}, '', window.location.pathname);
         }
-    }, [pathname]); // Check on navigation
+    }, [pathname]);
 
     if (status === "loading") {
         return (
-            <div className="flex h-screen w-screen items-center justify-center bg-zinc-950">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
+            <div className="flex h-screen w-screen items-center justify-center bg-[var(--bg-base)]">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="relative h-10 w-10">
+                        <div className="absolute inset-0 rounded-full border-2 border-neon-blue/20" />
+                        <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-[#00F5FF]" />
+                    </div>
+                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neon-blue/50">Loading</span>
+                </div>
             </div>
         );
     }
@@ -69,122 +66,133 @@ export default function DashboardLayout({
 
     const navItems = [
         { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-        ...(session?.user?.role === "ADMIN" ? [{ name: "Employees", href: "/dashboard/employees", icon: User }] : []),
+        ...(session?.user?.role === "ADMIN"
+            ? [{ name: "Employees", href: "/dashboard/employees", icon: Users }]
+            : []),
     ];
 
-    const isAdminDashboard = session.user?.role === "ADMIN" && pathname === "/dashboard";
-
-    const activeMembership = session.user?.memberships?.find(
-        (m: any) => m.companyId === session.user.activeCompanyId
-    );
-
     return (
-        <div className={cn("flex h-screen w-full text-zinc-100 overflow-hidden font-sans", isAdminDashboard ? "bg-[#0B0B0B]" : "bg-zinc-950")}>
-            {/* Sidebar */}
-            <aside className="w-[280px] hidden md:flex flex-col glass border-r border-zinc-800/50 z-20">
-                <div className="p-6">
-                    <div className="flex items-center gap-3 mb-8 px-2">
-                        <Image
-                            src="/images/ops-logo.png"
-                            alt="OPS Logo"
-                            width={40}
-                            height={40}
-                            className="object-contain"
-                        />
-                        <span className="text-xl font-bold tracking-tight text-gradient">Agents OPS</span>
-                    </div>
+        <div className="flex h-screen w-full overflow-hidden bg-[var(--bg-base)]">
 
+            {/* ── Sidebar ── */}
+            <aside className="w-[280px] hidden md:flex flex-col glass-strong border-r border-[var(--border-muted)]">
+
+                {/* Logo */}
+                <div className="px-6 pt-7 pb-5 border-b border-[var(--border-muted)]">
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <div className="absolute inset-0 rounded-xl bg-[#00F5FF]/20 blur-md" />
+                            <Image
+                                src="/images/ops-logo.png"
+                                alt="OPS Logo"
+                                width={36}
+                                height={36}
+                                className="relative object-contain rounded-xl"
+                            />
+                        </div>
+                        <div>
+                            <span className="text-lg font-bold tracking-tight text-white">Agents OPS</span>
+                            <div className="flex items-center gap-1 mt-0.5">
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#00F5FF] animate-pulse" />
+                                <span className="text-[10px] text-neon-blue/60 font-medium uppercase tracking-widest">Online</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Workspace switcher */}
+                <div className="px-4 pt-4">
                     <WorkspaceSwitcher />
                 </div>
 
-                <nav className="flex-1 px-6 space-y-2 mt-8">
+                {/* Nav */}
+                <nav className="flex-1 px-4 py-5 space-y-1 overflow-y-auto">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-3">Navigation</p>
                     {navItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
                             <a
                                 key={item.name}
                                 href={item.href}
-                                className={`flex items-center justify-between group rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${isActive
-                                    ? "bg-neon-blue/10 text-neon-blue border border-neon-blue/20 shadow-lg shadow-neon-blue/5"
-                                    : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50"
-                                    }`}
+                                className={`nav-item ${isActive ? "active" : ""}`}
                             >
-                                <div className="flex items-center gap-3">
-                                    <item.icon className={`w-5 h-5 transition-colors text-neon-blue`} />
-                                    {item.name}
-                                </div>
+                                <item.icon className="w-4.5 h-4.5 flex-shrink-0" style={{ width: 18, height: 18 }} />
+                                <span className="flex-1">{item.name}</span>
                                 {isActive && (
-                                    <motion.div layoutId="active" className="w-1 h-1 rounded-full bg-neon-blue" />
+                                    <motion.div
+                                        layoutId="nav-indicator"
+                                        className="w-1.5 h-1.5 rounded-full bg-[#00F5FF]"
+                                    />
                                 )}
                             </a>
                         );
                     })}
+
+                    {/* Assign Task (Admin only) */}
+                    {session.user.role === "ADMIN" && (
+                        <div className="pt-4">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-3">Quick Actions</p>
+                            <button
+                                onClick={() => setIsModalOpen(true)}
+                                className="btn-primary w-full text-sm font-semibold"
+                            >
+                                <PlusSquare className="w-4 h-4" />
+                                Assign Task
+                            </button>
+                        </div>
+                    )}
                 </nav>
 
-                <div className="p-6 border-t border-zinc-800/50 space-y-4">
-                    <div className="flex items-center gap-4 px-2 py-1">
-                        <div className="h-10 w-10 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center overflow-hidden">
+                {/* User footer */}
+                <div className="p-4 border-t border-[var(--border-muted)]">
+                    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/[0.03] transition-colors group cursor-default mb-2">
+                        <div className="h-9 w-9 rounded-xl bg-[var(--bg-overlay)] border border-[var(--border-default)] flex items-center justify-center flex-shrink-0">
                             {session.user.image ? (
-                                <img src={session.user.image} alt={session.user.name || "User"} className="h-full w-full object-cover" />
+                                <img src={session.user.image} alt={session.user.name || "User"} className="h-full w-full object-cover rounded-xl" />
                             ) : (
-                                <User className="w-6 h-6 text-neon-blue" />
+                                <User className="w-5 h-5 text-neon-blue" />
                             )}
                         </div>
-                        <div className="flex flex-col min-w-0">
-                            <span className="text-sm font-semibold truncate text-zinc-100">{session.user.name}</span>
-                            <div className="flex items-center gap-1.5">
-                                <span className={`w-1.5 h-1.5 rounded-full ${session.user.role === 'ADMIN' ? 'bg-amber-500' : 'bg-emerald-500'}`} />
-                                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">{session.user.role}</span>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-zinc-100 truncate">{session.user.name}</p>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                                <Zap className="w-3 h-3 text-neon-blue" />
+                                <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-neon-blue/60">
+                                    {session.user.role}
+                                </span>
                             </div>
                         </div>
                     </div>
-
                     <button
                         onClick={() => signOut()}
-                        className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-zinc-400 hover:text-red-400 hover:bg-red-500/5 transition-all outline-none"
+                        className="btn-surface w-full text-xs"
                     >
-                        <LogOut size={18} />
+                        <LogOut className="w-3.5 h-3.5" />
                         Sign out
                     </button>
                 </div>
             </aside>
 
-            {/* Content Area */}
+            {/* ── Main ── */}
             <div className="flex-1 flex flex-col relative h-full overflow-hidden">
-                {/* Header */}
-                <header className={cn(
-                    "h-[72px] flex items-center justify-between px-6 lg:px-10 z-10 transition-colors duration-300",
-                    isAdminDashboard ? "bg-[#0B0B0B]" : "border-b border-zinc-800/50 glass"
-                )}>
-                    <div className="flex items-center gap-4 md:hidden">
-                        <Image
-                            src="/images/ops-logo.png"
-                            alt="OPS Logo"
-                            width={32}
-                            height={32}
-                            className="object-contain"
-                        />
-                        <span className="text-sm font-bold truncate text-zinc-100">{activeMembership?.companyName}</span>
-                    </div>
 
-                    <div className="flex-1 hidden md:flex items-center">
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 border-l border-zinc-800/50 pl-6 ml-2">
-                            {activeMembership?.companyName}
-                        </span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                    </div>
-                </header>
+                {/* Ambient neon glow */}
+                <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#00F5FF]/[0.04] blur-3xl pointer-events-none -mr-48 -mt-48" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-[#00F5FF]/[0.03] blur-3xl pointer-events-none -ml-32 -mb-32" />
 
                 <main className="flex-1 overflow-hidden animate-fade-in relative flex flex-col">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-neon-blue/5 blur-3xl rounded-full -mr-32 -mt-32 pointer-events-none" />
-
                     <div className="flex-1 flex flex-col overflow-hidden w-full px-6 lg:px-10 pt-6">
                         {children}
                     </div>
                 </main>
             </div>
+
+            {/* Global Modal */}
+            <CreateTaskModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                employees={employees}
+            />
         </div>
     );
 }

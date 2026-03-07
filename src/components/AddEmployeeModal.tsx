@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Loader2, UserPlus } from "lucide-react";
+import { X, Loader2, UserPlus, UserCheck, Users, Shield, Building, Store, Layers, Phone } from "lucide-react";
 
 interface AddEmployeeModalProps {
     isOpen: boolean;
@@ -49,12 +49,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
             }
 
             const newEmployee = await res.json();
-
-            // reset form
-            setName("");
-            setPhone("");
-            setRole("MEMBER");
-            setCompanyType("Both");
+            setName(""); setPhone(""); setRole("MEMBER"); setCompanyType("Both");
             onSuccess(newEmployee);
         } catch (err: any) {
             setError(err.message);
@@ -72,40 +67,54 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
+                        className="absolute inset-0 bg-black/70 backdrop-blur-md"
                     />
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        initial={{ opacity: 0, scale: 0.92, y: 16 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="relative w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden glass hover-lift"
+                        exit={{ opacity: 0, scale: 0.92, y: 16 }}
+                        transition={{ type: "spring", stiffness: 340, damping: 28 }}
+                        className="relative w-full max-w-md overflow-hidden rounded-2xl"
+                        style={{
+                            background: "rgba(12, 12, 16, 0.96)",
+                            border: "1px solid rgba(0, 245, 255, 0.15)",
+                            boxShadow: "0 0 0 1px rgba(0,0,0,0.5), 0 24px 80px rgba(0, 245, 255, 0.12), 0 8px 32px rgba(0,0,0,0.6)",
+                        }}
                     >
-                        <div className="p-8">
-                            <div className="flex items-center justify-between mb-8">
-                                <div className="space-y-1">
-                                    <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-                                        <UserPlus className="w-6 h-6 text-neon-blue" />
-                                        Add Employee
-                                    </h2>
-                                    <p className="text-zinc-400 text-sm">Grant system access via phone OTP.</p>
+                        {/* Top accent */}
+                        <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-60" />
+                        {/* Glow */}
+                        <div className="absolute top-0 right-0 w-48 h-48 rounded-full bg-[#00F5FF]/[0.06] blur-3xl pointer-events-none -mr-24 -mt-24" />
+
+                        <div className="relative p-7">
+                            {/* Header */}
+                            <div className="flex items-center justify-between mb-7">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-10 w-10 rounded-xl bg-[#00F5FF]/10 border border-[#00F5FF]/20 flex items-center justify-center">
+                                        <UserPlus className="w-5 h-5 text-[#00F5FF]" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-bold text-white tracking-tight">Add Member</h2>
+                                        <p className="text-xs text-zinc-500">Grant system access via phone OTP.</p>
+                                    </div>
                                 </div>
-                                <button
-                                    onClick={onClose}
-                                    className="p-2 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors"
-                                >
-                                    <X className="w-5 h-5 text-neon-blue" />
+                                <button onClick={onClose} className="btn-surface w-9 h-9 p-0" style={{ height: 36, width: 36, padding: 0 }}>
+                                    <X className="w-4 h-4" />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            <form onSubmit={handleSubmit} className="space-y-5">
                                 {error && (
-                                    <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium">
+                                    <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium flex items-center gap-2">
+                                        <X className="w-4 h-4 flex-shrink-0" />
                                         {error}
                                     </div>
                                 )}
 
+                                {/* Name */}
                                 <div>
-                                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1 mb-2 block">
+                                    <label className="field-label">
+                                        <Users className="w-3 h-3" />
                                         Full Name
                                     </label>
                                     <input
@@ -113,17 +122,25 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                         placeholder="John Doe"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        className="w-full bg-zinc-900/50 border border-zinc-800 focus:border-neon-blue focus:ring-1 focus:ring-neon-blue rounded-xl px-4 py-3 text-zinc-100 placeholder:text-zinc-600 outline-none transition-all shadow-inner"
+                                        className="field-input w-full"
                                         autoFocus
                                     />
                                 </div>
 
+                                {/* Phone */}
                                 <div>
-                                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1 mb-2 block">
+                                    <label className="field-label">
+                                        <Phone className="w-3 h-3" />
                                         Mobile Number
                                     </label>
-                                    <div className="relative flex items-center rounded-xl border border-zinc-800 bg-zinc-900/50 focus-within:border-neon-blue focus-within:ring-1 focus-within:ring-neon-blue transition shadow-inner overflow-hidden">
-                                        <span className="pl-4 pr-2 text-zinc-300 font-semibold text-base select-none whitespace-nowrap flex items-center gap-1">
+                                    <div
+                                        className="flex items-center rounded-xl overflow-hidden transition-all duration-200"
+                                        style={{
+                                            background: "var(--bg-elevated)",
+                                            border: "1.5px solid var(--border-default)",
+                                        }}
+                                    >
+                                        <span className="pl-4 pr-2 text-zinc-300 font-semibold text-sm select-none whitespace-nowrap">
                                             🇮🇳 +91
                                         </span>
                                         <div className="w-px h-5 bg-zinc-700 mx-1" />
@@ -133,87 +150,75 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                             placeholder="XXXXX XXXXX"
                                             value={formatPhoneDisplay(phone)}
                                             onChange={handlePhoneChange}
-                                            className="flex-1 bg-transparent py-3 pr-4 text-zinc-100 placeholder:text-zinc-600 outline-none text-base tracking-wider"
+                                            className="flex-1 bg-transparent py-3 pr-4 text-zinc-100 placeholder:text-zinc-600 outline-none text-sm tracking-wider border-none"
+                                            style={{ background: "transparent", border: "none", boxShadow: "none" }}
                                         />
                                     </div>
-                                    <p className="text-[11px] text-zinc-500 ml-1 mt-1.5">
-                                        They will log in using this number via SMS OTP.
-                                    </p>
+                                    <p className="text-[11px] text-zinc-600 mt-1.5 ml-1">10-digit Indian mobile number</p>
                                 </div>
 
+                                {/* Role */}
                                 <div>
-                                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1 mb-2 block">
+                                    <label className="field-label">
+                                        <Shield className="w-3 h-3" />
                                         System Role
                                     </label>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <button
-                                            type="button"
-                                            onClick={() => setRole("MEMBER")}
-                                            className={`py-2.5 rounded-xl border text-sm font-medium transition-all ${role === "MEMBER"
-                                                ? "bg-neon-blue/10 border-neon-blue/50 text-neon-blue shadow-inner"
-                                                : "bg-zinc-900/50 border-zinc-800 text-zinc-400 hover:bg-zinc-800"
-                                                }`}
-                                        >
-                                            Member
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setRole("ADMIN")}
-                                            className={`py-2.5 rounded-xl border text-sm font-medium transition-all ${role === "ADMIN"
-                                                ? "bg-amber-500/10 border-amber-500/50 text-amber-500 shadow-inner"
-                                                : "bg-zinc-900/50 border-zinc-800 text-zinc-400 hover:bg-zinc-800"
-                                                }`}
-                                        >
-                                            Admin
-                                        </button>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {[{ val: "MEMBER", label: "Member", icon: Users }, { val: "ADMIN", label: "Admin", icon: Shield }].map(({ val, label, icon: Icon }) => (
+                                            <button
+                                                key={val}
+                                                type="button"
+                                                onClick={() => setRole(val)}
+                                                className={`select-btn ${role === val ? "active" : ""}`}
+                                            >
+                                                <Icon className="w-4 h-4" />
+                                                {label}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
 
+                                {/* Company */}
                                 <div>
-                                    <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1 mb-2 block">
+                                    <label className="field-label">
+                                        <Building className="w-3 h-3" />
                                         Company Access
                                     </label>
                                     <div className="grid grid-cols-3 gap-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => setCompanyType("Knight Wolf")}
-                                            className={`py-2 rounded-xl border text-xs font-medium transition-all ${companyType === "Knight Wolf"
-                                                ? "bg-neon-blue/10 border-neon-blue/50 text-neon-blue shadow-inner"
-                                                : "bg-zinc-900/50 border-zinc-800 text-zinc-400 hover:bg-zinc-800"
-                                                }`}
-                                        >
-                                            Knight Wolf
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setCompanyType("Commerce Agent")}
-                                            className={`py-2 rounded-xl border text-xs font-medium transition-all ${companyType === "Commerce Agent"
-                                                ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-500 shadow-inner"
-                                                : "bg-zinc-900/50 border-zinc-800 text-zinc-400 hover:bg-zinc-800"
-                                                }`}
-                                        >
-                                            Commerce
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setCompanyType("Both")}
-                                            className={`py-2 rounded-xl border text-xs font-medium transition-all ${companyType === "Both"
-                                                ? "bg-purple-500/10 border-purple-500/50 text-purple-400 shadow-inner"
-                                                : "bg-zinc-900/50 border-zinc-800 text-zinc-400 hover:bg-zinc-800"
-                                                }`}
-                                        >
-                                            Both
-                                        </button>
+                                        {[
+                                            { val: "Knight Wolf", label: "Knight Wolf", icon: Building },
+                                            { val: "Commerce Agent", label: "Commerce", icon: Store },
+                                            { val: "Both", label: "Both", icon: Layers },
+                                        ].map(({ val, label, icon: Icon }) => (
+                                            <button
+                                                key={val}
+                                                type="button"
+                                                onClick={() => setCompanyType(val)}
+                                                className={`select-btn text-xs ${companyType === val ? "active" : ""}`}
+                                            >
+                                                <Icon className="w-3.5 h-3.5" />
+                                                {label}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
 
-                                <button
+                                {/* Submit */}
+                                <motion.button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="w-full bg-neon-blue hover:bg-neon-blue/90 disabled:opacity-50 disabled:cursor-not-allowed text-zinc-950 rounded-xl py-3.5 font-bold shadow-lg shadow-neon-blue/20 transition-all flex items-center justify-center mt-4"
+                                    className="btn-primary w-full h-12 font-bold mt-2"
+                                    style={{ height: 48 }}
+                                    whileHover={{ scale: isLoading ? 1 : 1.01 }}
+                                    whileTap={{ scale: isLoading ? 1 : 0.98 }}
                                 >
-                                    {isLoading ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : "Confirm Add Employee"}
-                                </button>
+                                    {isLoading ? (
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                    ) : (
+                                        <UserCheck className="w-5 h-5" />
+                                    )}
+                                    {isLoading ? "Adding..." : "Confirm Add Member"}
+                                </motion.button>
                             </form>
                         </div>
                     </motion.div>

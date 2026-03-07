@@ -25,7 +25,7 @@ export default function WorkspaceSwitcher() {
             <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl glass border-zinc-800/30 shadow-inner">
                 <div
                     className="h-9 w-9 rounded-xl flex items-center justify-center text-white shadow-lg shadow-black/20 overflow-hidden"
-                    style={{ backgroundColor: activeMembership?.companyTheme || '#3b82f6' }}
+                    style={{ backgroundColor: activeMembership?.companyTheme || '#00F5FF' }}
                 >
                     {activeMembership?.companyLogo ? (
                         <img src={activeMembership.companyLogo} alt={activeMembership.companyName} className="w-full h-full object-cover" />
@@ -70,7 +70,7 @@ export default function WorkspaceSwitcher() {
                 <div className="flex items-center gap-3 truncate">
                     <div
                         className="h-9 w-9 flex-shrink-0 rounded-xl flex items-center justify-center text-white shadow-lg shadow-black/20 transition-transform group-hover:scale-105 overflow-hidden"
-                        style={{ backgroundColor: activeMembership?.companyTheme || '#3b82f6' }}
+                        style={{ backgroundColor: activeMembership?.companyTheme || '#00F5FF' }}
                     >
                         {activeMembership?.companyLogo ? (
                             <img src={activeMembership.companyLogo} alt={activeMembership.companyName} className="w-full h-full object-cover" />

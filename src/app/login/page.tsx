@@ -10,7 +10,7 @@ import {
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { Phone, Loader2, ArrowLeft, KeyRound, CheckCircle2 } from "lucide-react";
+import { Phone, Loader2, ArrowLeft, KeyRound, CheckCircle2, SendHorizonal, ShieldCheck, RotateCcw } from "lucide-react";
 import confetti from "canvas-confetti";
 import Image from "next/image";
 
@@ -97,7 +97,7 @@ export default function LoginPage() {
 
     const fireConfetti = () => {
         const end = Date.now() + 2000;
-        const colors = ["#3b82f6", "#60a5fa", "#93c5fd", "#ffffff", "#a78bfa"];
+        const colors = ["#00F5FF", "#70FFFF", "#E0FFFF", "#ffffff", "#09090b"];
         (function frame() {
             confetti({
                 particleCount: 5,
@@ -199,7 +199,7 @@ export default function LoginPage() {
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 }}
-                            className="w-20 h-20 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center"
+                            className="w-20 h-20 rounded-full bg-neon-blue/15 border border-neon-blue/30 flex items-center justify-center"
                         >
                             <CheckCircle2 className="w-10 h-10 text-neon-blue" />
                         </motion.div>
@@ -219,8 +219,17 @@ export default function LoginPage() {
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
-                        className="w-full max-w-md rounded-2xl bg-zinc-900/50 p-10 shadow-2xl border border-zinc-800 backdrop-blur-sm space-y-8 hover-lift"
+                        className="w-full max-w-md rounded-2xl p-8 space-y-7 hover-lift"
+                        style={{
+                            background: "rgba(12, 12, 16, 0.92)",
+                            border: "1px solid rgba(0, 245, 255, 0.12)",
+                            boxShadow: "0 0 0 1px rgba(0,0,0,0.4), 0 24px 80px rgba(0, 245, 255, 0.1), 0 8px 32px rgba(0,0,0,0.5)",
+                        }}
                     >
+                        {/* Neon top line */}
+                        <div className="absolute top-0 left-0 right-0 h-[2px] rounded-t-2xl bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-50" />
+                        {/* Ambient glow */}
+                        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#00F5FF]/[0.05] blur-3xl pointer-events-none -mr-32 -mt-32" />
                         {/* Icon + Title */}
                         <motion.div variants={itemVariants} className="text-center space-y-2">
                             <div className="mx-auto mb-6">
@@ -270,27 +279,33 @@ export default function LoginPage() {
                                     onSubmit={handleSendOTP}
                                 >
                                     <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1">
+                                        <label className="field-label">
+                                            <Phone className="w-3 h-3" />
                                             Phone Number
                                         </label>
                                         {/* Input with +91 prefix */}
-                                        <div className="relative group flex items-center rounded-xl border border-zinc-800 bg-zinc-900/50 focus-within:border-neon-blue focus-within:ring-1 focus-within:ring-neon-blue transition shadow-inner overflow-hidden">
-                                            {/* +91 prefix */}
-                                            <span className="pl-4 pr-2 text-zinc-300 font-semibold text-base select-none whitespace-nowrap flex items-center gap-1">
+                                        <div
+                                            className="flex items-center rounded-xl overflow-hidden transition-all duration-200"
+                                            style={{
+                                                background: "var(--bg-elevated)",
+                                                border: "1.5px solid var(--border-default)",
+                                            }}
+                                        >
+                                            <span className="pl-4 pr-2 text-zinc-300 font-semibold text-sm select-none whitespace-nowrap">
                                                 🇮🇳 +91
                                             </span>
                                             <div className="w-px h-5 bg-zinc-700 mx-1" />
-                                            {/* Digit input */}
                                             <input
                                                 type="tel"
                                                 inputMode="numeric"
                                                 placeholder="XXXXX XXXXX"
                                                 value={formatPhoneDigits(digits)}
                                                 onChange={handleDigitInput}
-                                                className="flex-1 bg-transparent py-3.5 pr-12 text-zinc-100 placeholder:text-zinc-600 outline-none text-base tracking-wider"
+                                                className="flex-1 bg-transparent py-3.5 pr-12 text-zinc-100 placeholder:text-zinc-600 outline-none text-sm tracking-wider border-none"
+                                                style={{ background: "transparent", border: "none", boxShadow: "none" }}
                                                 autoFocus
                                             />
-                                            {/* Green tick when valid */}
+                                            {/* Valid phone tick */}
                                             <AnimatePresence>
                                                 {isValidPhone && (
                                                     <motion.div
@@ -300,23 +315,27 @@ export default function LoginPage() {
                                                         transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                                         className="absolute right-3"
                                                     >
-                                                        <CheckCircle2 className="w-5 h-5 text-neon-blue" />
+                                                        <CheckCircle2 className="w-5 h-5" style={{ color: "#00F5FF" }} />
                                                     </motion.div>
                                                 )}
                                             </AnimatePresence>
                                         </div>
-                                        <p className="text-[11px] text-zinc-600 ml-1">
+                                        <p className="text-[11px] ml-1" style={{ color: "var(--text-muted)" }}>
                                             Indian number only • 10 digits
                                         </p>
                                     </div>
 
-                                    <button
+                                    <motion.button
                                         type="submit"
                                         disabled={isLoading || !isValidPhone}
-                                        className="flex w-full justify-center items-center gap-2 rounded-xl bg-neon-blue px-4 py-4 text-sm font-bold text-zinc-950 hover:bg-neon-blue/90 transition-all shadow-lg shadow-neon-blue/20 disabled:opacity-40 disabled:cursor-not-allowed"
+                                        className="btn-primary w-full"
+                                        style={{ height: 52 }}
+                                        whileHover={{ scale: (isLoading || !isValidPhone) ? 1 : 1.01 }}
+                                        whileTap={{ scale: (isLoading || !isValidPhone) ? 1 : 0.98 }}
                                     >
-                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send OTP via SMS"}
-                                    </button>
+                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <SendHorizonal className="w-5 h-5" />}
+                                        {isLoading ? "Sending OTP..." : "Send OTP via SMS"}
+                                    </motion.button>
                                 </motion.form>
                             )}
 
@@ -332,7 +351,8 @@ export default function LoginPage() {
                                     onSubmit={handleVerifyOTP}
                                 >
                                     <div className="space-y-4">
-                                        <label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider ml-1">
+                                        <label className="field-label">
+                                            <KeyRound className="w-3 h-3" />
                                             Verification Code
                                         </label>
                                         <div className="flex gap-3 justify-center" onPaste={handleOtpPaste}>
@@ -349,37 +369,49 @@ export default function LoginPage() {
                                                     value={digit}
                                                     onChange={(e) => handleOtpChange(i, e.target.value)}
                                                     onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                                                    className="w-12 h-14 text-center text-2xl font-bold rounded-xl border border-zinc-800 bg-zinc-900/50 text-zinc-100 focus:border-neon-blue focus:ring-1 focus:ring-neon-blue outline-none transition shadow-inner caret-transparent"
+                                                    className="w-12 h-14 text-center text-2xl font-bold rounded-xl outline-none transition-all caret-transparent"
+                                                    style={{
+                                                        background: "var(--bg-elevated)",
+                                                        border: `1.5px solid ${digit ? "rgba(0,245,255,0.4)" : "var(--border-default)"}`,
+                                                        color: "var(--text-primary)",
+                                                        boxShadow: digit ? "0 0 0 3px rgba(0,245,255,0.1)" : "none",
+                                                    }}
                                                     autoFocus={i === 0}
                                                 />
                                             ))}
                                         </div>
                                     </div>
 
-                                    <button
+                                    <motion.button
                                         type="submit"
                                         disabled={isLoading || otp.join("").length < 6}
-                                        className="flex w-full justify-center items-center gap-2 rounded-xl bg-neon-blue px-4 py-4 text-sm font-bold text-zinc-950 hover:bg-neon-blue/90 transition-all shadow-lg shadow-neon-blue/20 disabled:opacity-40 disabled:cursor-not-allowed"
+                                        className="btn-primary w-full"
+                                        style={{ height: 52 }}
+                                        whileHover={{ scale: (isLoading || otp.join("").length < 6) ? 1 : 1.01 }}
+                                        whileTap={{ scale: (isLoading || otp.join("").length < 6) ? 1 : 0.98 }}
                                     >
-                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify & Sign In"}
-                                    </button>
+                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5" />}
+                                        {isLoading ? "Verifying..." : "Verify & Sign In"}
+                                    </motion.button>
 
                                     <div className="flex items-center justify-between pt-2">
                                         <button
                                             type="button"
                                             onClick={() => { setStep("phone"); setOtp(["", "", "", "", "", ""]); setError(""); }}
-                                            className="flex items-center gap-1.5 text-sm text-neon-blue hover:text-zinc-300 transition-colors"
+                                            className="btn-ghost flex items-center gap-1.5 text-sm px-3"
+                                            style={{ height: 36 }}
                                         >
-                                            <ArrowLeft className="w-4 h-4 text-neon-blue" />
+                                            <ArrowLeft className="w-4 h-4" />
                                             Change number
                                         </button>
                                         <button
                                             type="button"
                                             disabled={countdown > 0}
                                             onClick={() => handleSendOTP()}
-                                            className="text-sm font-medium text-neon-blue hover:text-neon-blue/80 transition-colors disabled:text-zinc-600 disabled:cursor-not-allowed"
+                                            className="flex items-center gap-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed"
+                                            style={{ color: countdown > 0 ? "var(--text-muted)" : "#00F5FF" }}
                                         >
-                                            {countdown > 0 ? `Resend in ${countdown}s` : "Resend OTP"}
+                                            {countdown > 0 ? `Resend in ${countdown}s` : (<><RotateCcw className="w-3.5 h-3.5" /> Resend OTP</>)}
                                         </button>
                                     </div>
                                 </motion.form>

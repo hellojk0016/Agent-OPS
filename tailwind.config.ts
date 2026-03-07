@@ -6,46 +6,36 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-space-grotesk)", "Space Grotesk", "system-ui", "sans-serif"],
+      },
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
         "neon-blue": "rgb(var(--neon-blue-rgb) / <alpha-value>)",
+        "neon-blue-rgb": "0, 245, 255",
+      },
+      letterSpacing: {
+        tightest: "-0.04em",
+      },
+      boxShadow: {
+        "neon-sm": "0 0 8px rgba(0, 245, 255, 0.2)",
+        "neon": "0 0 20px rgba(0, 245, 255, 0.25), 0 4px 16px rgba(0, 245, 255, 0.15)",
+        "neon-lg": "0 0 40px rgba(0, 245, 255, 0.3), 0 8px 32px rgba(0, 245, 255, 0.2)",
+        "neon-xl": "0 0 0 1px rgba(0, 245, 255, 0.3), 0 0 60px rgba(0, 245, 255, 0.2)",
+      },
+      backgroundImage: {
+        "gradient-neon": "linear-gradient(135deg, #00F5FF 0%, #70FFFF 100%)",
+      },
+      animation: {
+        "slide-up": "slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "fade-in": "fadeIn 0.3s ease forwards",
+        "pulse-neon": "pulse-neon 2s ease-in-out infinite",
       },
     },
   },
   plugins: [],
 };
+
 export default config;

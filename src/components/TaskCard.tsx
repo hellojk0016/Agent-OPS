@@ -1,14 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle2, Circle, Clock, Loader2, User, MoreVertical, ExternalLink, X } from "lucide-react";
+import { CheckCircle2, Circle, Clock, Loader2, User, X, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs));
-}
 
 interface TaskCardProps {
     task: {
@@ -33,9 +27,7 @@ export default function TaskCard({ task, userId, userRole, isKanban }: TaskCardP
 
     const handleStatusUpdate = async () => {
         if (!canUpdate || isLoading) return;
-
         const nextStatus = status === 'TODO' ? 'IN_PROGRESS' : status === 'IN_PROGRESS' ? 'DONE' : 'TODO';
-
         setIsLoading(true);
         try {
             const res = await fetch('/api/tasks', {
@@ -43,10 +35,7 @@ export default function TaskCard({ task, userId, userRole, isKanban }: TaskCardP
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: task.id, status: nextStatus }),
             });
-
-            if (res.ok) {
-                setStatus(nextStatus);
-            }
+            if (res.ok) setStatus(nextStatus);
         } catch (error) {
             console.error('Failed to update task:', error);
         } finally {
@@ -56,17 +45,11 @@ export default function TaskCard({ task, userId, userRole, isKanban }: TaskCardP
 
     const handleDelete = async () => {
         if (userRole !== 'ADMIN' || isLoading) return;
-        if (!confirm("Are you sure you want to delete this task?")) return;
-
+        if (!confirm("Delete this task?")) return;
         setIsLoading(true);
         try {
-            const res = await fetch(`/api/tasks?id=${task.id}`, {
-                method: 'DELETE',
-            });
-
-            if (res.ok) {
-                window.location.reload();
-            }
+            const res = await fetch(`/api/tasks?id=${task.id}`, { method: 'DELETE' });
+            if (res.ok) window.location.reload();
         } catch (error) {
             console.error('Failed to delete task:', error);
         } finally {
@@ -74,104 +57,117 @@ export default function TaskCard({ task, userId, userRole, isKanban }: TaskCardP
         }
     };
 
-    const getStatusColor = (currentStatus: string) => {
-        switch (currentStatus) {
-            case 'DONE': return "text-emerald-500 bg-emerald-500/10 border-emerald-500/20";
-            case 'IN_PROGRESS': return "text-amber-500 bg-amber-500/10 border-amber-500/20";
-            default: return "text-zinc-500 bg-zinc-500/10 border-zinc-500/20";
-        }
-    };
+    const isDone = status === 'DONE';
+    const isInProgress = status === 'IN_PROGRESS';
 
     return (
         <div
-            className={cn(
-                "group relative flex flex-col glass glass-hover hover-lift transition-colors duration-200",
-                isKanban ? "p-5 gap-4 rounded-2xl" : "p-7 gap-5 rounded-3xl"
-            )}
+            className="group relative flex flex-col rounded-2xl transition-all duration-200"
+            style={{
+                background: "var(--bg-elevated)",
+                border: `1px solid ${isDone ? "rgba(0, 245, 255, 0.08)" : "var(--border-muted)"}`,
+                padding: isKanban ? "14px 16px" : "20px 22px",
+                gap: isKanban ? 12 : 16,
+                opacity: isDone ? 0.65 : 1,
+            }}
+            onMouseEnter={(e) => { if (!isDone) e.currentTarget.style.borderColor = "rgba(0, 245, 255, 0.2)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(0, 245, 255, 0.06)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = isDone ? "rgba(0, 245, 255, 0.08)" : "var(--border-muted)"; e.currentTarget.style.boxShadow = ""; }}
         >
-            <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1.5 flex-1 min-w-0">
-                    <div className="flex items-start gap-2">
-                        <AnimatePresence mode="wait">
-                            <motion.button
-                                key={status}
-                                initial={{ scale: 0.8, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                exit={{ scale: 0.8, opacity: 0 }}
-                                onClick={handleStatusUpdate}
-                                disabled={!canUpdate || isLoading}
-                                className={cn(
-                                    "flex-shrink-0 mt-1 p-1 rounded-full transition-all",
-                                    canUpdate ? "hover:bg-zinc-800 cursor-pointer" : "cursor-default opacity-30"
-                                )}
-                            >
-                                {isLoading ? (
-                                    <Loader2 className="w-4 h-4 animate-spin text-neon-blue" />
-                                ) : status === 'DONE' ? (
-                                    <CheckCircle2 className="w-4 h-4 text-neon-blue" />
-                                ) : status === 'IN_PROGRESS' ? (
-                                    <Clock className="w-4 h-4 text-neon-blue" />
-                                ) : (
-                                    <Circle className="w-4 h-4 text-neon-blue" />
-                                )}
-                            </motion.button>
-                        </AnimatePresence>
-                        <h3 className={cn(
-                            "font-bold tracking-tight transition-all",
-                            isKanban ? "text-base leading-snug" : "text-lg",
-                            status === 'DONE' ? "text-zinc-500 line-through decoration-zinc-800" : "text-zinc-100"
-                        )}>
-                            {task.title}
-                        </h3>
-                    </div>
+            {/* Header row */}
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                    <AnimatePresence mode="wait">
+                        <motion.button
+                            key={status}
+                            initial={{ scale: 0.7, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.7, opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                            onClick={handleStatusUpdate}
+                            disabled={!canUpdate || isLoading}
+                            className="flex-shrink-0 mt-0.5 transition-all rounded-full"
+                            style={{ cursor: canUpdate ? "pointer" : "default", opacity: !canUpdate ? 0.3 : 1 }}
+                        >
+                            {isLoading ? (
+                                <Loader2 className="w-4 h-4 animate-spin text-neon-blue" style={{ color: "#00F5FF" }} />
+                            ) : isDone ? (
+                                <CheckCircle2 className="w-4 h-4" style={{ color: "#00F5FF" }} />
+                            ) : isInProgress ? (
+                                <Clock className="w-4 h-4" style={{ color: "#00F5FF" }} />
+                            ) : (
+                                <Circle className="w-4 h-4 text-zinc-600" />
+                            )}
+                        </motion.button>
+                    </AnimatePresence>
+
+                    <h3
+                        className="font-semibold leading-snug transition-all"
+                        style={{
+                            fontSize: isKanban ? "13px" : "15px",
+                            color: isDone ? "var(--text-muted)" : "var(--text-primary)",
+                            textDecoration: isDone ? "line-through" : "none",
+                        }}
+                    >
+                        {task.title}
+                    </h3>
                 </div>
 
+                {/* Delete */}
                 {userRole === 'ADMIN' && (
                     <button
                         onClick={handleDelete}
                         disabled={isLoading}
-                        className="p-1.5 rounded-lg text-zinc-600 hover:text-red-400 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-all"
-                        title="Delete Task"
+                        className="btn-danger opacity-0 group-hover:opacity-100"
+                        style={{ padding: "4px" }}
                     >
-                        <X className="w-4 h-4 text-neon-blue" />
+                        <X className="w-3.5 h-3.5 text-neon-blue" style={{ color: "#00F5FF" }} />
                     </button>
                 )}
             </div>
 
-            <div className={cn(
-                "flex items-center justify-between border-t border-zinc-800/50",
-                isKanban ? "pt-3" : "pt-4"
-            )}>
-                <div className="flex items-center gap-2.5">
-                    <div className={cn(
-                        "rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-400 shadow-inner overflow-hidden",
-                        isKanban ? "h-7 w-7" : "h-9 w-9"
-                    )}>
-                        <User className={cn(isKanban ? "w-4 h-4" : "w-5 h-5", "text-neon-blue")} />
+            {/* Footer row */}
+            <div
+                className="flex items-center justify-between pt-3"
+                style={{ borderTop: "1px solid var(--border-muted)" }}
+            >
+                <div className="flex items-center gap-2">
+                    <div
+                        className="rounded-lg flex items-center justify-center"
+                        style={{
+                            width: isKanban ? 26 : 32,
+                            height: isKanban ? 26 : 32,
+                            background: "rgba(0, 245, 255, 0.08)",
+                            border: "1px solid rgba(0, 245, 255, 0.15)",
+                        }}
+                    >
+                        <User className="text-neon-blue" style={{ width: isKanban ? 12 : 15, height: isKanban ? 12 : 15, color: "#00F5FF" }} />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-zinc-500">Assignee</span>
-                        <span className="text-[11px] font-bold text-zinc-300 truncate max-w-[100px]">
+                        <span className="text-[8px] font-bold uppercase tracking-[0.15em]" style={{ color: "rgba(0,245,255,0.4)" }}>Assignee</span>
+                        <span className="font-semibold truncate max-w-[90px]" style={{ fontSize: 10, color: "var(--text-secondary)" }}>
                             {task.assignee?.name || 'Open Pool'}
                         </span>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    {!isKanban && (
-                        <div className={cn(
-                            "px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider",
-                            getStatusColor(status)
-                        )}>
-                            {status.replace('_', ' ')}
-                        </div>
-                    )}
-                    {isKanban && !canUpdate && (
-                        <div title="View Only">
-                            <ExternalLink className="w-3 h-3 text-neon-blue" />
-                        </div>
-                    )}
-                </div>
+                {/* Status pill */}
+                {(isInProgress || isDone) && (
+                    <div
+                        className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider"
+                        style={{
+                            background: "rgba(0, 245, 255, 0.08)",
+                            border: "1px solid rgba(0, 245, 255, 0.15)",
+                            color: "#00F5FF",
+                        }}
+                    >
+                        {isDone ? <CheckCircle2 className="w-2.5 h-2.5" /> : <Clock className="w-2.5 h-2.5" />}
+                        {status.replace('_', ' ')}
+                    </div>
+                )}
+
+                {isKanban && !canUpdate && (
+                    <ExternalLink className="w-3 h-3" style={{ color: "rgba(0,245,255,0.3)" }} />
+                )}
             </div>
         </div>
     );

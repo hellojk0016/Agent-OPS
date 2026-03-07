@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PlusCircle, Trash2, UserCircle, Loader2 } from "lucide-react";
+import { PlusCircle, Trash2, UserCircle, Loader2, Users, Building } from "lucide-react";
 import AddEmployeeModal from "@/components/AddEmployeeModal";
 import { useRouter } from "next/navigation";
 
@@ -20,7 +20,7 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
     const router = useRouter();
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to remove this employee? They will lose access to the system.")) return;
+        if (!confirm("Are you sure you want to remove this employee? They will lose access.")) return;
         setIsDeleting(id);
         try {
             const res = await fetch(`/api/employees/${id}`, { method: "DELETE" });
@@ -37,55 +37,69 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
 
     return (
         <div className="flex-1 flex flex-col max-w-6xl mx-auto w-full pb-10">
-            <div className="flex items-center justify-between mb-8 pb-6 border-b border-zinc-800/50">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-8 pb-6 border-b border-[var(--border-muted)]">
                 <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight">Team Members</h1>
-                    <p className="text-sm text-zinc-400 mt-1">Manage personnel and their system access.</p>
+                    <h1 className="text-2xl font-bold text-white tracking-tight">Team Members</h1>
+                    <p className="text-sm text-zinc-500 mt-1 flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-neon-blue/50" />
+                        Manage personnel and system access
+                    </p>
                 </div>
                 <button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="flex items-center gap-2 bg-neon-blue hover:bg-neon-blue/90 text-zinc-950 px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-neon-blue/20 transition-all"
+                    className="btn-primary"
                 >
-                    <PlusCircle className="w-5 h-5 text-zinc-950" />
+                    <PlusCircle className="w-4 h-4" />
                     Add Member
                 </button>
             </div>
 
-            <div className="bg-zinc-900/50 rounded-2xl border border-zinc-800 overflow-hidden glass">
+            {/* Table */}
+            <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border-muted)", background: "var(--bg-elevated)" }}>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-zinc-950/50 border-b border-zinc-800/80">
+                        <thead style={{ background: "rgba(9, 9, 11, 0.6)", borderBottom: "1px solid var(--border-muted)" }}>
                             <tr>
-                                <th className="px-6 py-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Member</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Phone / Sign In</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Role</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Workspaces</th>
-                                <th className="px-6 py-4 text-right"></th>
+                                {["Member", "Phone / Sign In", "Role", "Workspaces", ""].map((h, i) => (
+                                    <th key={i} className={`px-6 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-neon-blue/50 ${i === 4 ? "text-right" : ""}`}>
+                                        {h}
+                                    </th>
+                                ))}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-800/50">
-                            {employees.map((emp) => (
-                                <tr key={emp.id} className="hover:bg-white/[0.02] transition-colors group hover-lift">
+                        <tbody>
+                            {employees.map((emp, idx) => (
+                                <tr
+                                    key={emp.id}
+                                    className="group transition-colors"
+                                    style={{
+                                        borderTop: idx > 0 ? "1px solid var(--border-muted)" : "none",
+                                    }}
+                                    onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0, 245, 255, 0.02)")}
+                                    onMouseLeave={(e) => (e.currentTarget.style.background = "")}
+                                >
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700">
-                                                <UserCircle className="w-6 h-6 text-neon-blue" />
+                                            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                                                style={{ background: "rgba(0, 245, 255, 0.08)", border: "1px solid rgba(0, 245, 255, 0.15)" }}>
+                                                <UserCircle className="w-5 h-5 text-neon-blue" />
                                             </div>
-                                            <span className="font-semibold text-zinc-100">{emp.name}</span>
+                                            <span className="font-semibold text-zinc-100 text-sm">{emp.name}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-zinc-300 font-mono tracking-wide">
+                                    <td className="px-6 py-4 text-sm text-zinc-400 font-mono tracking-wider">
                                         {emp.phone}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${emp.role === "ADMIN" ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" : "bg-neon-blue/10 text-neon-blue border border-neon-blue/20"}`}>
-                                            {emp.role}
-                                        </span>
+                                        <span className="badge-neon">{emp.role}</span>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="flex flex-wrap gap-1">
-                                            {emp.companies.map(c => (
-                                                <span key={c} className="text-xs bg-zinc-800 px-2.5 py-1 rounded-md text-zinc-300 border border-zinc-700">
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {emp.companies.map((c) => (
+                                                <span key={c} className="inline-flex items-center gap-1 text-[10px] font-medium px-2.5 py-1 rounded-lg"
+                                                    style={{ background: "rgba(0, 245, 255, 0.06)", border: "1px solid rgba(0, 245, 255, 0.12)", color: "rgba(0, 245, 255, 0.7)" }}>
+                                                    <Building className="w-3 h-3" />
                                                     {c}
                                                 </span>
                                             ))}
@@ -96,9 +110,12 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                                             <button
                                                 onClick={() => handleDelete(emp.id)}
                                                 disabled={isDeleting === emp.id}
-                                                className="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors disabled:opacity-50"
+                                                className="btn-danger"
                                             >
-                                                {isDeleting === emp.id ? <Loader2 className="w-5 h-5 animate-spin text-neon-blue" /> : <Trash2 className="w-5 h-5 text-neon-blue" />}
+                                                {isDeleting === emp.id
+                                                    ? <Loader2 className="w-4 h-4 animate-spin text-neon-blue" />
+                                                    : <Trash2 className="w-4 h-4 text-neon-blue" />
+                                                }
                                             </button>
                                         )}
                                     </td>
@@ -106,8 +123,9 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                             ))}
                             {employees.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-zinc-500">
-                                        No employees found. click "Add Member" to invite someone.
+                                    <td colSpan={5} className="px-6 py-16 text-center">
+                                        <Users className="w-8 h-8 text-neon-blue/20 mx-auto mb-3" />
+                                        <p className="text-sm text-zinc-600">No members yet. Click <span className="text-neon-blue/70">Add Member</span> to invite someone.</p>
                                     </td>
                                 </tr>
                             )}

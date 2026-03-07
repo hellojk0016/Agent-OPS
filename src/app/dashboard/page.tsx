@@ -11,7 +11,7 @@ export default async function DashboardPage() {
         redirect("/login");
     }
 
-    const tasksPromise = prisma.task.findMany({
+    const tasks = await prisma.task.findMany({
         where: {
             companyId: session.user.activeCompanyId,
         },
@@ -21,24 +21,6 @@ export default async function DashboardPage() {
         orderBy: { createdAt: "desc" },
     });
 
-    const employeesPromise = prisma.companyMembership.findMany({
-        where: {
-            companyId: session.user.activeCompanyId,
-        },
-        include: {
-            user: {
-                select: {
-                    id: true,
-                    name: true,
-                }
-            }
-        }
-    });
-
-    const [tasks, memberships] = await Promise.all([tasksPromise, employeesPromise]);
-
-    const employees = memberships.map((m: any) => m.user);
-
     return (
         <DashboardClient
             tasks={tasks.map((t: any) => ({
@@ -46,7 +28,6 @@ export default async function DashboardPage() {
                 createdAt: new Date(t.createdAt)
             }))}
             session={session}
-            employees={employees}
         />
     );
 }
