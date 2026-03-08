@@ -53,10 +53,10 @@ export async function POST(req: Request) {
 
         let companies = await prisma.company.findMany();
 
-        if (companyType === "Knight Wolf") {
-            companies = companies.filter(c => c.name === "KnightWolf");
-        } else if (companyType === "Commerce Agent") {
-            companies = companies.filter(c => c.name === "Commerce Agents");
+        if (companyType === "KNIGHT_WOLF") {
+            companies = companies.filter(c => c.name.replace(/\s/g, "").toLowerCase() === "knightwolf");
+        } else if (companyType === "COMMERCE_AGENT") {
+            companies = companies.filter(c => c.name.toLowerCase().includes("commerce"));
         }
 
         if (companies.length > 0) {

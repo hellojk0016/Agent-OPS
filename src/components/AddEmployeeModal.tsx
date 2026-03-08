@@ -25,7 +25,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
     const [pin, setPin] = useState("");
     const [showPin, setShowPin] = useState(false);
     const [role, setRole] = useState("MEMBER");
-    const [companyType, setCompanyType] = useState("Both");
+    const [companyType, setCompanyType] = useState("BOTH");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -89,7 +89,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
     const handleDone = () => {
         // Reset everything
         setName(""); setPhone(""); setPin(""); setRole("MEMBER");
-        setCompanyType("Both"); setError(""); setCreatedEmployee(null); setPlainPin(""); setCopied(false);
+        setCompanyType("BOTH"); setError(""); setCreatedEmployee(null); setPlainPin(""); setCopied(false);
         onClose();
     };
 
@@ -218,12 +218,12 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                             <label className="field-label"><Building className="h-3 w-3" />Company Access</label>
                                             <div className="grid grid-cols-3 gap-2">
                                                 {[
-                                                    { val: "Knight Wolf", label: "Knight Wolf", Icon: Building },
-                                                    { val: "Commerce Agent", label: "Commerce", Icon: Store },
-                                                    { val: "Both", label: "Both", Icon: Layers },
+                                                    { val: "KNIGHT_WOLF", label: "KNIGHT WOLF", Icon: Building },
+                                                    { val: "COMMERCE_AGENT", label: "COMMERCE", Icon: Store },
+                                                    { val: "BOTH", label: "BOTH", Icon: Layers },
                                                 ].map(({ val, label, Icon }) => (
                                                     <button key={val} type="button" onClick={() => setCompanyType(val)}
-                                                        className={`select-btn text-xs ${companyType === val ? "active" : ""}`}>
+                                                        className={`select-btn text-[10px] font-bold tracking-wider ${companyType === val ? "active" : ""}`}>
                                                         <Icon className="h-3.5 w-3.5" />{label}
                                                     </button>
                                                 ))}

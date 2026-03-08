@@ -42,6 +42,10 @@ const STATUS_CONFIG: Record<string, { label: string; Icon: any; color: string }>
 };
 
 const COMPANY_LABELS: Record<string, string> = {
+    "KNIGHT_WOLF": "Knight Wolf",
+    "COMMERCE_AGENT": "Commerce Agent",
+    "BOTH": "Both Companies",
+    // Migration fallbacks
     "Knight Wolf": "Knight Wolf",
     "Commerce Agent": "Commerce Agent",
     "Both": "Both Companies",
