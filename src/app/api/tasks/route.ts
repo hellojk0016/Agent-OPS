@@ -91,34 +91,51 @@ export async function PATCH(req: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { id, status } = await req.json();
+        const body = await req.json();
+        const { id } = body;
 
-        if (!id || !status) {
-            return NextResponse.json({ error: "ID and status are required" }, { status: 400 });
+        if (!id) {
+            return NextResponse.json({ error: "Task ID is required" }, { status: 400 });
         }
 
-        // Fetch task to check ownership
-        const task = await prisma.task.findUnique({
-            where: { id },
-        });
+        // Fetch task to check ownership / existence
+        const task = await prisma.task.findUnique({ where: { id } });
 
         if (!task) {
             return NextResponse.json({ error: "Task not found" }, { status: 404 });
         }
 
-        // PERMISSION LOGIC:
-        // Admin can update any task in the company
-        // Member can only update tasks assigned to them
-        const canUpdate = session.user.role === 'ADMIN' ||
-            (session.user.role === 'MEMBER' && task.assigneeId === session.user.id);
+        const canUpdate =
+            session.user.role === "ADMIN" ||
+            (session.user.role === "MEMBER" && task.assigneeId === session.user.id);
 
         if (!canUpdate) {
-            return NextResponse.json({ error: "Forbidden - You can only update your own tasks" }, { status: 403 });
+            return NextResponse.json(
+                { error: "Forbidden - You can only update your own tasks" },
+                { status: 403 }
+            );
+        }
+
+        // Build update data — handles both status-only (drag-drop) and full edits
+        const { status, title, description, assigneeId, priority, dueDate, companyType } = body;
+
+        const data: Record<string, unknown> = {};
+        if (status !== undefined) data.status = status;
+        if (title !== undefined) data.title = title;
+        if (description !== undefined) data.description = description;
+        if (assigneeId !== undefined) data.assigneeId = assigneeId || null;
+        if (priority !== undefined) data.priority = priority;
+        if (dueDate !== undefined) data.dueDate = dueDate ? new Date(dueDate) : null;
+        if (companyType !== undefined) data.companyType = companyType;
+
+        if (Object.keys(data).length === 0) {
+            return NextResponse.json({ error: "No fields to update" }, { status: 400 });
         }
 
         const updatedTask = await prisma.task.update({
             where: { id },
-            data: { status },
+            data,
+            include: { assignee: true },
         });
 
         return NextResponse.json(updatedTask);

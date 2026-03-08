@@ -12,14 +12,19 @@ export default async function DashboardPage() {
     }
 
     const tasks = await prisma.task.findMany({
-        where: {
-            companyId: session.user.activeCompanyId,
-        },
-        include: {
-            assignee: true,
-        },
+        where: { companyId: session.user.activeCompanyId },
+        include: { assignee: true },
         orderBy: { createdAt: "desc" },
     });
+
+    // Fetch employees for the Edit Task dropdown (admin only)
+    const employees = session.user.role === "ADMIN"
+        ? await prisma.user.findMany({
+            where: { role: "MEMBER" },
+            select: { id: true, name: true },
+            orderBy: { name: "asc" },
+        })
+        : [];
 
     return (
         <DashboardClient
@@ -28,6 +33,7 @@ export default async function DashboardPage() {
                 createdAt: new Date(t.createdAt)
             }))}
             session={session}
+            employees={employees}
         />
     );
 }

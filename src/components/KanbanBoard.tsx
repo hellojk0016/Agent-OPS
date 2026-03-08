@@ -7,19 +7,28 @@ import { useRouter } from "next/navigation";
 
 interface Task {
     id: string;
-    displayId: string | null;
+    displayId?: string | null;
     title: string;
     description: string | null;
     status: string;
     assigneeId: string | null;
+    priority?: string | null;
+    dueDate?: Date | string | null;
+    companyType?: string | null;
     createdAt: Date;
     assignee: { name: string | null } | null;
+}
+
+interface Employee {
+    id: string;
+    name: string | null;
 }
 
 interface KanbanBoardProps {
     tasks: Task[];
     userId: string;
     userRole: string;
+    employees?: Employee[];
 }
 
 const COLUMNS = [
@@ -29,7 +38,7 @@ const COLUMNS = [
     { id: 'DONE', title: 'Done', icon: CheckCircle2, hue: "neon-dim" },
 ];
 
-export default function KanbanBoard({ tasks: initialTasks, userId, userRole }: KanbanBoardProps) {
+export default function KanbanBoard({ tasks: initialTasks, userId, userRole, employees = [] }: KanbanBoardProps) {
     const router = useRouter();
     const [tasks, setTasks] = useState<Task[]>(initialTasks);
     const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
@@ -89,6 +98,14 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole }: K
             console.error("Status update error:", error);
             setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: originalStatus } : t));
         }
+    };
+
+    const handleDeletedTask = (id: string) => {
+        setTasks(prev => prev.filter(t => t.id !== id));
+    };
+
+    const handleUpdatedTask = (updatedTask: Task) => {
+        setTasks(prev => prev.map(t => t.id === updatedTask.id ? { ...t, ...updatedTask } : t));
     };
 
     const getTasksByStatus = (s: string) => tasks.filter(t => t.status === s);
@@ -167,7 +184,15 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole }: K
                                         style={{ borderRadius: 16, cursor: "grab" }}
                                         className="relative transition-opacity"
                                     >
-                                        <TaskCard task={task} userId={userId} userRole={userRole} isKanban />
+                                        <TaskCard
+                                            task={task}
+                                            userId={userId}
+                                            userRole={userRole}
+                                            isKanban
+                                            employees={employees}
+                                            onDeleted={handleDeletedTask}
+                                            onUpdated={handleUpdatedTask}
+                                        />
                                     </div>
                                 ))}
 
