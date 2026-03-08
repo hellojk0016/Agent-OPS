@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import EditTaskModal from "./EditTaskModal";
+import TaskDetailsModal from "./TaskDetailsModal";
 
 interface Employee {
     id: string;
@@ -51,6 +52,7 @@ export default function TaskCard({
     const [isDeleting, setIsDeleting] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
+    const [detailsOpen, setDetailsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
     const canUpdate = userRole === 'ADMIN' || (userRole === 'MEMBER' && task.assigneeId === userId);
@@ -119,7 +121,9 @@ export default function TaskCard({
                     padding: isKanban ? "14px 16px" : "20px 22px",
                     gap: isKanban ? 12 : 16,
                     opacity: isDone ? 0.65 : 1,
+                    cursor: "pointer",
                 }}
+                onClick={() => setDetailsOpen(true)}
                 onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = "rgba(0, 245, 255, 0.2)";
                     e.currentTarget.style.boxShadow = "0 4px 20px rgba(0, 245, 255, 0.06)";
@@ -140,7 +144,7 @@ export default function TaskCard({
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0.7, opacity: 0 }}
                                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                                onClick={handleStatusUpdate}
+                                onClick={(e) => { e.stopPropagation(); handleStatusUpdate(); }}
                                 disabled={!canUpdate || isStatusLoading}
                                 className="flex-shrink-0 mt-0.5 transition-all rounded-full"
                                 style={{ cursor: canUpdate ? "pointer" : "default", opacity: !canUpdate ? 0.3 : 1 }}
@@ -170,7 +174,7 @@ export default function TaskCard({
                         </h3>
                     </div>
 
-                    {/* Three-dot menu (Admin only) */}
+                    {/* Three-dot menu (Admin only) — stopPropagation so card click doesn't also fire */}
                     {isAdmin && (
                         <div className="relative flex-shrink-0" ref={menuRef}>
                             <button
@@ -300,6 +304,15 @@ export default function TaskCard({
                 employees={employees}
                 onClose={() => setEditOpen(false)}
                 onSaved={handleSaved}
+            />
+
+            {/* Details Modal */}
+            <TaskDetailsModal
+                isOpen={detailsOpen}
+                task={localTask}
+                userRole={userRole}
+                onClose={() => setDetailsOpen(false)}
+                onEdit={() => setEditOpen(true)}
             />
         </>
     );

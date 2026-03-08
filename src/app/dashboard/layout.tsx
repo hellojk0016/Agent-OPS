@@ -28,6 +28,13 @@ export default function DashboardLayout({
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [employees, setEmployees] = useState([]);
 
+    // Redirect unauthenticated users — must be in useEffect, not render body
+    useEffect(() => {
+        if (status !== "loading" && !session) {
+            router.push("/login");
+        }
+    }, [status, session, router]);
+
     useEffect(() => {
         if (session?.user?.role === "ADMIN") {
             fetch("/api/employees")
@@ -59,8 +66,10 @@ export default function DashboardLayout({
         );
     }
 
+    // The redirection for unauthenticated users is handled by the useEffect above.
+    // If session is null here, it means the useEffect has already triggered a redirect,
+    // so we can safely return null to prevent rendering the rest of the layout.
     if (!session) {
-        router.push("/login");
         return null;
     }
 
