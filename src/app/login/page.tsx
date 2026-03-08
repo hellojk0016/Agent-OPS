@@ -10,18 +10,18 @@ import {
 } from "lucide-react";
 
 // ----- Firebase helpers (OTP only for PIN reset) -----
-let auth: any = null;
-let RecaptchaVerifier: any = null;
-let signInWithPhoneNumber: any = null;
+let firebaseAuth: any = null;
+let FirebaseRecaptchaVerifier: any = null;
+let firebaseSignInWithPhoneNumber: any = null;
 
 async function initFirebase() {
-    if (auth) return { auth, RecaptchaVerifier, signInWithPhoneNumber };
-    const app = await import("@/lib/firebase");
-    const firebase = await import("firebase/auth");
-    auth = firebase.getAuth(app.default);
-    RecaptchaVerifier = firebase.RecaptchaVerifier;
-    signInWithPhoneNumber = firebase.signInWithPhoneNumber;
-    return { auth, RecaptchaVerifier, signInWithPhoneNumber };
+    if (firebaseAuth) return { auth: firebaseAuth, RecaptchaVerifier: FirebaseRecaptchaVerifier, signInWithPhoneNumber: firebaseSignInWithPhoneNumber };
+    const appModule = await import("@/lib/firebase");
+    const authModule = await import("firebase/auth");
+    firebaseAuth = authModule.getAuth(appModule.default);
+    FirebaseRecaptchaVerifier = authModule.RecaptchaVerifier;
+    firebaseSignInWithPhoneNumber = authModule.signInWithPhoneNumber;
+    return { auth: firebaseAuth, RecaptchaVerifier: FirebaseRecaptchaVerifier, signInWithPhoneNumber: firebaseSignInWithPhoneNumber };
 }
 
 type Step = "phone" | "pin" | "forgot-otp" | "forgot-newpin" | "reset-pin";
@@ -52,8 +52,8 @@ export default function LoginPage() {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [countdown, setCountdown] = useState(0);
     const [confirmationResult, setConfirmationResult] = useState<any>(null);
-    const [recaptchaReady, setRecaptchaReady] = useState(false);
-    const recaptchaRef = useRef<any>(null);
+    const recaptchaVerifierRef = useRef<any>(null);  // persistent ref
+    const recaptchaContainerRef = useRef<HTMLDivElement>(null);
     const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
     // New PIN (after OTP verified)
@@ -131,27 +131,35 @@ export default function LoginPage() {
     };
 
     // ── Forgot PIN: Send OTP ───────────────────────────────────────────────
-    const initRecaptcha = async () => {
+    const getOrCreateRecaptchaVerifier = async () => {
         const { auth, RecaptchaVerifier } = await initFirebase();
-        if (!recaptchaRef.current) return null;
-        const verifier = new RecaptchaVerifier(auth, recaptchaRef.current, { size: "invisible" });
+        // Destroy old verifier if it exists to avoid 'already rendered' error
+        if (recaptchaVerifierRef.current) {
+            try { recaptchaVerifierRef.current.clear(); } catch (_) { }
+            recaptchaVerifierRef.current = null;
+        }
+        const containerId = "recaptcha-container";
+        const verifier = new RecaptchaVerifier(auth, containerId, {
+            size: "invisible",
+            callback: () => { },
+        });
         await verifier.render();
-        return verifier;
+        recaptchaVerifierRef.current = verifier;
+        return { auth, signInWithPhoneNumber: firebaseSignInWithPhoneNumber, verifier };
     };
 
     const handleSendForgotOtp = async () => {
         setIsLoading(true);
         setError("");
         try {
-            const { auth, signInWithPhoneNumber } = await initFirebase();
-            const verifier = await initRecaptcha();
-            if (!verifier) throw new Error("Recaptcha not ready");
+            const { auth, signInWithPhoneNumber, verifier } = await getOrCreateRecaptchaVerifier();
             const result = await signInWithPhoneNumber(auth, `+91${digits}`, verifier);
             setConfirmationResult(result);
             setCountdown(60);
             setStep("forgot-otp");
         } catch (err: any) {
-            setError(err.message || "Failed to send OTP");
+            console.error("OTP send error:", err);
+            setError(err.message || "Failed to send OTP. Check your Firebase config.");
         } finally {
             setIsLoading(false);
         }
@@ -248,8 +256,8 @@ export default function LoginPage() {
                 <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-blue-500/5 blur-[100px]" />
             </div>
 
-            {/* Recaptcha container */}
-            <div ref={recaptchaRef} id="recaptcha-container" />
+            {/* Recaptcha container — Firebase locates this by id="recaptcha-container" */}
+            <div id="recaptcha-container" style={{ position: "absolute", bottom: 0, left: 0, zIndex: -1 }} />
 
             {/* Logo */}
             <motion.div
