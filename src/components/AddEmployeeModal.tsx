@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Loader2, UserPlus, UserCheck, Users, Shield, Building, Store, Layers, Phone } from "lucide-react";
+import { X, Loader2, UserPlus, UserCheck, Users, Shield, Building, Store, Layers, Phone, Lock, Eye, EyeOff } from "lucide-react";
 
 interface AddEmployeeModalProps {
     isOpen: boolean;
@@ -13,6 +13,8 @@ interface AddEmployeeModalProps {
 export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmployeeModalProps) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
+    const [pin, setPin] = useState("");
+    const [showPin, setShowPin] = useState(false);
     const [role, setRole] = useState("MEMBER");
     const [companyType, setCompanyType] = useState("Both");
     const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +34,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
         e.preventDefault();
         if (!name.trim()) return setError("Name is required");
         if (phone.length !== 10) return setError("10-digit phone number required");
+        if (!pin || pin.length < 4) return setError("Temporary PIN must be at least 4 digits");
 
         setError("");
         setIsLoading(true);
@@ -40,7 +43,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
             const res = await fetch("/api/employees", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, phone, role, companyType }),
+                body: JSON.stringify({ name, phone, role, companyType, pin }),
             });
 
             if (!res.ok) {
@@ -49,7 +52,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
             }
 
             const newEmployee = await res.json();
-            setName(""); setPhone(""); setRole("MEMBER"); setCompanyType("Both");
+            setName(""); setPhone(""); setPin(""); setRole("MEMBER"); setCompanyType("Both");
             onSuccess(newEmployee);
         } catch (err: any) {
             setError(err.message);
@@ -95,7 +98,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                     </div>
                                     <div>
                                         <h2 className="text-lg font-bold text-white tracking-tight">Add Member</h2>
-                                        <p className="text-xs text-zinc-500">Grant system access via phone OTP.</p>
+                                        <p className="text-xs text-zinc-500">Add employee with phone + temporary PIN.</p>
                                     </div>
                                 </div>
                                 <button onClick={onClose} className="btn-surface w-9 h-9 p-0" style={{ height: 36, width: 36, padding: 0 }}>
@@ -155,6 +158,33 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                         />
                                     </div>
                                     <p className="text-[11px] text-zinc-600 mt-1.5 ml-1">10-digit Indian mobile number</p>
+                                </div>
+
+                                {/* Temporary PIN */}
+                                <div>
+                                    <label className="field-label">
+                                        <Lock className="w-3 h-3" />
+                                        Temporary PIN
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type={showPin ? "text" : "password"}
+                                            inputMode="numeric"
+                                            placeholder="Min. 4 digits"
+                                            value={pin}
+                                            onChange={e => setPin(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                                            className="field-input w-full pr-12"
+                                            maxLength={8}
+                                        />
+                                        <button type="button" onClick={() => setShowPin(v => !v)}
+                                            className="absolute right-3.5 top-1/2 -translate-y-1/2"
+                                            style={{ color: "var(--text-muted)" }}>
+                                            {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    </div>
+                                    <p className="text-[11px] text-zinc-600 mt-1.5 ml-1">
+                                        🔒 Employee will be required to reset this PIN on first login
+                                    </p>
                                 </div>
 
                                 {/* Role */}

@@ -13,10 +13,14 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { name, phone, role, companyType } = body;
+        const { name, phone, role, companyType, pin } = body;
 
         if (!name || !phone || phone.length !== 10) {
             return new NextResponse("Invalid name or 10-digit phone number", { status: 400 });
+        }
+
+        if (!pin || String(pin).length < 4) {
+            return new NextResponse("PIN must be at least 4 digits", { status: 400 });
         }
 
         const formattedPhone = `+91${phone}`;
@@ -30,7 +34,10 @@ export async function POST(req: Request) {
         }
 
         const generatedEmail = `${phone}@agentsops.com`;
+        // password field kept for legacy admin login — employees authenticate via PIN
         const generatedPassword = await bcrypt.hash(Math.random().toString(36).slice(-10), 10);
+        // Hash the admin-set PIN
+        const hashedPin = await bcrypt.hash(String(pin), 10);
 
         const newEmployee = await prisma.user.create({
             data: {
@@ -38,13 +45,14 @@ export async function POST(req: Request) {
                 phone: formattedPhone,
                 email: generatedEmail,
                 password: generatedPassword,
+                pin: hashedPin,
+                pinResetRequired: true, // Employee must reset PIN on first login
                 role: role === "ADMIN" ? "ADMIN" : "MEMBER",
             },
         });
 
         let companies = await prisma.company.findMany();
 
-        // Filter companies based on selection
         if (companyType === "Knight Wolf") {
             companies = companies.filter(c => c.name === "KnightWolf");
         } else if (companyType === "Commerce Agent") {

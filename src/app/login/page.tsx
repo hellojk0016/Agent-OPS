@@ -1,425 +1,522 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-    RecaptchaVerifier,
-    signInWithPhoneNumber,
-    ConfirmationResult,
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { motion, AnimatePresence, Variants } from "framer-motion";
-import { Phone, Loader2, ArrowLeft, KeyRound, CheckCircle2, SendHorizonal, ShieldCheck, RotateCcw } from "lucide-react";
-import confetti from "canvas-confetti";
-import Image from "next/image";
+    Phone, KeyRound, Loader2, ShieldCheck, ArrowLeft,
+    RotateCcw, CheckCircle2, Eye, EyeOff, Lock, RefreshCw,
+} from "lucide-react";
 
-declare global {
-    interface Window {
-        recaptchaVerifier?: RecaptchaVerifier;
-        confirmationResult?: ConfirmationResult;
-    }
+// ----- Firebase helpers (OTP only for PIN reset) -----
+let auth: any = null;
+let RecaptchaVerifier: any = null;
+let signInWithPhoneNumber: any = null;
+
+async function initFirebase() {
+    if (auth) return { auth, RecaptchaVerifier, signInWithPhoneNumber };
+    const app = await import("@/lib/firebase");
+    const firebase = await import("firebase/auth");
+    auth = firebase.getAuth(app.default);
+    RecaptchaVerifier = firebase.RecaptchaVerifier;
+    signInWithPhoneNumber = firebase.signInWithPhoneNumber;
+    return { auth, RecaptchaVerifier, signInWithPhoneNumber };
 }
 
-// Format 10 digits as XXXXX XXXXX
-function formatPhoneDigits(digits: string) {
-    const d = digits.slice(0, 10);
-    if (d.length <= 5) return d;
-    return d.slice(0, 5) + " " + d.slice(5);
-}
+type Step = "phone" | "pin" | "forgot-otp" | "forgot-newpin" | "reset-pin";
 
-const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.08, delayChildren: 0.1 },
-    },
+const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.07, duration: 0.4 } },
 };
-
-const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 18 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+const itemVariants = {
+    hidden: { opacity: 0, y: 12 },
+    visible: { opacity: 1, y: 0 },
 };
-
 
 export default function LoginPage() {
     const router = useRouter();
-    const [step, setStep] = useState<"phone" | "otp">("phone");
 
-    // Phone input state — store raw digits only (no +91)
+    // Phone entry
     const [digits, setDigits] = useState("");
-    const isValidPhone = digits.length === 10;
-
-    const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-    const [error, setError] = useState("");
+    const [step, setStep] = useState<Step>("phone");
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    // PIN login
+    const [pin, setPin] = useState("");
+    const [showPin, setShowPin] = useState(false);
+
+    // OTP (for forgot PIN)
+    const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [countdown, setCountdown] = useState(0);
-    const [success, setSuccess] = useState(false);
+    const [confirmationResult, setConfirmationResult] = useState<any>(null);
+    const [recaptchaReady, setRecaptchaReady] = useState(false);
+    const recaptchaRef = useRef<any>(null);
     const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-    useEffect(() => {
-        if (countdown <= 0) return;
-        const t = setTimeout(() => setCountdown((c) => c - 1), 1000);
-        return () => clearTimeout(t);
-    }, [countdown]);
+    // New PIN (after OTP verified)
+    const [newPin, setNewPin] = useState("");
+    const [confirmPin, setConfirmPin] = useState("");
+    const [showNewPin, setShowNewPin] = useState(false);
+    const [firebaseTokenForReset, setFirebaseTokenForReset] = useState("");
 
-    const fullPhone = `+91${digits}`;
+    // Success
+    const [success, setSuccess] = useState(false);
 
-    const setupRecaptcha = () => {
-        if (!window.recaptchaVerifier) {
-            window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-                size: "invisible",
-            });
-        }
-    };
-
-    const handleSendOTP = async (e?: React.FormEvent) => {
-        e?.preventDefault();
-        if (!isValidPhone) return;
-        setError("");
-        setIsLoading(true);
-        try {
-            setupRecaptcha();
-            const result = await signInWithPhoneNumber(auth, fullPhone, window.recaptchaVerifier!);
-            window.confirmationResult = result;
-            setStep("otp");
-            setCountdown(60);
-        } catch (err: any) {
-            setError(err.message || "Failed to send OTP. Please try again.");
-            if (window.recaptchaVerifier) {
-                window.recaptchaVerifier.clear();
-                window.recaptchaVerifier = undefined;
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const fireConfetti = () => {
-        const end = Date.now() + 2000;
-        const colors = ["#00F5FF", "#70FFFF", "#E0FFFF", "#ffffff", "#09090b"];
-        (function frame() {
-            confetti({
-                particleCount: 5,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-                colors,
-            });
-            confetti({
-                particleCount: 5,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-                colors,
-            });
-            if (Date.now() < end) requestAnimationFrame(frame);
-        })();
-    };
-
-    const handleVerifyOTP = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
-        setIsLoading(true);
-        const otpCode = otp.join("");
-        if (otpCode.length < 6) {
-            setError("Please enter the complete 6-digit code.");
-            setIsLoading(false);
-            return;
-        }
-        try {
-            const cResult = window.confirmationResult;
-            if (!cResult) throw new Error("Session expired. Please resend OTP.");
-            const credential = await cResult.confirm(otpCode);
-            const idToken = await credential.user.getIdToken();
-            const res = await signIn("credentials", {
-                redirect: false,
-                firebaseToken: idToken,
-                phone: credential.user.phoneNumber,
-            });
-            if (res?.error) {
-                setError("Phone number not registered in the system. Contact your admin.");
-            } else {
-                // 🎉 Success — fire confetti then redirect
-                setSuccess(true);
-                fireConfetti();
-                setTimeout(() => {
-                    router.push("/dashboard");
-                    router.refresh();
-                }, 2200);
-            }
-        } catch (err: any) {
-            setError(err.message || "Invalid OTP. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleOtpChange = (index: number, value: string) => {
-        if (!/^\d?$/.test(value)) return;
-        const n = [...otp];
-        n[index] = value;
-        setOtp(n);
-        if (value && index < 5) otpRefs.current[index + 1]?.focus();
-    };
-
-    const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
-        if (e.key === "Backspace" && !otp[index] && index > 0) otpRefs.current[index - 1]?.focus();
-    };
-
-    const handleOtpPaste = (e: React.ClipboardEvent) => {
-        const paste = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-        if (paste.length === 6) {
-            setOtp(paste.split(""));
-            otpRefs.current[5]?.focus();
-        }
+    const isValidPhone = digits.replace(/\s/g, "").length === 10;
+    const formatPhoneDigits = (d: string) => {
+        const n = d.replace(/\s/g, "");
+        return n.length > 5 ? `${n.slice(0, 5)} ${n.slice(5)}` : n;
     };
 
     const handleDigitInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Strip display formatting, keep only raw digits
         const raw = e.target.value.replace(/\D/g, "").slice(0, 10);
         setDigits(raw);
+        setError("");
+    };
+
+    // Countdown timer for OTP resend
+    useEffect(() => {
+        if (countdown <= 0) return;
+        const t = setTimeout(() => setCountdown(c => c - 1), 1000);
+        return () => clearTimeout(t);
+    }, [countdown]);
+
+    // ── Step 1: Check phone exists ─────────────────────────────────────────
+    const handleCheckPhone = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!isValidPhone) return;
+        setIsLoading(true);
+        setError("");
+        try {
+            const res = await fetch(`/api/check-phone?phone=${digits}`);
+            const data = await res.json();
+            if (!res.ok || !data.exists) {
+                setError("Phone number not registered. Contact your admin.");
+                return;
+            }
+            setStep("pin");
+        } catch {
+            setError("Network error. Try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // ── Step 2: Phone + PIN Login ──────────────────────────────────────────
+    const handlePinLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!pin || pin.length < 4) { setError("Enter your PIN"); return; }
+        setIsLoading(true);
+        setError("");
+        try {
+            const result = await signIn("credentials", {
+                redirect: false,
+                phone: `+91${digits}`,
+                pin,
+            });
+            if (result?.error) {
+                setError("Incorrect PIN. Try again or use Forgot PIN.");
+            } else {
+                setSuccess(true);
+                setTimeout(() => router.push("/dashboard"), 800);
+            }
+        } catch {
+            setError("Something went wrong. Please retry.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // ── Forgot PIN: Send OTP ───────────────────────────────────────────────
+    const initRecaptcha = async () => {
+        const { auth, RecaptchaVerifier } = await initFirebase();
+        if (!recaptchaRef.current) return null;
+        const verifier = new RecaptchaVerifier(auth, recaptchaRef.current, { size: "invisible" });
+        await verifier.render();
+        return verifier;
+    };
+
+    const handleSendForgotOtp = async () => {
+        setIsLoading(true);
+        setError("");
+        try {
+            const { auth, signInWithPhoneNumber } = await initFirebase();
+            const verifier = await initRecaptcha();
+            if (!verifier) throw new Error("Recaptcha not ready");
+            const result = await signInWithPhoneNumber(auth, `+91${digits}`, verifier);
+            setConfirmationResult(result);
+            setCountdown(60);
+            setStep("forgot-otp");
+        } catch (err: any) {
+            setError(err.message || "Failed to send OTP");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // ── Forgot PIN: Verify OTP ─────────────────────────────────────────────
+    const handleOtpChange = (i: number, val: string) => {
+        if (!/^\d*$/.test(val)) return;
+        const next = [...otp];
+        next[i] = val.slice(-1);
+        setOtp(next);
+        if (val && i < 5) otpRefs.current[i + 1]?.focus();
+    };
+
+    const handleOtpKeyDown = (i: number, e: React.KeyboardEvent) => {
+        if (e.key === "Backspace" && !otp[i] && i > 0) otpRefs.current[i - 1]?.focus();
+    };
+
+    const handleVerifyOtp = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const code = otp.join("");
+        if (code.length < 6) { setError("Enter the full 6-digit OTP"); return; }
+        setIsLoading(true);
+        setError("");
+        try {
+            const userCred = await confirmationResult.confirm(code);
+            const token = await userCred.user.getIdToken();
+            setFirebaseTokenForReset(token);
+            setStep("forgot-newpin");
+        } catch {
+            setError("Invalid OTP. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // ── Forgot PIN: Set new PIN ────────────────────────────────────────────
+    const handleSetNewPin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (newPin.length < 4) { setError("PIN must be at least 4 digits"); return; }
+        if (newPin !== confirmPin) { setError("PINs do not match"); return; }
+        setIsLoading(true);
+        setError("");
+        try {
+            const res = await fetch("/api/pin-reset", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    firebaseToken: firebaseTokenForReset,
+                    phone: `+91${digits}`,
+                    newPin,
+                }),
+            });
+            if (!res.ok) {
+                const d = await res.json();
+                throw new Error(d.error || "Failed to reset PIN");
+            }
+            // Auto-sign in with new PIN
+            const result = await signIn("credentials", {
+                redirect: false,
+                phone: `+91${digits}`,
+                pin: newPin,
+            });
+            if (result?.error) throw new Error("Login failed after reset");
+            setSuccess(true);
+            setTimeout(() => router.push("/dashboard"), 800);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const resetToPhone = () => {
+        setStep("phone");
+        setPin("");
+        setOtp(["", "", "", "", "", ""]);
+        setNewPin("");
+        setConfirmPin("");
+        setError("");
+    };
+
+    const cardStyle = {
+        background: "rgba(12, 12, 16, 0.97)",
+        border: "1px solid rgba(0, 245, 255, 0.14)",
+        boxShadow: "0 0 0 1px rgba(0,0,0,0.4), 0 24px 80px rgba(0,245,255,0.1), 0 8px 32px rgba(0,0,0,0.5)",
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-zinc-950 p-4 selection:bg-neon-blue/30">
-            <div id="recaptcha-container" />
+        <div className="relative flex min-h-screen flex-col items-center justify-center bg-[#09090b] p-4 overflow-hidden">
+            {/* Background blobs */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-cyan-500/5 blur-[120px]" />
+                <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-blue-500/5 blur-[100px]" />
+            </div>
 
-            <AnimatePresence mode="wait">
-                {success ? (
-                    /* ── Success State ── */
-                    <motion.div
-                        key="success"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="flex flex-col items-center gap-6 text-center"
-                    >
-                        <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 }}
-                            className="w-20 h-20 rounded-full bg-neon-blue/15 border border-neon-blue/30 flex items-center justify-center"
-                        >
-                            <CheckCircle2 className="w-10 h-10 text-neon-blue" />
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.25 }}
-                        >
-                            <p className="text-2xl font-bold text-zinc-100">Welcome!</p>
-                            <p className="text-sm text-zinc-400 mt-1">Redirecting to dashboard…</p>
-                        </motion.div>
-                    </motion.div>
-                ) : (
-                    /* ── Main Card ── */
-                    <motion.div
-                        key="card"
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="w-full max-w-md rounded-2xl p-8 space-y-7 hover-lift"
-                        style={{
-                            background: "rgba(12, 12, 16, 0.92)",
-                            border: "1px solid rgba(0, 245, 255, 0.12)",
-                            boxShadow: "0 0 0 1px rgba(0,0,0,0.4), 0 24px 80px rgba(0, 245, 255, 0.1), 0 8px 32px rgba(0,0,0,0.5)",
-                        }}
-                    >
-                        {/* Neon top line */}
-                        <div className="absolute top-0 left-0 right-0 h-[2px] rounded-t-2xl bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-50" />
-                        {/* Ambient glow */}
-                        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#00F5FF]/[0.05] blur-3xl pointer-events-none -mr-32 -mt-32" />
-                        {/* Icon + Title */}
-                        <motion.div variants={itemVariants} className="text-center space-y-2">
-                            <div className="mx-auto mb-6">
-                                <Image
-                                    src="/images/ops-logo.png"
-                                    alt="OPS Logo"
-                                    width={80}
-                                    height={80}
-                                    className="mx-auto object-contain"
-                                    priority
-                                />
-                            </div>
-                            <h2 className="text-3xl font-bold tracking-tight text-zinc-100">
-                                {step === "phone" ? "Welcome Back" : "Enter OTP"}
-                            </h2>
-                            <p className="text-sm text-zinc-400">
-                                {step === "phone"
-                                    ? "Enter your phone number to receive a one-time code"
-                                    : `6-digit code sent to +91 ${formatPhoneDigits(digits)}`}
-                            </p>
-                        </motion.div>
+            {/* Recaptcha container */}
+            <div ref={recaptchaRef} id="recaptcha-container" />
 
-                        {/* Error */}
-                        <AnimatePresence>
-                            {error && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -8 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -8 }}
-                                    className="rounded-lg bg-red-500/10 border border-red-500/20 p-4"
-                                >
-                                    <p className="text-sm text-red-400 text-center font-medium">{error}</p>
+            {/* Logo */}
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8 flex flex-col items-center gap-2"
+            >
+                <div className="flex items-center justify-center w-14 h-14 rounded-2xl"
+                    style={{ background: "rgba(0,245,255,0.1)", border: "1px solid rgba(0,245,255,0.2)" }}>
+                    <ShieldCheck className="w-7 h-7" style={{ color: "#00F5FF" }} />
+                </div>
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold text-white tracking-tight">Agents OPS</h1>
+                    <p className="text-xs text-zinc-500 mt-0.5">Secure team task management</p>
+                </div>
+            </motion.div>
+
+            <div className="w-full max-w-sm">
+                <AnimatePresence mode="wait">
+
+                    {/* ── STEP: PHONE ─────────────────────────────────── */}
+                    {step === "phone" && (
+                        <motion.div key="phone" variants={containerVariants} initial="hidden" animate="visible"
+                            className="relative rounded-2xl p-8" style={cardStyle}>
+                            <div className="h-[2px] absolute top-0 left-0 right-0 rounded-t-2xl bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-50" />
+
+                            <motion.div variants={itemVariants} className="mb-6">
+                                <h2 className="text-lg font-bold text-white">Sign In</h2>
+                                <p className="text-sm text-zinc-500 mt-0.5">Enter your registered phone number</p>
+                            </motion.div>
+
+                            <form onSubmit={handleCheckPhone} className="space-y-4">
+                                <motion.div variants={itemVariants}>
+                                    <label className="field-label"><Phone className="w-3 h-3" />Phone Number</label>
+                                    <div className="flex items-center rounded-xl overflow-hidden transition-all"
+                                        style={{ background: "var(--bg-elevated)", border: "1.5px solid var(--border-default)" }}>
+                                        <span className="pl-4 pr-2 text-zinc-300 font-semibold text-sm whitespace-nowrap select-none">🇮🇳 +91</span>
+                                        <div className="w-px h-5 bg-zinc-700 mx-1" />
+                                        <input type="tel" inputMode="numeric" placeholder="XXXXX XXXXX"
+                                            value={formatPhoneDigits(digits)}
+                                            onChange={handleDigitInput}
+                                            className="flex-1 bg-transparent py-3.5 pr-4 text-zinc-100 placeholder:text-zinc-600 outline-none text-sm tracking-wider border-none"
+                                            style={{ background: "transparent", border: "none", boxShadow: "none" }}
+                                            autoFocus />
+                                    </div>
+                                    <p className="text-[11px] mt-1.5 ml-1" style={{ color: "var(--text-muted)" }}>
+                                        Indian number only · 10 digits
+                                    </p>
                                 </motion.div>
-                            )}
-                        </AnimatePresence>
 
-                        {/* ── Step 1: Phone ── */}
-                        <AnimatePresence mode="wait">
-                            {step === "phone" && (
-                                <motion.form
-                                    key="phone-form"
-                                    initial={{ opacity: 0, x: 24 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -24 }}
-                                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                                    className="space-y-6"
-                                    onSubmit={handleSendOTP}
-                                >
-                                    <div className="space-y-2">
-                                        <label className="field-label">
-                                            <Phone className="w-3 h-3" />
-                                            Phone Number
-                                        </label>
-                                        {/* Input with +91 prefix */}
-                                        <div
-                                            className="flex items-center rounded-xl overflow-hidden transition-all duration-200"
-                                            style={{
-                                                background: "var(--bg-elevated)",
-                                                border: "1.5px solid var(--border-default)",
-                                            }}
-                                        >
-                                            <span className="pl-4 pr-2 text-zinc-300 font-semibold text-sm select-none whitespace-nowrap">
-                                                🇮🇳 +91
-                                            </span>
-                                            <div className="w-px h-5 bg-zinc-700 mx-1" />
-                                            <input
-                                                type="tel"
-                                                inputMode="numeric"
-                                                placeholder="XXXXX XXXXX"
-                                                value={formatPhoneDigits(digits)}
-                                                onChange={handleDigitInput}
-                                                className="flex-1 bg-transparent py-3.5 pr-12 text-zinc-100 placeholder:text-zinc-600 outline-none text-sm tracking-wider border-none"
-                                                style={{ background: "transparent", border: "none", boxShadow: "none" }}
-                                                autoFocus
+                                {error && (
+                                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                                        className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                                        {error}
+                                    </motion.p>
+                                )}
+
+                                <motion.button variants={itemVariants} type="submit"
+                                    disabled={isLoading || !isValidPhone}
+                                    className="btn-primary w-full" style={{ height: 48 }}
+                                    whileHover={{ scale: isLoading || !isValidPhone ? 1 : 1.01 }}
+                                    whileTap={{ scale: 0.98 }}>
+                                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowLeft className="w-4 h-4 rotate-180" />}
+                                    {isLoading ? "Checking..." : "Continue"}
+                                </motion.button>
+                            </form>
+                        </motion.div>
+                    )}
+
+                    {/* ── STEP: PIN ───────────────────────────────────── */}
+                    {step === "pin" && (
+                        <motion.div key="pin" variants={containerVariants} initial="hidden" animate="visible"
+                            className="relative rounded-2xl p-8" style={cardStyle}>
+                            <div className="h-[2px] absolute top-0 left-0 right-0 rounded-t-2xl bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-50" />
+
+                            <motion.div variants={itemVariants} className="mb-6">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <div className="w-8 h-8 rounded-lg flex items-center justify-center"
+                                        style={{ background: "rgba(0,245,255,0.1)", border: "1px solid rgba(0,245,255,0.2)" }}>
+                                        <Lock className="w-4 h-4" style={{ color: "#00F5FF" }} />
+                                    </div>
+                                    <h2 className="text-lg font-bold text-white">Enter PIN</h2>
+                                </div>
+                                <p className="text-sm text-zinc-500">
+                                    <span className="font-semibold" style={{ color: "#00F5FF" }}>+91 {formatPhoneDigits(digits)}</span>
+                                </p>
+                            </motion.div>
+
+                            <form onSubmit={handlePinLogin} className="space-y-4">
+                                <motion.div variants={itemVariants}>
+                                    <label className="field-label"><KeyRound className="w-3 h-3" />PIN</label>
+                                    <div className="relative">
+                                        <input
+                                            type={showPin ? "text" : "password"}
+                                            inputMode="numeric"
+                                            placeholder="Enter your PIN"
+                                            value={pin}
+                                            onChange={e => { setPin(e.target.value.replace(/\D/g, "")); setError(""); }}
+                                            className="field-input w-full pr-12"
+                                            maxLength={8}
+                                            autoFocus
+                                        />
+                                        <button type="button" onClick={() => setShowPin(v => !v)}
+                                            className="absolute right-3.5 top-1/2 -translate-y-1/2"
+                                            style={{ color: "var(--text-muted)" }}>
+                                            {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    </div>
+                                </motion.div>
+
+                                {error && (
+                                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                                        className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                                        {error}
+                                    </motion.p>
+                                )}
+
+                                <motion.button variants={itemVariants} type="submit"
+                                    disabled={isLoading || pin.length < 4}
+                                    className="btn-primary w-full" style={{ height: 48 }}
+                                    whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
+                                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+                                    {isLoading ? "Signing In..." : "Sign In"}
+                                </motion.button>
+
+                                <motion.div variants={itemVariants} className="flex items-center justify-between pt-1">
+                                    <button type="button" onClick={resetToPhone}
+                                        className="btn-ghost flex items-center gap-1.5 text-sm px-3" style={{ height: 32 }}>
+                                        <ArrowLeft className="w-3.5 h-3.5" />Change number
+                                    </button>
+                                    <button type="button" onClick={() => { setStep("forgot-otp"); handleSendForgotOtp(); }}
+                                        className="text-sm font-medium transition-colors"
+                                        style={{ color: "#00F5FF" }}>
+                                        Forgot PIN?
+                                    </button>
+                                </motion.div>
+                            </form>
+                        </motion.div>
+                    )}
+
+                    {/* ── STEP: FORGOT — SEND OTP ─────────────────────── */}
+                    {step === "forgot-otp" && (
+                        <motion.div key="forgot-otp" variants={containerVariants} initial="hidden" animate="visible"
+                            className="relative rounded-2xl p-8" style={cardStyle}>
+                            <div className="h-[2px] absolute top-0 left-0 right-0 rounded-t-2xl bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-50" />
+
+                            <motion.div variants={itemVariants} className="mb-6">
+                                <h2 className="text-lg font-bold text-white">Verify Identity</h2>
+                                <p className="text-sm text-zinc-500 mt-0.5">Enter the OTP sent to <span style={{ color: "#00F5FF" }}>+91 {formatPhoneDigits(digits)}</span></p>
+                            </motion.div>
+
+                            <form onSubmit={handleVerifyOtp} className="space-y-5">
+                                <motion.div variants={itemVariants}>
+                                    <label className="field-label"><KeyRound className="w-3 h-3" />6-digit OTP</label>
+                                    <div className="flex gap-2 justify-between">
+                                        {otp.map((digit, i) => (
+                                            <motion.input key={i}
+                                                ref={el => { otpRefs.current[i] = el; }}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: i * 0.06 }}
+                                                type="text" inputMode="numeric" maxLength={1}
+                                                value={digit}
+                                                onChange={e => handleOtpChange(i, e.target.value)}
+                                                onKeyDown={e => handleOtpKeyDown(i, e)}
+                                                className="w-11 h-13 text-center text-xl font-bold rounded-xl outline-none transition-all caret-transparent"
+                                                style={{
+                                                    background: "var(--bg-elevated)",
+                                                    border: `1.5px solid ${digit ? "rgba(0,245,255,0.4)" : "var(--border-default)"}`,
+                                                    color: "var(--text-primary)",
+                                                    boxShadow: digit ? "0 0 0 3px rgba(0,245,255,0.1)" : "none",
+                                                    height: 52,
+                                                }}
+                                                autoFocus={i === 0}
                                             />
-                                            {/* Valid phone tick */}
-                                            <AnimatePresence>
-                                                {isValidPhone && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, scale: 0.4 }}
-                                                        animate={{ opacity: 1, scale: 1 }}
-                                                        exit={{ opacity: 0, scale: 0.4 }}
-                                                        transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                                                        className="absolute right-3"
-                                                    >
-                                                        <CheckCircle2 className="w-5 h-5" style={{ color: "#00F5FF" }} />
-                                                    </motion.div>
-                                                )}
-                                            </AnimatePresence>
-                                        </div>
-                                        <p className="text-[11px] ml-1" style={{ color: "var(--text-muted)" }}>
-                                            Indian number only • 10 digits
-                                        </p>
+                                        ))}
                                     </div>
+                                </motion.div>
 
-                                    <motion.button
-                                        type="submit"
-                                        disabled={isLoading || !isValidPhone}
-                                        className="btn-primary w-full"
-                                        style={{ height: 52 }}
-                                        whileHover={{ scale: (isLoading || !isValidPhone) ? 1 : 1.01 }}
-                                        whileTap={{ scale: (isLoading || !isValidPhone) ? 1 : 0.98 }}
-                                    >
-                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <SendHorizonal className="w-5 h-5" />}
-                                        {isLoading ? "Sending OTP..." : "Send OTP via SMS"}
-                                    </motion.button>
-                                </motion.form>
-                            )}
+                                {error && <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{error}</p>}
 
-                            {/* ── Step 2: OTP ── */}
-                            {step === "otp" && (
-                                <motion.form
-                                    key="otp-form"
-                                    initial={{ opacity: 0, x: 24 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -24 }}
-                                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                                    className="space-y-6"
-                                    onSubmit={handleVerifyOTP}
-                                >
-                                    <div className="space-y-4">
-                                        <label className="field-label">
-                                            <KeyRound className="w-3 h-3" />
-                                            Verification Code
-                                        </label>
-                                        <div className="flex gap-3 justify-center" onPaste={handleOtpPaste}>
-                                            {otp.map((digit, i) => (
-                                                <motion.input
-                                                    key={i}
-                                                    ref={(el) => { otpRefs.current[i] = el; }}
-                                                    initial={{ opacity: 0, y: 12 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ delay: i * 0.06, duration: 0.3 }}
-                                                    type="text"
-                                                    inputMode="numeric"
-                                                    maxLength={1}
-                                                    value={digit}
-                                                    onChange={(e) => handleOtpChange(i, e.target.value)}
-                                                    onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                                                    className="w-12 h-14 text-center text-2xl font-bold rounded-xl outline-none transition-all caret-transparent"
-                                                    style={{
-                                                        background: "var(--bg-elevated)",
-                                                        border: `1.5px solid ${digit ? "rgba(0,245,255,0.4)" : "var(--border-default)"}`,
-                                                        color: "var(--text-primary)",
-                                                        boxShadow: digit ? "0 0 0 3px rgba(0,245,255,0.1)" : "none",
-                                                    }}
-                                                    autoFocus={i === 0}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
+                                <motion.button variants={itemVariants} type="submit"
+                                    disabled={isLoading || otp.join("").length < 6}
+                                    className="btn-primary w-full" style={{ height: 48 }}
+                                    whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
+                                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                                    {isLoading ? "Verifying..." : "Verify OTP"}
+                                </motion.button>
 
-                                    <motion.button
-                                        type="submit"
-                                        disabled={isLoading || otp.join("").length < 6}
-                                        className="btn-primary w-full"
-                                        style={{ height: 52 }}
-                                        whileHover={{ scale: (isLoading || otp.join("").length < 6) ? 1 : 1.01 }}
-                                        whileTap={{ scale: (isLoading || otp.join("").length < 6) ? 1 : 0.98 }}
-                                    >
-                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5" />}
-                                        {isLoading ? "Verifying..." : "Verify & Sign In"}
-                                    </motion.button>
+                                <div className="flex items-center justify-between pt-1">
+                                    <button type="button" onClick={() => setStep("pin")}
+                                        className="btn-ghost flex items-center gap-1.5 text-sm px-3" style={{ height: 32 }}>
+                                        <ArrowLeft className="w-3.5 h-3.5" /> Back
+                                    </button>
+                                    <button type="button" disabled={countdown > 0} onClick={handleSendForgotOtp}
+                                        className="flex items-center gap-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed"
+                                        style={{ color: countdown > 0 ? "var(--text-muted)" : "#00F5FF" }}>
+                                        {countdown > 0 ? `Resend in ${countdown}s` : <><RotateCcw className="w-3.5 h-3.5" />Resend</>}
+                                    </button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    )}
 
-                                    <div className="flex items-center justify-between pt-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => { setStep("phone"); setOtp(["", "", "", "", "", ""]); setError(""); }}
-                                            className="btn-ghost flex items-center gap-1.5 text-sm px-3"
-                                            style={{ height: 36 }}
-                                        >
-                                            <ArrowLeft className="w-4 h-4" />
-                                            Change number
-                                        </button>
-                                        <button
-                                            type="button"
-                                            disabled={countdown > 0}
-                                            onClick={() => handleSendOTP()}
-                                            className="flex items-center gap-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed"
-                                            style={{ color: countdown > 0 ? "var(--text-muted)" : "#00F5FF" }}
-                                        >
-                                            {countdown > 0 ? `Resend in ${countdown}s` : (<><RotateCcw className="w-3.5 h-3.5" /> Resend OTP</>)}
+                    {/* ── STEP: SET NEW PIN ───────────────────────────── */}
+                    {step === "forgot-newpin" && (
+                        <motion.div key="forgot-newpin" variants={containerVariants} initial="hidden" animate="visible"
+                            className="relative rounded-2xl p-8" style={cardStyle}>
+                            <div className="h-[2px] absolute top-0 left-0 right-0 rounded-t-2xl bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-50" />
+
+                            <motion.div variants={itemVariants} className="mb-6">
+                                <h2 className="text-lg font-bold text-white">Set New PIN</h2>
+                                <p className="text-sm text-zinc-500 mt-0.5">Choose a secure PIN (minimum 4 digits)</p>
+                            </motion.div>
+
+                            <form onSubmit={handleSetNewPin} className="space-y-4">
+                                <motion.div variants={itemVariants}>
+                                    <label className="field-label"><Lock className="w-3 h-3" />New PIN</label>
+                                    <div className="relative">
+                                        <input type={showNewPin ? "text" : "password"} inputMode="numeric"
+                                            placeholder="Min. 4 digits" value={newPin}
+                                            onChange={e => { setNewPin(e.target.value.replace(/\D/g, "")); setError(""); }}
+                                            className="field-input w-full pr-12" maxLength={8} autoFocus />
+                                        <button type="button" onClick={() => setShowNewPin(v => !v)}
+                                            className="absolute right-3.5 top-1/2 -translate-y-1/2"
+                                            style={{ color: "var(--text-muted)" }}>
+                                            {showNewPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                         </button>
                                     </div>
-                                </motion.form>
-                            )}
-                        </AnimatePresence>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                                </motion.div>
+
+                                <motion.div variants={itemVariants}>
+                                    <label className="field-label"><ShieldCheck className="w-3 h-3" />Confirm PIN</label>
+                                    <input type="password" inputMode="numeric"
+                                        placeholder="Re-enter PIN" value={confirmPin}
+                                        onChange={e => { setConfirmPin(e.target.value.replace(/\D/g, "")); setError(""); }}
+                                        className="field-input w-full" maxLength={8} />
+                                </motion.div>
+
+                                {error && <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{error}</p>}
+
+                                <motion.button variants={itemVariants} type="submit"
+                                    disabled={isLoading || newPin.length < 4 || newPin !== confirmPin}
+                                    className="btn-primary w-full" style={{ height: 48 }}
+                                    whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
+                                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                                    {isLoading ? "Saving PIN..." : "Save & Sign In"}
+                                </motion.button>
+                            </form>
+                        </motion.div>
+                    )}
+
+                    {/* ── SUCCESS ─────────────────────────────────────── */}
+                    {success && (
+                        <motion.div key="success" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                            className="flex flex-col items-center gap-4 py-12">
+                            <div className="w-16 h-16 rounded-full flex items-center justify-center"
+                                style={{ background: "rgba(0,245,255,0.1)", border: "2px solid rgba(0,245,255,0.4)" }}>
+                                <CheckCircle2 className="w-8 h-8" style={{ color: "#00F5FF" }} />
+                            </div>
+                            <p className="text-white font-bold text-lg">Signed in!</p>
+                            <p className="text-zinc-500 text-sm">Redirecting to dashboard…</p>
+                        </motion.div>
+                    )}
+
+                </AnimatePresence>
+            </div>
         </div>
     );
 }
