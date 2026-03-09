@@ -1,3 +1,5 @@
+"use client";
+
 import KanbanBoard from "@/components/KanbanBoard";
 
 interface Employee {
@@ -13,13 +15,15 @@ interface DashboardClientProps {
 
 export default function DashboardClient({ tasks, session, employees = [] }: DashboardClientProps) {
     return (
-        <div className="animate-slide-up h-full">
-            <KanbanBoard
-                tasks={tasks}
-                userId={session.user.id}
-                userRole={session.user.role}
-                employees={employees}
-            />
+        <div className="flex flex-col h-full overflow-hidden">
+            <div className="flex-1 min-h-0">
+                <KanbanBoard
+                    tasks={tasks}
+                    userId={session.user.id}
+                    userRole={session.user.role}
+                    employees={employees}
+                />
+            </div>
         </div>
     );
 }

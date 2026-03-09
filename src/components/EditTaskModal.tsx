@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useToast } from "./ToastContext";
 import {
     X,
     Loader2,
@@ -42,6 +43,7 @@ interface EditTaskModalProps {
 }
 
 export default function EditTaskModal({ isOpen, task, employees, onClose, onSaved }: EditTaskModalProps) {
+    const { showToast } = useToast();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [assigneeId, setAssigneeId] = useState("");
@@ -97,10 +99,12 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
             }
 
             const updatedTask = await res.json();
+            showToast(`Task "${title}" updated successfully`);
             onSaved(updatedTask);
             onClose();
         } catch (err: any) {
             setError(err.message);
+            showToast(err.message || "Failed to update task", "error");
         } finally {
             setIsLoading(false);
         }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useToast } from "./ToastContext";
 import {
     X, Loader2, UserPlus, UserCheck, Users, Shield,
     Building, Store, Layers, Phone, Lock, Eye, EyeOff,
@@ -20,6 +21,7 @@ function generatePin(length = 6): string {
 }
 
 export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmployeeModalProps) {
+    const { showToast } = useToast();
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [pin, setPin] = useState("");
@@ -72,6 +74,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
             const newEmployee = await res.json();
             setPlainPin(pin);         // hold the plain PIN for display
             setCreatedEmployee(newEmployee);
+            showToast(`Member "${name}" added successfully`);
             onSuccess(newEmployee);
         } catch (err: any) {
             setError(err.message);
@@ -160,12 +163,11 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                             <label className="field-label"><Phone className="h-3 w-3" />Mobile Number</label>
                                             <div className="flex items-center overflow-hidden rounded-xl transition-all"
                                                 style={{ background: "var(--bg-elevated)", border: "1.5px solid var(--border-default)" }}>
-                                                <span className="select-none whitespace-nowrap pl-4 pr-2 text-sm font-semibold text-zinc-300">🇮🇳 +91</span>
-                                                <div className="mx-1 h-5 w-px bg-zinc-700" />
+                                                <span className="select-none whitespace-nowrap pl-4 pr-1 text-sm font-semibold text-zinc-300">🇮🇳 +91</span>
                                                 <input type="tel" inputMode="numeric" placeholder="XXXXX XXXXX"
                                                     value={formatPhoneDisplay(phone)} onChange={handlePhoneChange}
-                                                    className="flex-1 bg-transparent py-3 pr-4 text-sm tracking-wider text-zinc-100 outline-none placeholder:text-zinc-600"
-                                                    style={{ border: "none", boxShadow: "none" }} />
+                                                    className="flex-1 border-0 bg-transparent py-3 pl-3 pr-4 text-sm tracking-wider text-zinc-100 caret-[#00F5FF] outline-none hover:border-0 focus:border-0 focus:outline-none focus:ring-0 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0 placeholder:text-zinc-600"
+                                                    style={{ border: "none", borderWidth: 0, boxShadow: "none", outline: "none" }} />
                                             </div>
                                         </div>
 

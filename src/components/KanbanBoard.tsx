@@ -230,7 +230,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
             )}
 
             {/* ── Kanban columns ─────────────────────────────────────────── */}
-            <div className="flex gap-3 overflow-hidden h-full -mx-2 px-2 pb-6">
+            <div className="flex gap-4 overflow-x-auto snap-x-mandatory no-scrollbar h-full -mx-4 px-4 pb-6">
                 {COLUMNS.map((col) => {
                     const columnTasks = getTasksByStatus(col.id);
                     const isDragOver = dragOverColumn === col.id;
@@ -238,7 +238,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                     const isLocked = !isAdmin && col.id === "DONE";
 
                     return (
-                        <div key={col.id} className="flex-1 min-w-0 flex flex-col h-full">
+                        <div key={col.id} className="flex-shrink-0 w-[85vw] md:w-auto md:flex-1 snap-center flex flex-col h-full">
                             {/* Header */}
                             <div className="flex items-center gap-2 px-1 mb-3">
                                 <col.icon style={{ width: 14, height: 14, color: getIconColor(col.hue), flexShrink: 0 }} />

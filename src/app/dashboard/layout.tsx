@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -14,6 +15,7 @@ import {
 import { useState, useEffect } from "react";
 import WorkspaceSwitcher from "@/components/WorkspaceSwitcher";
 import CreateTaskModal from "@/components/CreateTaskModal";
+import LogoutConfirmModal from "@/components/LogoutConfirmModal";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -24,8 +26,9 @@ export default function DashboardLayout({
 }) {
     const { data: session, status } = useSession();
     const router = useRouter();
-    const pathname = usePathname();
+    const [pathname, setPathname] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [employees, setEmployees] = useState([]);
 
     // Redirect unauthenticated users — must be in useEffect, not render body
@@ -92,11 +95,11 @@ export default function DashboardLayout({
                         <div className="relative">
                             <div className="absolute inset-0 rounded-xl bg-[#00F5FF]/20 blur-md" />
                             <Image
-                                src="/images/ops-logo.png"
+                                src="/ops-logo.png"
                                 alt="OPS Logo"
-                                width={36}
-                                height={36}
-                                className="relative object-contain rounded-xl"
+                                width={48}
+                                height={48}
+                                className="relative w-12 h-12 object-cover rounded-xl border border-[#00F5FF]/20"
                             />
                         </div>
                         <div>
@@ -173,24 +176,89 @@ export default function DashboardLayout({
                         </div>
                     </div>
                     <button
-                        onClick={() => signOut()}
-                        className="btn-surface w-full text-xs"
+                        onClick={() => setIsLogoutModalOpen(true)}
+                        className="flex w-full items-center justify-start gap-3 px-4 text-sm font-bold tracking-wide transition-all duration-200 rounded-xl"
+                        style={{
+                            height: 40,
+                            color: "#FF4D6A",
+                            border: "1px solid rgba(255, 77, 106, 0.4)",
+                            background: "rgba(255, 77, 106, 0.05)"
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "rgba(255, 77, 106, 0.12)";
+                            e.currentTarget.style.borderColor = "rgba(255, 77, 106, 0.8)";
+                            e.currentTarget.style.boxShadow = "0 0 20px rgba(255, 77, 106, 0.3)";
+                            e.currentTarget.style.transform = "translateY(-1px)";
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "rgba(255, 77, 106, 0.05)";
+                            e.currentTarget.style.borderColor = "rgba(255, 77, 106, 0.4)";
+                            e.currentTarget.style.boxShadow = "none";
+                            e.currentTarget.style.transform = "translateY(0px)";
+                        }}
                     >
-                        <LogOut className="w-3.5 h-3.5" />
-                        Sign out
+                        <LogOut className="w-4.5 h-4.5 flex-shrink-0" style={{ width: 18, height: 18 }} />
+                        Sign Out
                     </button>
                 </div>
             </aside>
 
+            {/* ── Mobile Nav (Bottom Bar) ── */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-[50] glass-strong border-t border-white/5 px-6 py-4 pb-10">
+                <div className="flex items-center justify-between max-w-sm mx-auto">
+                    {navItems.map((item) => {
+                        const isActive = pathname === item.href;
+                        return (
+                            <a
+                                key={item.name}
+                                href={item.href}
+                                className={`relative flex flex-col items-center gap-2 transition-all duration-300 ${isActive ? "text-[#00F5FF]" : "text-zinc-500 hover:text-zinc-300"}`}
+                            >
+                                <div className={`relative p-2 rounded-2xl transition-all duration-300 ${isActive ? "bg-[#00F5FF]/10 shadow-[0_0_20px_rgba(0,245,255,0.15)] ring-1 ring-[#00F5FF]/30" : ""}`}>
+                                    <item.icon style={{ width: 26, height: 26 }} strokeWidth={isActive ? 2.5 : 2} />
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="mobile-active-glow"
+                                            className="absolute inset-0 bg-[#00F5FF]/20 blur-xl rounded-full"
+                                        />
+                                    )}
+                                </div>
+                                <span className={`text-[10px] font-bold tracking-widest transition-opacity ${isActive ? "opacity-100" : "opacity-60"}`}>{item.name}</span>
+                            </a>
+                        );
+                    })}
+                    {session.user.role === "ADMIN" && (
+                        <Link
+                            href="/dashboard/tasks/new"
+                            className="flex flex-col items-center gap-2 text-zinc-500 hover:text-[#00F5FF] transition-all"
+                        >
+                            <div className="p-2 rounded-2xl bg-white/5 border border-white/10">
+                                <PlusSquare style={{ width: 26, height: 26 }} />
+                            </div>
+                            <span className="text-[10px] font-bold tracking-widest opacity-60">Add</span>
+                        </Link>
+                    )}
+                    <button
+                        onClick={() => setIsLogoutModalOpen(true)}
+                        className="flex flex-col items-center gap-2 text-zinc-500 hover:text-[#FF4D6A] transition-all"
+                    >
+                        <div className="p-2 rounded-2xl hover:bg-red-500/10 transition-colors">
+                            <LogOut style={{ width: 26, height: 26 }} />
+                        </div>
+                        <span className="text-[10px] font-bold tracking-widest opacity-60">Sign Out</span>
+                    </button>
+                </div>
+            </div>
+
             {/* ── Main ── */}
-            <div className="flex-1 flex flex-col relative h-full overflow-hidden">
+            <div className="flex-1 flex flex-col relative min-h-0 overflow-y-auto overflow-x-hidden mb-[80px] md:mb-0">
 
                 {/* Ambient neon glow */}
                 <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#00F5FF]/[0.04] blur-3xl pointer-events-none -mr-48 -mt-48" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-[#00F5FF]/[0.03] blur-3xl pointer-events-none -ml-32 -mb-32" />
 
-                <main className="flex-1 overflow-hidden animate-fade-in relative flex flex-col">
-                    <div className="flex-1 flex flex-col overflow-hidden w-full px-6 lg:px-10 pt-6">
+                <main className="flex-1 animate-fade-in relative flex flex-col">
+                    <div className="flex-1 flex flex-col w-full px-4 md:px-6 lg:px-10 pt-4 md:pt-6">
                         {children}
                     </div>
                 </main>
@@ -201,6 +269,16 @@ export default function DashboardLayout({
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 employees={employees}
+            />
+
+            <LogoutConfirmModal
+                isOpen={isLogoutModalOpen}
+                onClose={() => setIsLogoutModalOpen(false)}
+                onConfirm={async () => {
+                    setIsLogoutModalOpen(false);
+                    await signOut({ redirect: false });
+                    router.push("/login");
+                }}
             />
         </div>
     );

@@ -1,12 +1,12 @@
 {
-  "name": "Agents OPS",
-  "short_name": "AgentsOPS",
-  "description": "Multi-tenant Task Management — neon-powered PWA",
-  "start_url": "/dashboard",
+  "name": "Agent OPS",
+  "short_name": "OPS",
+  "description": "Multi-tenant Task Management \u2014 neon-powered PWA",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#09090b",
+  "orientation": "portrait",
+  "background_color": "#000000",
   "theme_color": "#00F5FF",
   "categories": [
     "productivity",

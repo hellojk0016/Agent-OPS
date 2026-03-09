@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     X, Pencil, Calendar, User, Building2, Tag,
     AlignLeft, Hash, CheckCircle2, Clock, Zap, Circle, Eye as EyeIcon,
+    Loader2, Rocket,
 } from "lucide-react";
 
 interface Task {
@@ -26,12 +28,20 @@ interface TaskDetailsModalProps {
     userRole: string;
     onClose: () => void;
     onEdit: () => void;
+    onStatusUpdate?: (newStatus: string) => Promise<void>;
 }
 
 const PRIORITY_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
     HIGH: { label: "High", color: "#FF4D6A", bg: "rgba(255,77,106,0.1)" },
     MEDIUM: { label: "Medium", color: "#F59E0B", bg: "rgba(245,158,11,0.1)" },
     LOW: { label: "Low", color: "#00F5FF", bg: "rgba(0,245,255,0.08)" },
+};
+
+const STATUS_FLOW: Record<string, { label: string; next: string | null }> = {
+    TODO: { label: "Move to In Progress", next: "IN_PROGRESS" },
+    IN_PROGRESS: { label: "Move to Review", next: "REVIEW" },
+    REVIEW: { label: "Move to Done", next: "DONE" },
+    DONE: { label: "Task Completed", next: null },
 };
 
 const STATUS_CONFIG: Record<string, { label: string; Icon: any; color: string }> = {
@@ -67,14 +77,29 @@ function Field({ icon: Icon, label, children }: { icon: any; label: string; chil
 }
 
 export default function TaskDetailsModal({
-    isOpen, task, userRole, onClose, onEdit,
+    isOpen, task, userRole, onClose, onEdit, onStatusUpdate,
 }: TaskDetailsModalProps) {
+    const [isUpdating, setIsUpdating] = useState(false);
+
     if (!task) return null;
     const isAdmin = userRole === "ADMIN";
+    const isDone = task.status === "DONE";
 
     const priority = task.priority ? PRIORITY_CONFIG[task.priority] ?? null : null;
     const statusCfg = STATUS_CONFIG[task.status] ?? STATUS_CONFIG.TODO;
     const StatusIcon = statusCfg.Icon;
+
+    const handleStatusAction = async () => {
+        const flow = STATUS_FLOW[task.status] || STATUS_FLOW.TODO;
+        if (!flow.next || !onStatusUpdate || isUpdating) return;
+
+        setIsUpdating(true);
+        try {
+            await onStatusUpdate(flow.next);
+        } finally {
+            setIsUpdating(false);
+        }
+    };
 
     const dueDateStr = task.dueDate
         ? new Date(task.dueDate).toLocaleDateString("en-IN", {
@@ -256,20 +281,43 @@ export default function TaskDetailsModal({
                                     </div>
                                 )}
 
+                                {/* ── Status Action Button ───────────────── */}
+                                {(() => {
+                                    const flow = STATUS_FLOW[task.status] || STATUS_FLOW.TODO;
+                                    const isReview = task.status === "REVIEW";
+                                    const canComplete = isAdmin || !isReview;
+                                    const shouldShow = !isDone && canComplete;
+
+                                    if (!shouldShow) return null;
+
+                                    return (
+                                        <div className="mb-8 pt-2">
+                                            <motion.button
+                                                onClick={handleStatusAction}
+                                                disabled={isUpdating || !onStatusUpdate}
+                                                className={`w-full h-14 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all btn-primary shadow-[0_0_30px_rgba(0,245,255,0.2)] ${isUpdating ? "opacity-80" : ""
+                                                    }`}
+                                                whileHover={!isUpdating ? { scale: 1.02, translateY: -2 } : {}}
+                                                whileTap={!isUpdating ? { scale: 0.98 } : {}}
+                                            >
+                                                {isUpdating ? (
+                                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                                ) : (
+                                                    <Rocket className="w-5 h-5" />
+                                                )}
+                                                {isUpdating ? "Updating Status..." : flow.label}
+                                            </motion.button>
+                                        </div>
+                                    );
+                                })()}
+
                                 {/* ── Footer buttons ────────────────────── */}
-                                <div className="flex gap-3 pt-2"
-                                    style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-                                    <button
-                                        onClick={onClose}
-                                        className="btn-surface flex-1 text-sm"
-                                        style={{ height: 44 }}
-                                    >
-                                        Close
-                                    </button>
-                                    {isAdmin && (
+                                {isAdmin && (
+                                    <div className="pt-6"
+                                        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                                         <motion.button
                                             onClick={() => { onClose(); onEdit(); }}
-                                            className="btn-primary flex-1 text-sm font-bold"
+                                            className="btn-primary w-full text-sm font-bold"
                                             style={{ height: 44 }}
                                             whileHover={{ scale: 1.01 }}
                                             whileTap={{ scale: 0.98 }}
@@ -277,8 +325,8 @@ export default function TaskDetailsModal({
                                             <Pencil className="h-4 w-4" />
                                             Edit Task
                                         </motion.button>
-                                    )}
-                                </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </motion.div>

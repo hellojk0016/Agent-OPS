@@ -10,18 +10,18 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'Agents OPS',
+  title: 'Agent OPS',
   description: 'Multi-tenant Task Management — neon-powered PWA',
   manifest: '/manifest.json',
-  applicationName: 'Agents OPS',
+  applicationName: 'Agent OPS',
   keywords: ['task management', 'kanban', 'team', 'productivity', 'PWA'],
-  authors: [{ name: 'Agents OPS' }],
+  authors: [{ name: 'Agent OPS' }],
 
   // Apple PWA meta
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Agents OPS',
+    title: 'Agent OPS',
     startupImage: [
       {
         url: '/icon-512x512.png',
@@ -33,13 +33,14 @@ export const metadata: Metadata = {
   // Open Graph for social sharing
   openGraph: {
     type: 'website',
-    title: 'Agents OPS',
+    title: 'Agent OPS',
     description: 'Multi-tenant Task Management',
-    siteName: 'Agents OPS',
+    siteName: 'Agent OPS',
   },
 
   icons: {
     icon: [
+      { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
       { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
       { url: '/icon-96x96.png', sizes: '96x96', type: 'image/png' },
     ],
@@ -48,7 +49,7 @@ export const metadata: Metadata = {
       { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
     ],
     other: [
-      { rel: 'mask-icon', url: '/icon-512x512.png' },
+      { rel: 'mask-icon', url: '/icon-512x512.png', color: '#00F5FF' },
     ],
   },
 }
@@ -65,6 +66,8 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 }
 
+import { ToastProvider } from '@/components/ToastContext'
+
 export default function RootLayout({
   children,
 }: {
@@ -77,14 +80,16 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Agents OPS" />
+        <meta name="apple-mobile-web-app-title" content="Agent OPS" />
         {/* MS Tile */}
         <meta name="msapplication-TileImage" content="/icon-144x144.png" />
-        <meta name="msapplication-TileColor" content="#09090b" />
+        <meta name="msapplication-TileColor" content="#000000" />
       </head>
       <body className={`${spaceGrotesk.variable} font-sans min-h-screen bg-zinc-950 text-zinc-100`}>
         <NextAuthProvider>
-          {children}
+          <ToastProvider>
+            {children}
+          </ToastProvider>
         </NextAuthProvider>
       </body>
     </html>

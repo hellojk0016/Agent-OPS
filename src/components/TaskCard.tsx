@@ -3,11 +3,14 @@
 import { useState, useRef, useEffect } from 'react';
 import {
     CheckCircle2, Circle, Clock, Loader2, User,
-    ExternalLink, MoreVertical, Pencil, Trash2
+    ExternalLink, MoreVertical, Pencil, Trash2,
+    Eye as EyeIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import EditTaskModal from "./EditTaskModal";
 import TaskDetailsModal from "./TaskDetailsModal";
+import DeleteConfirmModal from "./DeleteConfirmModal";
+import { useToast } from "./ToastContext";
 
 interface Employee {
     id: string;
@@ -53,7 +56,9 @@ export default function TaskCard({
     const [menuOpen, setMenuOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(false);
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const { showToast } = useToast();
 
     const canUpdate = userRole === 'ADMIN' || (userRole === 'MEMBER' && task.assigneeId === userId);
     const isAdmin = userRole === 'ADMIN';
@@ -69,9 +74,23 @@ export default function TaskCard({
         return () => document.removeEventListener("mousedown", handler);
     }, [menuOpen]);
 
-    const handleStatusUpdate = async () => {
+    const handleStatusUpdate = async (newStatus?: string) => {
         if (!canUpdate || isStatusLoading) return;
-        const nextStatus = status === 'TODO' ? 'IN_PROGRESS' : status === 'IN_PROGRESS' ? 'DONE' : 'TODO';
+
+        let nextStatus = newStatus;
+        if (!nextStatus) {
+            if (status === 'TODO') nextStatus = 'IN_PROGRESS';
+            else if (status === 'IN_PROGRESS') nextStatus = 'REVIEW';
+            else if (status === 'REVIEW') {
+                if (isAdmin) nextStatus = 'DONE';
+                else nextStatus = 'TODO'; // Or just return if we want to stop
+            }
+            else nextStatus = 'TODO';
+        }
+
+        // Final safety check for DONE status
+        if (nextStatus === 'DONE' && !isAdmin) return;
+
         setIsStatusLoading(true);
         try {
             const res = await fetch('/api/tasks', {
@@ -79,9 +98,16 @@ export default function TaskCard({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: task.id, status: nextStatus }),
             });
-            if (res.ok) setStatus(nextStatus);
+            if (res.ok) {
+                const updatedTask = { ...localTask, status: nextStatus };
+                setStatus(nextStatus);
+                setLocalTask(updatedTask);
+                showToast(`Task moved to ${nextStatus.replace('_', ' ')}`);
+                onUpdated?.(updatedTask);
+            }
         } catch (err) {
             console.error('Status update failed:', err);
+            showToast("Failed to update status", "error");
         } finally {
             setIsStatusLoading(false);
         }
@@ -89,15 +115,21 @@ export default function TaskCard({
 
     const handleDelete = async () => {
         setMenuOpen(false);
-        if (!confirm(`Delete "${localTask.title}"? This cannot be undone.`)) return;
+        setIsConfirmDeleteOpen(true);
+    };
+
+    const performDelete = async () => {
+        setIsConfirmDeleteOpen(false);
         setIsDeleting(true);
         try {
             const res = await fetch(`/api/tasks?id=${task.id}`, { method: 'DELETE' });
             if (res.ok) {
+                showToast("Task deleted successfully");
                 onDeleted?.(task.id);
             }
         } catch (err) {
             console.error('Delete failed:', err);
+            showToast("Failed to delete task", "error");
         } finally {
             setIsDeleting(false);
         }
@@ -110,6 +142,10 @@ export default function TaskCard({
 
     const isDone = status === 'DONE';
     const isInProgress = status === 'IN_PROGRESS';
+    const isReview = status === 'REVIEW';
+
+    // Check if the current user can move THIS task to the NEXT logical status
+    const canToggle = canUpdate && !(isReview && !isAdmin);
 
     return (
         <>
@@ -145,14 +181,16 @@ export default function TaskCard({
                                 exit={{ scale: 0.7, opacity: 0 }}
                                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
                                 onClick={(e) => { e.stopPropagation(); handleStatusUpdate(); }}
-                                disabled={!canUpdate || isStatusLoading}
+                                disabled={!canToggle || isStatusLoading}
                                 className="flex-shrink-0 mt-0.5 transition-all rounded-full"
-                                style={{ cursor: canUpdate ? "pointer" : "default", opacity: !canUpdate ? 0.3 : 1 }}
+                                style={{ cursor: canToggle ? "pointer" : "default", opacity: !canToggle ? 0.3 : 1 }}
                             >
                                 {isStatusLoading ? (
                                     <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#00F5FF" }} />
                                 ) : isDone ? (
                                     <CheckCircle2 className="w-4 h-4" style={{ color: "#00F5FF" }} />
+                                ) : isReview ? (
+                                    <EyeIcon className="w-4 h-4" style={{ color: "#A78BFA" }} />
                                 ) : isInProgress ? (
                                     <Clock className="w-4 h-4" style={{ color: "#00F5FF" }} />
                                 ) : (
@@ -313,6 +351,17 @@ export default function TaskCard({
                 userRole={userRole}
                 onClose={() => setDetailsOpen(false)}
                 onEdit={() => setEditOpen(true)}
+                onStatusUpdate={handleStatusUpdate}
+            />
+
+            {/* Delete Confirmation Modal */}
+            <DeleteConfirmModal
+                isOpen={isConfirmDeleteOpen}
+                onClose={() => setIsConfirmDeleteOpen(false)}
+                onConfirm={performDelete}
+                isDeleting={isDeleting}
+                title="Delete Task"
+                message={`Are you sure you want to delete "${localTask.title}"? This action cannot be undone.`}
             />
         </>
     );
