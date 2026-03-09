@@ -14,7 +14,6 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 if (!credentials?.phone || !credentials?.pin) return null;
 
-                // Normalise: accept "9941292729" or "+919941292729"
                 const raw = String(credentials.phone).replace(/\D/g, "");
                 const formattedPhone =
                     raw.length === 12 && raw.startsWith("91")

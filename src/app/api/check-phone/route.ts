@@ -16,6 +16,7 @@ export async function GET(req: Request) {
     }
 
     const raw = phone.replace(/\D/g, "");
+
     const formattedPhone = raw.startsWith("91") && raw.length === 12
         ? `+${raw}`
         : `+91${raw.slice(-10)}`;

@@ -46,6 +46,7 @@ export default function LoginPage() {
         if (!isValidPhone) return;
         setIsLoading(true);
         setError("");
+
         try {
             const res = await fetch(`/api/check-phone?phone=${digits}`);
             const data = await res.json();
