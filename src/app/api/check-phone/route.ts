@@ -23,11 +23,8 @@ export async function GET(req: Request) {
 
     const user = await prisma.user.findFirst({
         where: { phone: formattedPhone },
-        select: { id: true, role: true }, // select role to allow conditional UI
+        select: { id: true }, // only check existence — no sensitive data
     });
 
-    return NextResponse.json({
-        exists: !!user,
-        role: user?.role || null
-    });
+    return NextResponse.json({ exists: !!user });
 }

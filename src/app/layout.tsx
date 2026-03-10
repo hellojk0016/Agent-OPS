@@ -91,35 +91,6 @@ export default function RootLayout({
           <ToastProvider>
             {children}
             <PWAInstallPrompt />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  if ('serviceWorker' in navigator) {
-                    window.addEventListener('load', function() {
-                      navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                        console.log('SW registered: ', registration);
-                        registration.onupdatefound = () => {
-                          const installingWorker = registration.installing;
-                          if (installingWorker) {
-                            installingWorker.onstatechange = () => {
-                              if (installingWorker.state === 'installed') {
-                                if (navigator.serviceWorker.controller) {
-                                  console.log('New content is available; please refresh.');
-                                } else {
-                                  console.log('Content is cached for offline use.');
-                                }
-                              }
-                            };
-                          }
-                        };
-                      }, function(err) {
-                        console.log('SW registration failed: ', err);
-                      });
-                    });
-                  }
-                `,
-              }}
-            />
           </ToastProvider>
         </NextAuthProvider>
       </body>

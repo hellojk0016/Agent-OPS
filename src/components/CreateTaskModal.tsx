@@ -38,16 +38,6 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
     const { showToast } = useToast();
     const router = useRouter();
 
-    const resetForm = () => {
-        setTitle("");
-        setDescription("");
-        setAssigneeId("");
-        setPriority("MEDIUM");
-        setCompanyType("BOTH");
-        setDueDate("");
-        setDateOption("");
-    };
-
     useEffect(() => {
         if (isOpen) {
             const fetchNextId = async () => {
@@ -62,9 +52,6 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                 }
             };
             fetchNextId();
-        } else {
-            // Reset form when modal is closed
-            resetForm();
         }
     }, [isOpen]);
 

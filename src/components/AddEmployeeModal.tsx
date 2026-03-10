@@ -36,22 +36,6 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
     const [plainPin, setPlainPin] = useState("");
     const [copied, setCopied] = useState(false);
 
-    const resetForm = () => {
-        setName("");
-        setPhone("");
-        setPin("");
-        setRole("MEMBER");
-        setCompanyType("BOTH");
-        setError("");
-        setCreatedEmployee(null);
-        setPlainPin("");
-        setCopied(false);
-    };
-
-    useState(() => {
-        if (!isOpen) resetForm();
-    });
-
     const formatPhoneDisplay = (val: string) => {
         const n = val.replace(/\D/g, "").slice(0, 10);
         return n.length <= 5 ? n : `${n.slice(0, 5)} ${n.slice(5)}`;
@@ -211,7 +195,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                 </button>
                                             </div>
                                             <p className="ml-1 mt-1.5 text-[11px] text-zinc-600">
-                                                🔒 Share this PIN with the employee — save it, it won&apos;t be shown again
+                                                🔒 Share this PIN with the employee — save it, it won't be shown again
                                             </p>
                                         </div>
 

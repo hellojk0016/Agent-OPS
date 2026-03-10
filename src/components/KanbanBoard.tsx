@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import TaskCard from "./TaskCard";
-import { Circle, Zap, Eye, CheckCircle2, ChevronDown, User, Users, Filter, X } from "lucide-react";
+import { Circle, Zap, Eye, CheckCircle2, ChevronDown, User, Users, Filter, X, UserCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -241,9 +241,9 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setFilterOpen(v => !v)}
-                            className={`p-4 rounded-2xl shadow-2xl transition-all duration-300 flex items-center justify-center border-2 ${!filterOpen ? 'bg-[#00F5FF] text-zinc-950 border-[#00F5FF] shadow-[#00F5FF]/40' : 'glass-strong text-[#00F5FF] border-[#00F5FF]/30 hover:border-[#00F5FF]/60'}`}
+                            className={`p-4 rounded-2xl shadow-2xl transition-all duration-300 flex items-center justify-center border-2 ${filterOpen ? 'bg-[#00F5FF] text-zinc-950 border-[#00F5FF] shadow-[0_0_25px_rgba(0,245,255,0.4)]' : 'glass-strong text-[#00F5FF] border-[#00F5FF]/30 hover:border-[#00F5FF]/60'}`}
                         >
-                            {filterOpen ? <X className="w-6 h-6" style={{ color: "#00F5FF" }} /> : <Users className="w-6 h-6" />}
+                            {filterOpen ? <X className="w-6 h-6" /> : <UserCircle className="w-6 h-6" />}
                         </motion.button>
                     </div>
                 </div>

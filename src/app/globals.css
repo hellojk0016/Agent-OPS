@@ -208,8 +208,11 @@
 
   /* PRIMARY — Solid Neon Blue */
   .btn-primary {
-    @apply relative inline-flex items-center justify-center gap-2.5 px-6 py-0 font-bold text-sm tracking-widest rounded-xl text-zinc-950 uppercase select-none transition-all duration-300 ease-out;
+    @apply relative inline-flex items-center justify-center gap-2.5;
+    @apply px-6 py-0 font-bold text-sm tracking-widest rounded-xl;
+    @apply text-zinc-950 uppercase select-none;
     background: linear-gradient(135deg, #00F5FF 0%, #00D1FF 100%);
+    @apply transition-all duration-300 ease-out;
     height: var(--btn-h-md);
     min-height: 44px;
     /* Mobile standard */
@@ -241,7 +244,10 @@
 
   /* GHOST — Outlined Neon Blue */
   .btn-ghost {
-    @apply relative inline-flex items-center justify-center gap-2.5 px-6 py-0 font-semibold text-sm rounded-xl text-[#00F5FF] select-none transition-all duration-200 ease-out;
+    @apply relative inline-flex items-center justify-center gap-2.5;
+    @apply px-6 py-0 font-semibold text-sm rounded-xl;
+    @apply text-[#00F5FF] select-none;
+    @apply transition-all duration-200 ease-out;
     height: var(--btn-h-md);
     min-height: 44px;
     background: transparent;
@@ -266,7 +272,10 @@
 
   /* SURFACE — Subtle action button */
   .btn-surface {
-    @apply relative inline-flex items-center justify-center gap-2 px-4 py-0 font-medium text-sm rounded-lg text-zinc-400 select-none transition-all duration-150 ease-out;
+    @apply relative inline-flex items-center justify-center gap-2;
+    @apply px-4 py-0 font-medium text-sm rounded-lg;
+    @apply text-zinc-400 select-none;
+    @apply transition-all duration-150 ease-out;
     height: var(--btn-h-sm);
     min-height: 36px;
     background: rgba(39, 39, 42, 0.5);
@@ -285,7 +294,9 @@
 
   /* DANGER — Neon-bordered delete */
   .btn-danger {
-    @apply relative inline-flex items-center justify-center gap-2 p-2 text-zinc-600 rounded-lg transition-all duration-150 ease-out;
+    @apply relative inline-flex items-center justify-center gap-2;
+    @apply p-2 text-zinc-600 rounded-lg;
+    @apply transition-all duration-150 ease-out;
     border: 1px solid transparent;
   }
 
@@ -309,7 +320,8 @@
 
   /* FIELD input */
   .field-input {
-    @apply w-full rounded-xl px-4 py-3 text-sm text-zinc-100 outline-none transition-all duration-200;
+    @apply w-full rounded-xl px-4 py-3 text-sm text-zinc-100;
+    @apply outline-none transition-all duration-200;
     background: var(--bg-elevated);
     border: 1.5px solid var(--border-default);
     font-family: inherit;
@@ -327,7 +339,9 @@
 
   /* SELECT toggle button */
   .select-btn {
-    @apply flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-sm font-medium transition-all duration-150 ease-out;
+    @apply flex items-center justify-center gap-2;
+    @apply py-2.5 px-3 rounded-xl border text-sm font-medium;
+    @apply transition-all duration-150 ease-out;
     background: var(--bg-elevated);
     border-color: var(--border-default);
     color: var(--text-secondary);
@@ -349,7 +363,8 @@
 
   /* NAV ITEM */
   .nav-item {
-    @apply flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ease-out;
+    @apply flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium;
+    @apply transition-all duration-200 ease-out;
     color: rgba(0, 245, 255, 0.5);
   }
 
