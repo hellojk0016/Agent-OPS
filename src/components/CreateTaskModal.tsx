@@ -38,6 +38,16 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
     const { showToast } = useToast();
     const router = useRouter();
 
+    const resetForm = () => {
+        setTitle("");
+        setDescription("");
+        setAssigneeId("");
+        setPriority("MEDIUM");
+        setCompanyType("BOTH");
+        setDueDate("");
+        setDateOption("");
+    };
+
     useEffect(() => {
         if (isOpen) {
             const fetchNextId = async () => {
@@ -52,6 +62,9 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                 }
             };
             fetchNextId();
+        } else {
+            // Reset form when modal is closed
+            resetForm();
         }
     }, [isOpen]);
 
@@ -82,7 +95,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8">
+                <div className="fixed inset-0 z-[1000] flex items-center justify-center md:p-4">
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -98,7 +111,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.93, opacity: 0, y: 16 }}
                         transition={{ type: "spring", stiffness: 340, damping: 28 }}
-                        className="relative w-full max-w-2xl rounded-2xl md:rounded-3xl h-full md:h-auto max-h-screen overflow-hidden"
+                        className="relative w-full md:max-w-2xl rounded-none md:rounded-3xl h-full md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col"
                         style={{
                             background: "rgba(12, 12, 16, 0.95)",
                             border: "1px solid rgba(0, 245, 255, 0.15)",
@@ -111,7 +124,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                         {/* Ambient glow */}
                         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#00F5FF]/[0.06] blur-3xl pointer-events-none -mr-32 -mt-32" />
 
-                        <div className="relative p-5 md:p-6">
+                        <div className="relative p-5 md:p-8 flex-1 overflow-y-auto custom-scrollbar">
                             {/* Header */}
                             <div className="flex items-start justify-between mb-4 md:mb-5">
                                 <div>
@@ -123,24 +136,24 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                     className="btn-surface w-10 h-10 p-0 rounded-xl flex-shrink-0"
                                     style={{ height: 40, width: 40, padding: 0 }}
                                 >
-                                    <X className="w-5 h-5" />
+                                    <X className="w-5 h-5" style={{ color: "#00F5FF" }} />
                                 </button>
                             </div>
 
                             {/* Form */}
                             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5 pb-4">
                                 {/* Row 1: ID + Title */}
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-5 md:gap-4">
-                                    <div className="order-2 md:order-1">
+                                <div className="grid grid-cols-1 gap-5 md:gap-4">
+                                    <div>
                                         <label className="field-label">
                                             <Hash className="w-3.5 h-3.5" />
                                             Task ID
                                         </label>
-                                        <div className="field-input h-12 md:h-auto flex items-center text-zinc-500 text-xs font-mono cursor-not-allowed select-none">
+                                        <div className="field-input h-14 flex items-center text-zinc-500 text-sm font-mono cursor-not-allowed select-none px-4">
                                             {displayId}
                                         </div>
                                     </div>
-                                    <div className="md:col-span-3 order-1 md:order-2">
+                                    <div>
                                         <label className="field-label">
                                             <Type className="w-3 h-3" />
                                             Task Name
@@ -151,7 +164,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                             value={title}
                                             onChange={(e) => setTitle(e.target.value)}
                                             placeholder="e.g. Update system architecture"
-                                            className="field-input h-11 md:h-11 w-full text-base md:text-sm"
+                                            className="field-input h-14 w-full text-base"
                                         />
                                     </div>
                                 </div>
@@ -168,7 +181,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                 required
                                                 value={assigneeId}
                                                 onChange={(e) => setAssigneeId(e.target.value)}
-                                                className="field-input h-11 md:h-11 w-full appearance-none cursor-pointer pr-10 text-base md:text-sm selection:bg-neon-blue/30"
+                                                className="field-input h-14 w-full appearance-none cursor-pointer pr-12 text-base selection:bg-neon-blue/30"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="" disabled className="text-zinc-500">Select Employee</option>
@@ -195,7 +208,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                             <select
                                                 value={priority}
                                                 onChange={(e) => setPriority(e.target.value)}
-                                                className="field-input h-11 md:h-11 w-full appearance-none cursor-pointer pr-10 text-base md:text-sm selection:bg-neon-blue/30"
+                                                className="field-input h-14 w-full appearance-none cursor-pointer pr-12 text-base selection:bg-neon-blue/30"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="LOW" style={{ background: "#0e0e12" }}>Low</option>
@@ -229,7 +242,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                             setDueDate(tom.toISOString().split('T')[0]);
                                                         }
                                                     }}
-                                                    className={`flex-1 px-3 py-3 md:py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all ${dateOption === opt
+                                                    className={`flex-1 px-3 py-4 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all ${dateOption === opt
                                                         ? "bg-[#00F5FF]/10 text-[#00F5FF] shadow-[0_0_15px_rgba(0,245,255,0.15)] ring-1 ring-[#00F5FF]/30"
                                                         : "text-zinc-500 hover:text-zinc-300 hover:bg-white/5"
                                                         }`}
@@ -255,7 +268,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                             setDueDate(e.target.value);
                                                             setDateOption('custom');
                                                         }}
-                                                        className="field-input h-11 md:h-11 w-full text-base md:text-sm"
+                                                        className="field-input h-14 w-full text-base"
                                                         style={{ colorScheme: "dark" }}
                                                     />
                                                 </motion.div>
@@ -277,7 +290,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                             <select
                                                 value={companyType}
                                                 onChange={(e) => setCompanyType(e.target.value)}
-                                                className="field-input h-11 md:h-11 w-full appearance-none cursor-pointer pr-10 text-base md:text-sm selection:bg-neon-blue/30"
+                                                className="field-input h-14 w-full appearance-none cursor-pointer pr-12 text-base selection:bg-neon-blue/30"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>Commerce Agents</option>
@@ -300,16 +313,15 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Provide context and requirements..."
-                                        className="field-input w-full resize-none text-base md:text-sm py-4"
+                                        className="field-input w-full resize-none text-base py-5 px-4"
                                     />
                                 </div>
 
-                                {/* Submit Only (No Cancel as per request) */}
-                                <div className="pt-2 md:pt-1">
+                                <div className="pt-6">
                                     <motion.button
                                         type="submit"
                                         disabled={isLoading}
-                                        className="w-full h-11 md:h-12 btn-primary text-sm md:text-base font-black tracking-wider uppercase"
+                                        className="w-full h-14 btn-primary text-base font-black tracking-wider uppercase shadow-[0_0_20px_rgba(0,245,255,0.2)]"
                                         whileHover={{ scale: isLoading ? 1 : 1.01 }}
                                         whileTap={{ scale: isLoading ? 1 : 0.98 }}
                                     >

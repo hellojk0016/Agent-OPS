@@ -131,7 +131,10 @@ export default function DashboardLayout({
                                 href={item.href}
                                 className={`nav-item ${isActive ? "active" : ""}`}
                             >
-                                <item.icon className="w-4.5 h-4.5 flex-shrink-0" style={{ width: 18, height: 18 }} />
+                                <item.icon
+                                    className="w-4.5 h-4.5 flex-shrink-0"
+                                    style={{ width: 18, height: 18, color: isActive ? "#00F5FF" : "rgba(0, 245, 255, 0.45)" }}
+                                />
                                 <span className="flex-1">{item.name}</span>
                                 {isActive && (
                                     <motion.div
@@ -162,9 +165,9 @@ export default function DashboardLayout({
                             <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-3">Quick Actions</p>
                             <button
                                 onClick={() => setIsModalOpen(true)}
-                                className="btn-primary w-full text-sm font-semibold"
+                                className="btn-primary w-full text-sm font-semibold justify-start px-6"
                             >
-                                <PlusSquare className="w-4 h-4" />
+                                <PlusSquare className="w-5 h-5" style={{ color: "rgba(9, 9, 11, 0.85)" }} />
                                 Assign Task
                             </button>
                         </div>
@@ -178,13 +181,13 @@ export default function DashboardLayout({
                             {session.user.image ? (
                                 <img src={session.user.image} alt={session.user.name || "User"} className="h-full w-full object-cover rounded-xl" />
                             ) : (
-                                <User className="w-5 h-5 text-neon-blue" />
+                                <User className="w-5 h-5" style={{ color: "#00F5FF" }} />
                             )}
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-zinc-100 truncate">{session.user.name}</p>
                             <div className="flex items-center gap-1.5 mt-0.5">
-                                <Zap className="w-3 h-3 text-neon-blue" />
+                                <Zap className="w-3 h-3" style={{ color: "#00F5FF" }} />
                                 <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-neon-blue/60">
                                     {session.user.role}
                                 </span>
@@ -220,18 +223,18 @@ export default function DashboardLayout({
             </aside>
 
             {/* ── Mobile Nav (Bottom Bar) ── */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-[50] glass-strong border-t border-white/5 px-6 py-4 pb-10">
-                <div className="flex items-center justify-between max-w-sm mx-auto">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-[50] glass-strong border-t border-white/5 px-4 pt-3 pb-8">
+                <div className="flex items-center justify-around max-w-lg mx-auto">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
                             <a
                                 key={item.name}
                                 href={item.href}
-                                className={`relative flex flex-col items-center gap-2 transition-all duration-300 ${isActive ? "text-[#00F5FF]" : "text-zinc-500 hover:text-zinc-300"}`}
+                                className={`relative flex flex-col items-center justify-center gap-1.5 transition-all duration-300 min-w-[64px] min-h-[48px] ${isActive ? "text-[#00F5FF]" : "text-[#00F5FF]/30"}`}
                             >
-                                <div className={`relative p-2 rounded-2xl transition-all duration-300 ${isActive ? "bg-[#00F5FF]/10 shadow-[0_0_20px_rgba(0,245,255,0.15)] ring-1 ring-[#00F5FF]/30" : ""}`}>
-                                    <item.icon style={{ width: 26, height: 26 }} strokeWidth={isActive ? 2.5 : 2} />
+                                <div className={`relative p-2.5 rounded-2xl transition-all duration-300 ${isActive ? "bg-[#00F5FF]/10 shadow-[0_0_20px_rgba(0,245,255,0.2)] ring-1 ring-[#00F5FF]/40" : "bg-white/[0.03] border border-white/5"}`}>
+                                    <item.icon style={{ width: 24, height: 24, color: isActive ? "#00F5FF" : "rgba(0, 245, 255, 0.4)" }} strokeWidth={isActive ? 2.5 : 2} />
                                     {isActive && (
                                         <motion.div
                                             layoutId="mobile-active-glow"
@@ -243,50 +246,69 @@ export default function DashboardLayout({
                             </a>
                         );
                     })}
-                    {/* Mobile Install Button */}
                     {isInstallable && (
                         <button
                             onClick={installPWA}
-                            className="flex flex-col items-center gap-2 text-neon-blue animate-pulse"
+                            className="flex flex-col items-center justify-center gap-1.5 text-neon-blue min-w-[64px] min-h-[48px]"
                         >
-                            <div className="p-2 rounded-2xl bg-neon-blue/10 border border-neon-blue/30 shadow-[0_0_15px_rgba(0,245,255,0.2)]">
-                                <Download style={{ width: 26, height: 26 }} />
+                            <div className="p-2.5 rounded-2xl bg-neon-blue/15 border border-neon-blue/40 shadow-[0_0_15px_rgba(0,245,255,0.25)] animate-pulse">
+                                <Download style={{ width: 24, height: 24 }} strokeWidth={2.5} />
                             </div>
-                            <span className="text-[10px] font-bold tracking-widest">Install</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest">Install</span>
                         </button>
                     )}
                     {session.user.role === "ADMIN" && (
                         <Link
                             href="/dashboard/tasks/new"
-                            className="flex flex-col items-center gap-2 text-zinc-500 hover:text-[#00F5FF] transition-all"
+                            className="flex flex-col items-center justify-center gap-1.5 min-w-[64px] min-h-[48px]"
                         >
-                            <div className="p-2 rounded-2xl bg-white/5 border border-white/10">
-                                <PlusSquare style={{ width: 26, height: 26 }} />
+                            <div className="p-2.5 rounded-2xl bg-[#00F5FF]/10 border border-[#00F5FF]/30">
+                                <PlusSquare style={{ width: 24, height: 24, color: "#00F5FF" }} />
                             </div>
-                            <span className="text-[10px] font-bold tracking-widest opacity-60">Add</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-neon-blue/60">Add</span>
                         </Link>
                     )}
                     <button
                         onClick={() => setIsLogoutModalOpen(true)}
-                        className="flex flex-col items-center gap-2 text-zinc-500 hover:text-[#FF4D6A] transition-all"
+                        className="flex flex-col items-center justify-center gap-1.5 min-w-[64px] min-h-[48px]"
                     >
-                        <div className="p-2 rounded-2xl hover:bg-red-500/10 transition-colors">
-                            <LogOut style={{ width: 26, height: 26 }} />
+                        <div className="p-2.5 rounded-2xl bg-[#00F5FF]/5 border border-[#00F5FF]/10 hover:bg-red-500/10 transition-colors">
+                            <LogOut style={{ width: 24, height: 24, color: "#00F5FF" }} />
                         </div>
-                        <span className="text-[10px] font-bold tracking-widest opacity-60">Sign Out</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest opacity-60">Out</span>
                     </button>
                 </div>
             </div>
 
-            {/* ── Main ── */}
-            <div className="flex-1 flex flex-col relative min-h-0 overflow-hidden mb-[80px] md:mb-0">
+            {/* ── Main Wrapper ── */}
+            <div className="flex-1 flex flex-col relative min-h-0 overflow-hidden mb-[85px] md:mb-0 pt-[64px] md:pt-0 custom-scrollbar">
+
+                {/* ── Mobile Header ── */}
+                <header className="md:hidden fixed top-0 left-0 right-0 h-[64px] flex items-center justify-between px-4 glass-strong border-b border-white/5 z-[100]">
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <div className="absolute inset-0 rounded-lg bg-[#00F5FF]/20 blur-sm" />
+                            <Image
+                                src="/ops-logo.png"
+                                alt="OPS Logo"
+                                width={32}
+                                height={32}
+                                className="relative w-8 h-8 object-cover rounded-lg border border-[#00F5FF]/20"
+                            />
+                        </div>
+                        <span className="text-sm font-black tracking-tight text-white uppercase italic">Agents OPS</span>
+                    </div>
+                    <div className="flex-1 max-w-[160px] ml-4">
+                        <WorkspaceSwitcher />
+                    </div>
+                </header>
 
                 {/* Ambient neon glow */}
                 <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#00F5FF]/[0.04] blur-3xl pointer-events-none -mr-48 -mt-48" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-[#00F5FF]/[0.03] blur-3xl pointer-events-none -ml-32 -mb-32" />
 
-                <main className="flex-1 animate-fade-in relative flex flex-col">
-                    <div className="flex-1 flex flex-col w-full px-4 md:px-6 lg:px-10 pt-4 md:pt-6">
+                <main className="flex-1 animate-fade-in relative flex flex-col overflow-y-auto md:overflow-y-visible custom-scrollbar">
+                    <div className="flex-1 flex flex-col w-full px-4 md:px-6 lg:px-10 py-4 md:py-6">
                         {children}
                     </div>
                 </main>

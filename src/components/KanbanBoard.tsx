@@ -151,9 +151,9 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
     };
 
     const getIconColor = (hue: string) => {
-        if (hue === "zinc") return "rgba(113,113,122,0.6)";
-        if (hue === "neon-dim") return "rgba(0,245,255,0.3)";
-        return "rgba(0,245,255,0.6)";
+        if (hue === "zinc") return "rgba(0, 245, 255, 0.45)";
+        if (hue === "neon-dim") return "rgba(0, 245, 255, 0.65)";
+        return "rgba(0, 245, 255, 0.85)";
     };
 
     // ── Selected employee label for filter button ──────────────────────────
@@ -230,9 +230,9 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                 </span>
                                 <button
                                     onClick={() => setFilterEmployee("all")}
-                                    className="p-1 hover:bg-white/10 rounded-md transition-colors"
+                                    className="p-1 hover:bg-[#00F5FF]/10 rounded-md transition-colors"
                                 >
-                                    <X className="w-3 h-3 text-neon-blue/60" />
+                                    <X className="w-3 h-3" style={{ color: "#00F5FF" }} />
                                 </button>
                             </motion.div>
                         )}
@@ -241,16 +241,16 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setFilterOpen(v => !v)}
-                            className={`p-4 rounded-2xl shadow-2xl transition-all duration-300 flex items-center justify-center border-2 ${filterOpen ? 'bg-neon-blue text-zinc-950 border-neon-blue shadow-neon-blue/40' : 'glass-strong text-neon-blue border-neon-blue/30 hover:border-neon-blue/60'}`}
+                            className={`p-4 rounded-2xl shadow-2xl transition-all duration-300 flex items-center justify-center border-2 ${!filterOpen ? 'bg-[#00F5FF] text-zinc-950 border-[#00F5FF] shadow-[#00F5FF]/40' : 'glass-strong text-[#00F5FF] border-[#00F5FF]/30 hover:border-[#00F5FF]/60'}`}
                         >
-                            {filterOpen ? <X className="w-6 h-6" /> : <Users className="w-6 h-6" />}
+                            {filterOpen ? <X className="w-6 h-6" style={{ color: "#00F5FF" }} /> : <Users className="w-6 h-6" />}
                         </motion.button>
                     </div>
                 </div>
             )}
 
             {/* ── Kanban columns ─────────────────────────────────────────── */}
-            <div className="flex gap-2 md:gap-4 overflow-hidden h-full">
+            <div className="flex flex-row gap-6 md:gap-4 overflow-x-auto md:overflow-x-hidden md:overflow-y-hidden h-full custom-scrollbar pb-20 md:pb-0 snap-x snap-mandatory scroll-smooth px-4 md:px-0">
                 {COLUMNS.map((col) => {
                     const columnTasks = getTasksByStatus(col.id);
                     const isDragOver = dragOverColumn === col.id;
@@ -258,9 +258,9 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                     const isLocked = !isAdmin && col.id === "DONE";
 
                     return (
-                        <div key={col.id} className="flex-1 flex flex-col h-full min-w-0">
+                        <div key={col.id} className="min-w-[85vw] md:min-w-0 md:flex-1 flex flex-col h-full relative snap-center">
                             {/* Header */}
-                            <div className="flex items-center gap-2 px-1 mb-3">
+                            <div className="sticky top-0 z-[10] flex items-center gap-2 px-1 mb-3 py-2 bg-[var(--bg-base)]/80 backdrop-blur-md">
                                 <col.icon style={{ width: 14, height: 14, color: getIconColor(col.hue), flexShrink: 0 }} />
                                 <h3 className="flex-1 text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-500">
                                     {col.title}

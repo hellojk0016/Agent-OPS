@@ -114,7 +114,7 @@ export default function TaskDetailsModal({
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[110] flex items-center justify-center md:p-4">
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -130,13 +130,12 @@ export default function TaskDetailsModal({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.93, y: 20 }}
                         transition={{ type: "spring", stiffness: 360, damping: 30 }}
-                        className="relative w-full max-w-lg overflow-hidden rounded-2xl"
+                        className="relative w-full md:max-w-lg overflow-hidden rounded-none md:rounded-2xl h-full md:h-auto md:max-h-[90vh] flex flex-col"
                         style={{
                             background: "rgba(10, 10, 14, 0.98)",
                             border: "1px solid rgba(0, 245, 255, 0.14)",
                             boxShadow:
                                 "0 0 0 1px rgba(0,0,0,0.5), 0 30px 80px rgba(0,245,255,0.1), 0 8px 32px rgba(0,0,0,0.7)",
-                            maxHeight: "90vh",
                         }}
                     >
                         {/* Top accent line */}
@@ -169,7 +168,7 @@ export default function TaskDetailsModal({
                                         className="btn-surface flex-shrink-0"
                                         style={{ height: 36, width: 36, padding: 0 }}
                                     >
-                                        <X className="h-4 w-4" />
+                                        <X className="h-4 w-4" style={{ color: "#00F5FF" }} />
                                     </button>
                                 </div>
 
@@ -206,7 +205,7 @@ export default function TaskDetailsModal({
 
                                 {/* ── Detail fields grid ────────────────── */}
                                 <div
-                                    className="mb-4 grid grid-cols-2 gap-4 rounded-xl p-4"
+                                    className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4 rounded-2xl p-5 md:p-6"
                                     style={{
                                         background: "rgba(255,255,255,0.02)",
                                         border: "1px solid rgba(255,255,255,0.05)",
@@ -291,11 +290,11 @@ export default function TaskDetailsModal({
                                     if (!shouldShow) return null;
 
                                     return (
-                                        <div className="mb-4 pt-1">
+                                        <div className="mb-6 pt-2">
                                             <motion.button
                                                 onClick={handleStatusAction}
                                                 disabled={isUpdating || !onStatusUpdate}
-                                                className={`w-full h-14 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all btn-primary shadow-[0_0_30px_rgba(0,245,255,0.2)] ${isUpdating ? "opacity-80" : ""
+                                                className={`w-full h-16 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all btn-primary shadow-[0_0_30px_rgba(0,245,255,0.25)] ${isUpdating ? "opacity-80" : ""
                                                     }`}
                                                 whileHover={!isUpdating ? { scale: 1.02, translateY: -2 } : {}}
                                                 whileTap={!isUpdating ? { scale: 0.98 } : {}}
@@ -317,8 +316,8 @@ export default function TaskDetailsModal({
                                         style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                                         <motion.button
                                             onClick={() => { onClose(); onEdit(); }}
-                                            className="btn-primary w-full text-sm font-bold"
-                                            style={{ height: 44 }}
+                                            className="btn-primary w-full text-base font-bold shadow-[0_0_20px_rgba(0,245,255,0.15)]"
+                                            style={{ height: 52 }}
                                             whileHover={{ scale: 1.01 }}
                                             whileTap={{ scale: 0.98 }}
                                         >

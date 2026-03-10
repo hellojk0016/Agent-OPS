@@ -36,6 +36,22 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
     const [plainPin, setPlainPin] = useState("");
     const [copied, setCopied] = useState(false);
 
+    const resetForm = () => {
+        setName("");
+        setPhone("");
+        setPin("");
+        setRole("MEMBER");
+        setCompanyType("BOTH");
+        setError("");
+        setCreatedEmployee(null);
+        setPlainPin("");
+        setCopied(false);
+    };
+
+    useState(() => {
+        if (!isOpen) resetForm();
+    });
+
     const formatPhoneDisplay = (val: string) => {
         const n = val.replace(/\D/g, "").slice(0, 10);
         return n.length <= 5 ? n : `${n.slice(0, 5)} ${n.slice(5)}`;
@@ -105,24 +121,21 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[110] flex items-center justify-center md:p-4">
                     <motion.div
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         onClick={createdEmployee ? undefined : onClose}
                         className="absolute inset-0 bg-black/70 backdrop-blur-md"
                     />
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.92, y: 16 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.92, y: 16 }}
                         transition={{ type: "spring", stiffness: 340, damping: 28 }}
-                        className="relative w-full max-w-md overflow-hidden rounded-2xl"
+                        className="relative w-full md:max-w-md overflow-hidden rounded-none md:rounded-2xl h-full md:h-auto md:max-h-[90vh] flex flex-col"
                         style={cardStyle}
                     >
                         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-60" />
                         <div className="absolute -mr-24 -mt-24 right-0 top-0 h-48 w-48 rounded-full bg-[#00F5FF]/[0.05] blur-3xl pointer-events-none" />
 
-                        <div className="relative p-7">
+                        <div className="relative p-7 flex-1 overflow-y-auto custom-scrollbar">
 
                             {/* ── FORM VIEW ──────────────────────────────────────── */}
                             {!createdEmployee && (
@@ -139,7 +152,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                             </div>
                                         </div>
                                         <button onClick={onClose} className="btn-surface" style={{ height: 36, width: 36, padding: 0 }}>
-                                            <X className="h-4 w-4" />
+                                            <X className="h-4 w-4" style={{ color: "#00F5FF" }} />
                                         </button>
                                     </div>
 
@@ -155,7 +168,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                             <label className="field-label"><Users className="h-3 w-3" />Full Name</label>
                                             <input type="text" placeholder="John Doe" value={name}
                                                 onChange={e => setName(e.target.value)}
-                                                className="field-input w-full" autoFocus />
+                                                className="field-input w-full h-14 text-base px-4" autoFocus />
                                         </div>
 
                                         {/* Phone */}
@@ -166,7 +179,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                 <span className="select-none whitespace-nowrap pl-4 pr-1 text-sm font-semibold text-zinc-300">🇮🇳 +91</span>
                                                 <input type="tel" inputMode="numeric" placeholder="XXXXX XXXXX"
                                                     value={formatPhoneDisplay(phone)} onChange={handlePhoneChange}
-                                                    className="flex-1 border-0 bg-transparent py-3 pl-3 pr-4 text-sm tracking-wider text-zinc-100 caret-[#00F5FF] outline-none hover:border-0 focus:border-0 focus:outline-none focus:ring-0 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0 placeholder:text-zinc-600"
+                                                    className="flex-1 border-0 bg-transparent h-14 pl-3 pr-4 text-base tracking-wider text-zinc-100 caret-[#00F5FF] outline-none placeholder:text-zinc-600"
                                                     style={{ border: "none", borderWidth: 0, boxShadow: "none", outline: "none" }} />
                                             </div>
                                         </div>
@@ -182,7 +195,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                         placeholder="Min. 4 digits"
                                                         value={pin}
                                                         onChange={e => { setPin(e.target.value.replace(/\D/g, "").slice(0, 8)); setError(""); }}
-                                                        className="field-input w-full pr-12"
+                                                        className="field-input w-full pr-12 h-14 text-base px-4"
                                                     />
                                                     <button type="button" onClick={() => setShowPin(v => !v)}
                                                         className="absolute right-3.5 top-1/2 -translate-y-1/2"
@@ -192,9 +205,9 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                 </div>
                                                 {/* Generate button */}
                                                 <button type="button" onClick={handleGenerate}
-                                                    className="btn-surface flex items-center gap-1.5 whitespace-nowrap px-3 text-xs font-semibold"
-                                                    style={{ height: 46, flexShrink: 0 }}>
-                                                    <RefreshCw className="h-3.5 w-3.5" />Generate
+                                                    className="btn-surface flex items-center gap-1.5 whitespace-nowrap px-4 text-xs font-bold"
+                                                    style={{ height: 56, flexShrink: 0 }}>
+                                                    <RefreshCw className="h-4 w-4" />Gen
                                                 </button>
                                             </div>
                                             <p className="ml-1 mt-1.5 text-[11px] text-zinc-600">
@@ -205,11 +218,11 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                         {/* Role */}
                                         <div>
                                             <label className="field-label"><Shield className="h-3 w-3" />System Role</label>
-                                            <div className="grid grid-cols-2 gap-2">
+                                            <div className="grid grid-cols-1 gap-3">
                                                 {[{ val: "MEMBER", label: "Member", Icon: Users }, { val: "ADMIN", label: "Admin", Icon: Shield }].map(({ val, label, Icon }) => (
                                                     <button key={val} type="button" onClick={() => setRole(val)}
-                                                        className={`select-btn ${role === val ? "active" : ""}`}>
-                                                        <Icon className="h-4 w-4" />{label}
+                                                        className={`select-btn h-14 text-base ${role === val ? "active" : ""}`}>
+                                                        <Icon className="h-5 w-5" />{label}
                                                     </button>
                                                 ))}
                                             </div>
@@ -218,23 +231,22 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                         {/* Company */}
                                         <div>
                                             <label className="field-label"><Building className="h-3 w-3" />Company Access</label>
-                                            <div className="grid grid-cols-3 gap-2">
+                                            <div className="grid grid-cols-1 gap-3">
                                                 {[
                                                     { val: "KNIGHT_WOLF", label: "KNIGHT WOLF", Icon: Building },
                                                     { val: "COMMERCE_AGENT", label: "COMMERCE", Icon: Store },
                                                     { val: "BOTH", label: "BOTH", Icon: Layers },
                                                 ].map(({ val, label, Icon }) => (
                                                     <button key={val} type="button" onClick={() => setCompanyType(val)}
-                                                        className={`select-btn text-[10px] font-bold tracking-wider ${companyType === val ? "active" : ""}`}>
-                                                        <Icon className="h-3.5 w-3.5" />{label}
+                                                        className={`select-btn h-14 text-sm font-bold tracking-wider ${companyType === val ? "active" : ""}`}>
+                                                        <Icon className="h-4 w-4" />{label}
                                                     </button>
                                                 ))}
                                             </div>
                                         </div>
 
                                         <motion.button type="submit" disabled={isLoading}
-                                            className="btn-primary mt-2 h-12 w-full font-bold"
-                                            style={{ height: 48 }}
+                                            className="btn-primary mt-2 h-14 w-full font-black text-base uppercase tracking-widest shadow-[0_0_20px_rgba(0,245,255,0.2)]"
                                             whileHover={{ scale: isLoading ? 1 : 1.01 }}
                                             whileTap={{ scale: isLoading ? 1 : 0.98 }}>
                                             {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <UserCheck className="h-5 w-5" />}

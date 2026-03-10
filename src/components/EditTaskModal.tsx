@@ -129,7 +129,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.93, opacity: 0, y: 16 }}
                         transition={{ type: "spring", stiffness: 340, damping: 28 }}
-                        className="relative w-full max-w-xl overflow-hidden rounded-2xl"
+                        className="relative w-full md:max-w-xl rounded-none md:rounded-2xl h-full md:h-auto md:max-h-[90vh] flex flex-col overflow-hidden"
                         style={{
                             background: "rgba(12, 12, 16, 0.97)",
                             border: "1px solid rgba(0, 245, 255, 0.18)",
@@ -141,7 +141,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                         {/* Ambient glow */}
                         <div className="absolute top-0 right-0 w-56 h-56 rounded-full bg-[#00F5FF]/[0.06] blur-3xl pointer-events-none -mr-28 -mt-28" />
 
-                        <div className="relative p-6">
+                        <div className="relative p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar">
                             {/* Header */}
                             <div className="flex items-start justify-between mb-4">
                                 <div>
@@ -153,7 +153,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                     className="btn-surface rounded-lg"
                                     style={{ height: 36, width: 36, padding: 0 }}
                                 >
-                                    <X className="w-4 h-4" />
+                                    <X className="w-4 h-4" style={{ color: "#00F5FF" }} />
                                 </button>
                             </div>
 
@@ -178,13 +178,13 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
                                         placeholder="Task name..."
-                                        className="field-input w-full selection:bg-neon-blue/30 h-11"
+                                        className="field-input w-full selection:bg-neon-blue/30 h-14 px-4 text-base"
                                         style={{ colorScheme: "dark" }}
                                     />
                                 </div>
 
                                 {/* Assign + Priority */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
                                     <div>
                                         <label className="field-label">
                                             <UserPlus className="w-3 h-3" />
@@ -194,7 +194,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                             <select
                                                 value={assigneeId}
                                                 onChange={(e) => setAssigneeId(e.target.value)}
-                                                className="field-input w-full appearance-none cursor-pointer pr-9 selection:bg-neon-blue/30 h-11"
+                                                className="field-input w-full appearance-none cursor-pointer pr-12 selection:bg-neon-blue/30 h-14 text-base"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="" style={{ background: "#0e0e12" }}>Unassigned</option>
@@ -216,7 +216,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                             <select
                                                 value={priority}
                                                 onChange={(e) => setPriority(e.target.value)}
-                                                className="field-input w-full appearance-none cursor-pointer pr-9 selection:bg-neon-blue/30 h-11"
+                                                className="field-input w-full appearance-none cursor-pointer pr-12 selection:bg-neon-blue/30 h-14 text-base"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="LOW" style={{ background: "#0e0e12" }}>Low</option>
@@ -229,7 +229,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                 </div>
 
                                 {/* Due Date + Company Type */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
                                     <div>
                                         <label className="field-label">
                                             <Calendar className="w-3 h-3" />
@@ -239,7 +239,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                             type="date"
                                             value={dueDate}
                                             onChange={(e) => setDueDate(e.target.value)}
-                                            className="field-input w-full selection:bg-neon-blue/30 h-11"
+                                            className="field-input w-full selection:bg-neon-blue/30 h-14 text-base"
                                             style={{ colorScheme: "dark" }}
                                         />
                                     </div>
@@ -252,7 +252,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                             <select
                                                 value={companyType}
                                                 onChange={(e) => setCompanyType(e.target.value)}
-                                                className="field-input w-full appearance-none cursor-pointer pr-9 selection:bg-neon-blue/30 h-11"
+                                                className="field-input w-full appearance-none cursor-pointer pr-12 selection:bg-neon-blue/30 h-14 text-base"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>Commerce Agents</option>
@@ -275,26 +275,24 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Add context or requirements..."
-                                        className="field-input w-full resize-none selection:bg-neon-blue/30 py-3"
+                                        className="field-input w-full resize-none selection:bg-neon-blue/30 py-5 px-4 text-base"
                                         style={{ colorScheme: "dark" }}
                                     />
                                 </div>
 
                                 {/* Actions */}
-                                <div className="flex gap-3 pt-1">
+                                <div className="flex flex-col md:flex-row gap-4 pt-4">
                                     <button
                                         type="button"
                                         onClick={onClose}
-                                        className="btn-ghost flex-1"
-                                        style={{ height: 48 }}
+                                        className="btn-ghost w-full md:flex-1 h-14 text-base"
                                     >
                                         Cancel
                                     </button>
                                     <motion.button
                                         type="submit"
                                         disabled={isLoading}
-                                        className="btn-primary flex-1"
-                                        style={{ height: 48 }}
+                                        className="btn-primary w-full md:flex-1 h-14 text-base"
                                         whileHover={{ scale: isLoading ? 1 : 1.01 }}
                                         whileTap={{ scale: isLoading ? 1 : 0.98 }}
                                     >

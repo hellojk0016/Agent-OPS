@@ -1,28 +1,24 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
-var __webpack_exports__ = {};
+  var __webpack_exports__ = {};
 
 
-self.fallback = async request => {
-  // https://developer.mozilla.org/en-US/docs/Web/API/RequestDestination
-  switch (request.destination) {
-    case 'document':
-      if (true) return caches.match("/offline", {
-        ignoreSearch: true
-      });
-    case 'image':
-      if (false) {}
-    case 'audio':
-      if (false) {}
-    case 'video':
-      if (false) {}
-    case 'font':
-      if (false) {}
-    case '':
-      if (false) {}
-    default:
-      return Response.error();
-  }
-};
-/******/ })()
-;
+  self.fallback = async request => {
+    // https://developer.mozilla.org/en-US/docs/Web/API/RequestDestination
+    switch (request.destination) {
+      case 'document':
+        return caches.match("/offline", { ignoreSearch: true });
+      case 'image':
+        return caches.match("/icon-192x192.png");
+      case 'font':
+        return caches.match(request.url);
+      case 'script':
+      case 'style':
+        return caches.match(request.url);
+      default:
+        return fetch(request);
+    }
+  };
+  /******/
+})()
+  ;

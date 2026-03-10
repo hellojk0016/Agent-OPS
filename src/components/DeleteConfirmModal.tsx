@@ -23,7 +23,7 @@ export default function DeleteConfirmModal({
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[150] flex items-center justify-center md:p-4">
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -35,11 +35,8 @@ export default function DeleteConfirmModal({
 
                     {/* Modal */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                        className="relative w-full max-w-sm overflow-hidden rounded-2xl"
+                        className="relative w-full md:max-w-sm rounded-none md:rounded-2xl h-full md:h-auto flex flex-col items-center justify-center"
                         style={{
                             background: "rgba(10, 10, 14, 0.98)",
                             border: "1px solid rgba(255, 77, 106, 0.2)",
@@ -49,7 +46,7 @@ export default function DeleteConfirmModal({
                         {/* Critical Accent Line (Danger Red) */}
                         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#FF4D6A] to-transparent opacity-60" />
 
-                        <div className="p-6 text-center">
+                        <div className="p-8 text-center flex-1 flex flex-col items-center justify-center w-full">
                             {/* Warning Icon (Red) */}
                             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl"
                                 style={{ background: "rgba(255, 77, 106, 0.1)", border: "1px solid rgba(255, 77, 106, 0.2)" }}>
@@ -59,7 +56,7 @@ export default function DeleteConfirmModal({
                             <h3 className="mb-2 text-lg font-bold text-white tracking-tight">
                                 {title}
                             </h3>
-                            <p className="mb-8 text-sm leading-relaxed text-zinc-400">
+                            <p className="mb-10 text-base leading-relaxed text-zinc-400 max-w-[280px]">
                                 {message}
                             </p>
 
@@ -67,19 +64,18 @@ export default function DeleteConfirmModal({
                                 <button
                                     onClick={onClose}
                                     disabled={isDeleting}
-                                    className="btn-surface flex-1 text-sm font-semibold opacity-70 hover:opacity-100 transition-opacity"
-                                    style={{ height: 44, background: "rgba(255,255,255,0.03)" }}
+                                    className="btn-surface flex-1 text-base font-bold opacity-70 hover:opacity-100 transition-opacity rounded-2xl"
+                                    style={{ height: 56, background: "rgba(255,255,255,0.03)" }}
                                 >
                                     Cancel
                                 </button>
                                 <motion.button
                                     onClick={onConfirm}
                                     disabled={isDeleting}
-                                    className="flex-1 text-sm font-bold text-white rounded-xl transition-all"
+                                    className="flex-1 text-base font-black uppercase tracking-widest text-white rounded-2xl transition-all shadow-[0_4px_20px_rgba(255,77,106,0.3)]"
                                     style={{
-                                        height: 44,
+                                        height: 56,
                                         background: "#FF4D6A",
-                                        boxShadow: "0 4px 15px rgba(255, 77, 106, 0.3)"
                                     }}
                                     whileHover={{ scale: 1.02, background: "#FF3555" }}
                                     whileTap={{ scale: 0.98 }}
@@ -98,9 +94,9 @@ export default function DeleteConfirmModal({
                         {!isDeleting && (
                             <button
                                 onClick={onClose}
-                                className="absolute right-4 top-4 p-1 opacity-30 hover:opacity-100 transition-opacity"
+                                className="absolute right-4 top-4 p-1 opacity-60 hover:opacity-100 transition-opacity"
                             >
-                                <X className="h-4 w-4 text-white" />
+                                <X className="h-4 w-4" style={{ color: "#00F5FF" }} />
                             </button>
                         )}
                     </motion.div>
