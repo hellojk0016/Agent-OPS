@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import TaskCard from "./TaskCard";
-import { Circle, Zap, Eye, CheckCircle2, ChevronDown, User } from "lucide-react";
+import { Circle, Zap, Eye, CheckCircle2, ChevronDown, User, Users, Filter, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Task {
     id: string;
@@ -49,8 +50,14 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
     // Employee filter — admin only
     const [filterEmployee, setFilterEmployee] = useState<string>("all");
     const [filterOpen, setFilterOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
-    useEffect(() => { setTasks(initialTasks); }, [initialTasks]);
+    useEffect(() => {
+        setTasks(initialTasks);
+        setIsMounted(true);
+    }, [initialTasks]);
+
+    if (!isMounted) return null;
 
     // ── Filtered task list ─────────────────────────────────────────────────
     const visibleTasks = isAdmin
@@ -157,80 +164,93 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
     return (
         <div className="flex flex-col h-full overflow-hidden gap-3">
 
-            {/* ── Employee filter (admin only) ───────────────────────────── */}
+            {/* ── Floating Member Filter (Admin Only) ───────────────────────── */}
             {isAdmin && employees.length > 0 && (
-                <div className="flex items-center gap-3 px-1">
-                    <span className="text-[11px] font-bold uppercase tracking-widest text-zinc-600">Filter by</span>
-                    <div className="relative">
-                        <button
-                            onClick={() => setFilterOpen(v => !v)}
-                            className="flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all"
-                            style={{
-                                background: filterEmployee !== "all"
-                                    ? "rgba(0,245,255,0.08)"
-                                    : "rgba(39,39,42,0.5)",
-                                border: filterEmployee !== "all"
-                                    ? "1px solid rgba(0,245,255,0.25)"
-                                    : "1px solid rgba(63,63,70,0.6)",
-                                color: filterEmployee !== "all" ? "#00F5FF" : "var(--text-secondary)",
-                            }}
-                        >
-                            <User className="h-3 w-3" />
-                            {filterLabel}
-                            <ChevronDown className={`h-3 w-3 transition-transform ${filterOpen ? "rotate-180" : ""}`} />
-                        </button>
-
+                <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3">
+                    <AnimatePresence>
                         {filterOpen && (
-                            <div
-                                className="absolute left-0 top-full mt-1.5 z-50 min-w-[160px] overflow-hidden rounded-xl py-1"
+                            <motion.div
+                                key="member-filter-popup"
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                className="mb-2 min-w-[200px] overflow-hidden rounded-2xl p-1 glass-strong neon-glow"
                                 style={{
-                                    background: "rgba(14,14,18,0.97)",
-                                    border: "1px solid rgba(0,245,255,0.12)",
-                                    boxShadow: "0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.3)",
+                                    background: "rgba(14, 14, 18, 0.98)",
+                                    border: "1px solid rgba(0, 245, 255, 0.2)",
                                 }}
                             >
-                                {/* All */}
-                                <button
-                                    onClick={() => { setFilterEmployee("all"); setFilterOpen(false); }}
-                                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-xs font-medium transition-colors hover:bg-white/5"
-                                    style={{ color: filterEmployee === "all" ? "#00F5FF" : "var(--text-secondary)" }}
-                                >
-                                    <User className="h-3 w-3" /> All Members
-                                </button>
-                                <div className="mx-3 my-1 h-px bg-zinc-800" />
-                                {employees.map(emp => (
+                                <div className="px-3 py-2 border-b border-white/5 mb-1">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-neon-blue/60">Team Filter</p>
+                                </div>
+                                <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                                    {/* All Members */}
                                     <button
-                                        key={emp.id}
-                                        onClick={() => { setFilterEmployee(emp.id); setFilterOpen(false); }}
-                                        className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-xs font-medium transition-colors hover:bg-white/5"
-                                        style={{ color: filterEmployee === emp.id ? "#00F5FF" : "var(--text-secondary)" }}
+                                        onClick={() => { setFilterEmployee("all"); setFilterOpen(false); }}
+                                        className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-xs font-semibold transition-all hover:bg-neon-blue/10 group"
+                                        style={{ color: filterEmployee === "all" ? "#00F5FF" : "var(--text-secondary)" }}
                                     >
-                                        <div
-                                            className="flex h-4 w-4 items-center justify-center rounded-full text-[8px] font-bold"
-                                            style={{ background: "rgba(0,245,255,0.12)", color: "#00F5FF" }}
-                                        >
-                                            {emp.name?.[0]?.toUpperCase() ?? "?"}
+                                        <div className={`flex h-7 w-7 items-center justify-center rounded-lg border transition-all ${filterEmployee === "all" ? "bg-neon-blue/20 border-neon-blue/40" : "bg-white/5 border-white/5"}`}>
+                                            <Users className="h-3.5 w-3.5" />
                                         </div>
-                                        {emp.name}
+                                        <span>All Members</span>
                                     </button>
-                                ))}
-                            </div>
+
+                                    {employees.map(emp => (
+                                        <button
+                                            key={emp.id}
+                                            onClick={() => { setFilterEmployee(emp.id); setFilterOpen(false); }}
+                                            className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-xs font-semibold transition-all hover:bg-neon-blue/10 group"
+                                            style={{ color: filterEmployee === emp.id ? "#00F5FF" : "var(--text-secondary)" }}
+                                        >
+                                            <div
+                                                className={`flex h-7 w-7 items-center justify-center rounded-lg border transition-all ${filterEmployee === emp.id ? "bg-neon-blue/20 border-neon-blue/40" : "bg-white/5 border-white/10"}`}
+                                            >
+                                                <span className="text-[10px] font-bold">
+                                                    {emp.name?.[0]?.toUpperCase() ?? "?"}
+                                                </span>
+                                            </div>
+                                            <span className="truncate">{emp.name}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </motion.div>
                         )}
-                    </div>
-                    {filterEmployee !== "all" && (
-                        <button
-                            onClick={() => setFilterEmployee("all")}
-                            className="text-[10px] font-semibold uppercase tracking-widest transition-colors"
-                            style={{ color: "rgba(0,245,255,0.5)" }}
+                    </AnimatePresence>
+
+                    <div className="flex items-center gap-3">
+                        {filterEmployee !== "all" && (
+                            <motion.div
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="glass px-4 py-2 rounded-xl border-neon-blue/30 flex items-center gap-2"
+                            >
+                                <span className="text-[10px] font-bold text-neon-blue uppercase tracking-widest truncate max-w-[120px]">
+                                    {filterLabel}
+                                </span>
+                                <button
+                                    onClick={() => setFilterEmployee("all")}
+                                    className="p-1 hover:bg-white/10 rounded-md transition-colors"
+                                >
+                                    <X className="w-3 h-3 text-neon-blue/60" />
+                                </button>
+                            </motion.div>
+                        )}
+
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setFilterOpen(v => !v)}
+                            className={`p-4 rounded-2xl shadow-2xl transition-all duration-300 flex items-center justify-center border-2 ${filterOpen ? 'bg-neon-blue text-zinc-950 border-neon-blue shadow-neon-blue/40' : 'glass-strong text-neon-blue border-neon-blue/30 hover:border-neon-blue/60'}`}
                         >
-                            Clear
-                        </button>
-                    )}
+                            {filterOpen ? <X className="w-6 h-6" /> : <Users className="w-6 h-6" />}
+                        </motion.button>
+                    </div>
                 </div>
             )}
 
             {/* ── Kanban columns ─────────────────────────────────────────── */}
-            <div className="flex gap-4 overflow-x-auto snap-x-mandatory no-scrollbar h-full -mx-4 px-4 pb-6">
+            <div className="flex gap-2 md:gap-4 overflow-hidden h-full">
                 {COLUMNS.map((col) => {
                     const columnTasks = getTasksByStatus(col.id);
                     const isDragOver = dragOverColumn === col.id;
@@ -238,7 +258,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                     const isLocked = !isAdmin && col.id === "DONE";
 
                     return (
-                        <div key={col.id} className="flex-shrink-0 w-[85vw] md:w-auto md:flex-1 snap-center flex flex-col h-full">
+                        <div key={col.id} className="flex-1 flex flex-col h-full min-w-0">
                             {/* Header */}
                             <div className="flex items-center gap-2 px-1 mb-3">
                                 <col.icon style={{ width: 14, height: 14, color: getIconColor(col.hue), flexShrink: 0 }} />

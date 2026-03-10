@@ -11,11 +11,13 @@ import {
     PlusSquare,
     ChevronRight,
     Zap,
+    Download,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import WorkspaceSwitcher from "@/components/WorkspaceSwitcher";
 import CreateTaskModal from "@/components/CreateTaskModal";
 import LogoutConfirmModal from "@/components/LogoutConfirmModal";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -30,6 +32,7 @@ export default function DashboardLayout({
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [employees, setEmployees] = useState([]);
+    const { isInstallable, installPWA } = usePWAInstall();
 
     // Redirect unauthenticated users — must be in useEffect, not render body
     useEffect(() => {
@@ -140,6 +143,19 @@ export default function DashboardLayout({
                         );
                     })}
 
+                    {/* Install App (Visible only if installable) */}
+                    {isInstallable && (
+                        <div className="pt-2">
+                            <button
+                                onClick={installPWA}
+                                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-neon-blue bg-neon-blue/10 border border-neon-blue/30 rounded-xl hover:bg-neon-blue/20 transition-all shadow-[0_0_15px_rgba(0,245,255,0.1)]"
+                            >
+                                <Download className="w-4.5 h-4.5" />
+                                Install Project
+                            </button>
+                        </div>
+                    )}
+
                     {/* Assign Task (Admin only) */}
                     {session.user.role === "ADMIN" && (
                         <div className="pt-4">
@@ -227,6 +243,18 @@ export default function DashboardLayout({
                             </a>
                         );
                     })}
+                    {/* Mobile Install Button */}
+                    {isInstallable && (
+                        <button
+                            onClick={installPWA}
+                            className="flex flex-col items-center gap-2 text-neon-blue animate-pulse"
+                        >
+                            <div className="p-2 rounded-2xl bg-neon-blue/10 border border-neon-blue/30 shadow-[0_0_15px_rgba(0,245,255,0.2)]">
+                                <Download style={{ width: 26, height: 26 }} />
+                            </div>
+                            <span className="text-[10px] font-bold tracking-widest">Install</span>
+                        </button>
+                    )}
                     {session.user.role === "ADMIN" && (
                         <Link
                             href="/dashboard/tasks/new"
@@ -251,7 +279,7 @@ export default function DashboardLayout({
             </div>
 
             {/* ── Main ── */}
-            <div className="flex-1 flex flex-col relative min-h-0 overflow-y-auto overflow-x-hidden mb-[80px] md:mb-0">
+            <div className="flex-1 flex flex-col relative min-h-0 overflow-hidden mb-[80px] md:mb-0">
 
                 {/* Ambient neon glow */}
                 <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#00F5FF]/[0.04] blur-3xl pointer-events-none -mr-48 -mt-48" />

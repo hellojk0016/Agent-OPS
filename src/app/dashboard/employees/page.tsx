@@ -32,3 +32,11 @@ export default async function EmployeesPage() {
 
     return <EmployeesClient initialEmployees={serializedEmployees} />;
 }
+
+/*
+- [/] Phase 19: Mobile Performance (Production Mode)
+    - [ ] Stop development server
+    - [ ] Run production build (`npm run build`)
+    - [ ] Start production server (`npm run start`)
+    - [ ] Reconfigure tunnel for production port
+*/

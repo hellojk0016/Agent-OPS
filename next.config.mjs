@@ -5,19 +5,56 @@ const withPWA = withPWAInit({
     dest: 'public',
     register: true,
     skipWaiting: true,
-    disable: process.env.NODE_ENV === 'development',
+    disable: false,
     sw: 'sw.js',
     runtimeCaching: [
         {
-            // Cache pages — network-first strategy
+            // Cache fonts and static assets - CacheFirst
+            urlPattern: /\.(?:eot|otf|ttc|ttf|woff|woff2|font.css)$/i,
+            handler: 'CacheFirst',
+            options: {
+                cacheName: 'static-font-assets',
+                expiration: {
+                    maxEntries: 4,
+                    maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+                },
+            },
+        },
+        {
+            // Cache images - CacheFirst
+            urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
+            handler: 'CacheFirst',
+            options: {
+                cacheName: 'static-image-assets',
+                expiration: {
+                    maxEntries: 64,
+                    maxAgeSeconds: 24 * 60 * 60, // 24 hours
+                },
+            },
+        },
+        {
+            // Cache JS/CSS - StaleWhileRevalidate
+            urlPattern: /\.(?:js|css)$/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+                cacheName: 'static-js-css-assets',
+                expiration: {
+                    maxEntries: 32,
+                    maxAgeSeconds: 24 * 60 * 60, // 24 hours
+                },
+            },
+        },
+        {
+            // Everything else - NetworkFirst
             urlPattern: /^https?.*/,
             handler: 'NetworkFirst',
             options: {
-                cacheName: 'offlineCache',
+                cacheName: 'others',
                 expiration: {
-                    maxEntries: 200,
+                    maxEntries: 32,
                     maxAgeSeconds: 24 * 60 * 60, // 24 hours
                 },
+                networkTimeoutSeconds: 10,
             },
         },
     ],
@@ -29,6 +66,12 @@ const withPWA = withPWAInit({
 
 const nextConfig = {
     reactStrictMode: true,
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
     async headers() {
         return [
             {

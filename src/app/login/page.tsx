@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -78,8 +78,14 @@ export default function LoginPage() {
                 setError("Incorrect PIN. Please try again.");
                 setPin("");
             } else {
-                setStep("success");
-                setTimeout(() => router.push("/dashboard"), 900);
+                // Check if they need a mandatory PIN reset
+                const session = await getSession();
+                if (session?.user?.pinResetRequired) {
+                    setStep("reset-pin");
+                } else {
+                    setStep("success");
+                    setTimeout(() => router.push("/dashboard"), 900);
+                }
             }
         } catch {
             setError("Something went wrong. Please retry.");
@@ -103,7 +109,7 @@ export default function LoginPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Failed to send OTP");
 
-            setMessage("OTP sent to your phone");
+            setMessage(data.message || "OTP sent to your email");
             setStep("forgot-pin");
         } catch (err: any) {
             setError(err.message);
@@ -426,9 +432,9 @@ export default function LoginPage() {
                         >
                             {accentLine}
                             <div className="mb-6">
-                                <h2 className="text-lg font-bold text-white">Verify Phone</h2>
+                                <h2 className="text-lg font-bold text-white">Verify Code</h2>
                                 <p className="text-sm text-zinc-500">
-                                    Enter the 6-digit OTP sent to <span className="text-neon-blue">+91 {formatDisplay(digits)}</span>
+                                    Enter the 6-digit OTP sent to the email address registered for <span className="text-neon-blue">+91 {formatDisplay(digits)}</span>
                                 </p>
                             </div>
 

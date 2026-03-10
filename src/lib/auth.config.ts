@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 import { type NextAuthOptions } from "next-auth";
@@ -28,12 +29,12 @@ export const authOptions: NextAuthOptions = {
                 });
 
                 if (!user) {
-                    console.error(`Phone not registered: ${formattedPhone}`);
+                    console.error(`[AUTH_ERROR] Phone not registered: ${formattedPhone}`);
                     return null;
                 }
 
                 if (!user.pin) {
-                    console.error(`No PIN set for user: ${user.id}`);
+                    console.error(`[AUTH_ERROR] No PIN set for user: ${user.id} (${user.name})`);
                     return null;
                 }
 
@@ -42,7 +43,7 @@ export const authOptions: NextAuthOptions = {
                     user.pin
                 );
                 if (!pinValid) {
-                    console.error(`Wrong PIN for user: ${user.id}`);
+                    console.error(`[AUTH_ERROR] Wrong PIN attempt for user: ${user.id} (${user.name})`);
                     return null;
                 }
 
@@ -75,6 +76,7 @@ export const authOptions: NextAuthOptions = {
                     role: user.role,
                     memberships: allMemberships,
                     activeCompanyId,
+                    pinResetRequired: user.pinResetRequired,
                 } as any;
             },
         }),
@@ -97,6 +99,7 @@ export const authOptions: NextAuthOptions = {
                 token.role = user.role;
                 token.memberships = user.memberships;
                 token.activeCompanyId = user.activeCompanyId;
+                token.pinResetRequired = user.pinResetRequired;
             }
             if (trigger === "update" && session?.activeCompanyId) {
                 token.activeCompanyId = session.activeCompanyId;
@@ -118,6 +121,7 @@ export const authOptions: NextAuthOptions = {
                     role: token.role as string,
                     memberships: token.memberships,
                     activeCompanyId: token.activeCompanyId,
+                    pinResetRequired: token.pinResetRequired as boolean,
                 };
             }
             return session;

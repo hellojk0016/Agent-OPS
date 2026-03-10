@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
     try {
@@ -9,24 +11,40 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Phone and OTP token are required' }, { status: 400 });
         }
 
-        // Verify the OTP via Supabase
-        const { data, error } = await supabase.auth.verifyOtp({
-            phone,
-            token,
-            type: 'sms',
+        // Format phone number consistently
+        const raw = String(phone).replace(/\D/g, "");
+        const formattedPhone =
+            raw.length === 12 && raw.startsWith("91")
+                ? `+${raw}`
+                : `+91${raw.slice(-10)}`;
+
+        // Find the OTP token in the DB
+        const otpRecord = await prisma.otpToken.findUnique({
+            where: { phone: formattedPhone }
         });
 
-        if (error) {
-            return NextResponse.json({ error: error.message }, { status: 400 });
+        if (!otpRecord) {
+            return NextResponse.json({ error: 'No OTP found for this number. Please request a new one.' }, { status: 400 });
         }
 
-        // If verification is successful, Supabase returns a session or user data.
-        // We can return a success indicator. The client will then show the reset PIN form.
+        // Check if token matches
+        if (otpRecord.token !== token) {
+            return NextResponse.json({ error: 'Invalid OTP code' }, { status: 400 });
+        }
+
+        // Check expiration
+        if (new Date() > otpRecord.expiresAt) {
+            return NextResponse.json({ error: 'OTP has expired. Please request a new one.' }, { status: 400 });
+        }
+
+        // Success: Delete the OTP to prevent reuse
+        await prisma.otpToken.delete({
+            where: { phone: formattedPhone }
+        });
+
         return NextResponse.json({
             success: true,
             message: 'OTP verified successfully',
-            // We might want to pass a temporary access token or session if needed, 
-            // but for this simple PIN reset, successful verification is enough to proceed to step 3.
         });
     } catch (error) {
         console.error('Error verifying OTP:', error);

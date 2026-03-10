@@ -12,15 +12,19 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
+        // Format phone number consistently
+        const raw = String(phone).replace(/\D/g, "");
+        const formattedPhone =
+            raw.length === 12 && raw.startsWith("91")
+                ? `+${raw}`
+                : `+91${raw.slice(-10)}`;
+
         // 1. Hash the new PIN
         const hashedPin = await bcrypt.hash(newPin, 10);
 
         // 2. Update the user in the database
-        // Note: In a production app, you'd verify a 'reset token' or 'verified session' 
-        // to prevent unauthorized updates. For this PWA flow, we assume the previous 
-        // verify-otp step was the security gate.
         await prisma.user.update({
-            where: { phone },
+            where: { phone: formattedPhone },
             data: {
                 pin: hashedPin,
                 pinResetRequired: false

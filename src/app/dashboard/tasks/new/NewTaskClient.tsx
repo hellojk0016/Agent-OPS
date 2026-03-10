@@ -141,21 +141,19 @@ export default function NewTaskClient({ employees }: NewTaskClientProps) {
                         />
                     </div>
 
-                    {/* 3. Assign Employee */}
                     <div className="space-y-2">
                         <label className="field-label px-1">
                             <UserPlus className="w-3.5 h-3.5 text-neon-blue/50" />
-                            Assign Employee
+                            Assign Employee {employees.length === 0 && <span className="text-red-400/60 ml-1">(No employees found)</span>}
                         </label>
                         <div className="relative">
                             <select
-                                required
                                 value={assigneeId}
                                 onChange={(e) => setAssigneeId(e.target.value)}
                                 className="field-input w-full h-14 appearance-none pr-12 text-base"
                                 style={{ background: "var(--bg-elevated)" }}
                             >
-                                <option value="" disabled>Select Team Member</option>
+                                <option value="">{employees.length === 0 ? "No available team members" : "Select Team Member (Optional)"}</option>
                                 {employees.map((emp) => (
                                     <option key={emp.id} value={emp.id} className="bg-[#0e0e12]">
                                         {emp.name || "Unknown"}

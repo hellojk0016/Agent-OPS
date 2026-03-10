@@ -67,6 +67,7 @@ export const viewport: Viewport = {
 }
 
 import { ToastProvider } from '@/components/ToastContext'
+import PWAInstallPrompt from '@/components/PWAInstallPrompt'
 
 export default function RootLayout({
   children,
@@ -89,6 +90,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <ToastProvider>
             {children}
+            <PWAInstallPrompt />
           </ToastProvider>
         </NextAuthProvider>
       </body>

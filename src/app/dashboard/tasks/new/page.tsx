@@ -13,11 +13,24 @@ export default async function NewTaskPage() {
         redirect("/dashboard");
     }
 
-    const employees = await prisma.user.findMany({
-        where: { role: "MEMBER" },
-        select: { id: true, name: true },
-        orderBy: { name: "asc" },
+    const activeCompanyId = session.user.activeCompanyId;
+
+    const memberships = await prisma.companyMembership.findMany({
+        where: {
+            companyId: activeCompanyId,
+            user: { role: "MEMBER" }
+        },
+        include: {
+            user: {
+                select: { id: true, name: true }
+            }
+        },
+        orderBy: {
+            user: { name: "asc" }
+        }
     });
+
+    const employees = memberships.map(m => m.user);
 
     return <NewTaskClient employees={employees} />;
 }

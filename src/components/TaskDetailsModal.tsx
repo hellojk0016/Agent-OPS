@@ -147,10 +147,10 @@ export default function TaskDetailsModal({
 
                         {/* Scrollable content */}
                         <div className="overflow-y-auto custom-scrollbar" style={{ maxHeight: "calc(90vh - 2px)" }}>
-                            <div className="p-7">
+                            <div className="p-6">
 
                                 {/* ── Header ─────────────────────────────── */}
-                                <div className="mb-6 flex items-start justify-between gap-4">
+                                <div className="mb-4 flex items-start justify-between gap-4">
                                     <div className="flex-1 min-w-0">
                                         {/* Task ID */}
                                         {task.displayId && (
@@ -174,7 +174,7 @@ export default function TaskDetailsModal({
                                 </div>
 
                                 {/* ── Status + Priority pills (top row) ─── */}
-                                <div className="mb-6 flex flex-wrap items-center gap-2">
+                                <div className="mb-4 flex flex-wrap items-center gap-2">
                                     {/* Status */}
                                     <div
                                         className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold"
@@ -206,7 +206,7 @@ export default function TaskDetailsModal({
 
                                 {/* ── Detail fields grid ────────────────── */}
                                 <div
-                                    className="mb-6 grid grid-cols-2 gap-5 rounded-xl p-5"
+                                    className="mb-4 grid grid-cols-2 gap-4 rounded-xl p-4"
                                     style={{
                                         background: "rgba(255,255,255,0.02)",
                                         border: "1px solid rgba(255,255,255,0.05)",
@@ -264,7 +264,7 @@ export default function TaskDetailsModal({
 
                                 {/* ── Description ──────────────────────── */}
                                 {task.description && (
-                                    <div className="mb-6">
+                                    <div className="mb-4">
                                         <Field icon={AlignLeft} label="Description">
                                             <p
                                                 className="mt-1.5 rounded-xl p-4 text-sm leading-relaxed"
@@ -291,7 +291,7 @@ export default function TaskDetailsModal({
                                     if (!shouldShow) return null;
 
                                     return (
-                                        <div className="mb-8 pt-2">
+                                        <div className="mb-4 pt-1">
                                             <motion.button
                                                 onClick={handleStatusAction}
                                                 disabled={isUpdating || !onStatusUpdate}
@@ -313,7 +313,7 @@ export default function TaskDetailsModal({
 
                                 {/* ── Footer buttons ────────────────────── */}
                                 {isAdmin && (
-                                    <div className="pt-6"
+                                    <div className="pt-4"
                                         style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                                         <motion.button
                                             onClick={() => { onClose(); onEdit(); }}

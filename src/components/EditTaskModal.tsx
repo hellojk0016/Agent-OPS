@@ -141,9 +141,9 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                         {/* Ambient glow */}
                         <div className="absolute top-0 right-0 w-56 h-56 rounded-full bg-[#00F5FF]/[0.06] blur-3xl pointer-events-none -mr-28 -mt-28" />
 
-                        <div className="relative p-7">
+                        <div className="relative p-6">
                             {/* Header */}
-                            <div className="flex items-start justify-between mb-6">
+                            <div className="flex items-start justify-between mb-4">
                                 <div>
                                     <h2 className="text-xl font-bold text-white tracking-tight">Edit Task</h2>
                                     <p className="text-sm text-zinc-500 mt-0.5">Update task details below.</p>
@@ -178,7 +178,8 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
                                         placeholder="Task name..."
-                                        className="field-input w-full"
+                                        className="field-input w-full selection:bg-neon-blue/30 h-11"
+                                        style={{ colorScheme: "dark" }}
                                     />
                                 </div>
 
@@ -193,8 +194,8 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                             <select
                                                 value={assigneeId}
                                                 onChange={(e) => setAssigneeId(e.target.value)}
-                                                className="field-input w-full appearance-none cursor-pointer pr-9"
-                                                style={{ background: "var(--bg-elevated)" }}
+                                                className="field-input w-full appearance-none cursor-pointer pr-9 selection:bg-neon-blue/30 h-11"
+                                                style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="" style={{ background: "#0e0e12" }}>Unassigned</option>
                                                 {employees.map((emp) => (
@@ -215,8 +216,8 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                             <select
                                                 value={priority}
                                                 onChange={(e) => setPriority(e.target.value)}
-                                                className="field-input w-full appearance-none cursor-pointer pr-9"
-                                                style={{ background: "var(--bg-elevated)" }}
+                                                className="field-input w-full appearance-none cursor-pointer pr-9 selection:bg-neon-blue/30 h-11"
+                                                style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="LOW" style={{ background: "#0e0e12" }}>Low</option>
                                                 <option value="MEDIUM" style={{ background: "#0e0e12" }}>Medium</option>
@@ -238,7 +239,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                             type="date"
                                             value={dueDate}
                                             onChange={(e) => setDueDate(e.target.value)}
-                                            className="field-input w-full"
+                                            className="field-input w-full selection:bg-neon-blue/30 h-11"
                                             style={{ colorScheme: "dark" }}
                                         />
                                     </div>
@@ -251,8 +252,8 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                             <select
                                                 value={companyType}
                                                 onChange={(e) => setCompanyType(e.target.value)}
-                                                className="field-input w-full appearance-none cursor-pointer pr-9"
-                                                style={{ background: "var(--bg-elevated)" }}
+                                                className="field-input w-full appearance-none cursor-pointer pr-9 selection:bg-neon-blue/30 h-11"
+                                                style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>Commerce Agents</option>
                                                 <option value="KNIGHT_WOLF" style={{ background: "#0e0e12" }}>Knight Wolf</option>
@@ -270,11 +271,12 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         Description
                                     </label>
                                     <textarea
-                                        rows={3}
+                                        rows={2}
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Add context or requirements..."
-                                        className="field-input w-full resize-none"
+                                        className="field-input w-full resize-none selection:bg-neon-blue/30 py-3"
+                                        style={{ colorScheme: "dark" }}
                                     />
                                 </div>
 

@@ -12,6 +12,7 @@ declare module "next-auth" {
                 companyLogo?: string | null;
             }[];
             activeCompanyId: string;
+            pinResetRequired?: boolean;
         } & DefaultSession["user"];
     }
 
@@ -23,6 +24,7 @@ declare module "next-auth" {
             companyTheme: string;
             companyLogo?: string | null;
         }[];
+        pinResetRequired?: boolean;
     }
 }
 
@@ -37,5 +39,6 @@ declare module "next-auth/jwt" {
             companyLogo?: string | null;
         }[];
         activeCompanyId: string;
+        pinResetRequired?: boolean;
     }
 }

@@ -98,7 +98,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.93, opacity: 0, y: 16 }}
                         transition={{ type: "spring", stiffness: 340, damping: 28 }}
-                        className="relative w-full max-w-2xl overflow-y-auto md:overflow-hidden rounded-2xl md:rounded-3xl h-full md:h-auto max-h-screen md:max-h-[85vh]"
+                        className="relative w-full max-w-2xl rounded-2xl md:rounded-3xl h-full md:h-auto max-h-screen overflow-hidden"
                         style={{
                             background: "rgba(12, 12, 16, 0.95)",
                             border: "1px solid rgba(0, 245, 255, 0.15)",
@@ -111,9 +111,9 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                         {/* Ambient glow */}
                         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#00F5FF]/[0.06] blur-3xl pointer-events-none -mr-32 -mt-32" />
 
-                        <div className="relative p-5 md:p-8">
+                        <div className="relative p-5 md:p-6">
                             {/* Header */}
-                            <div className="flex items-start justify-between mb-6 md:mb-8">
+                            <div className="flex items-start justify-between mb-4 md:mb-5">
                                 <div>
                                     <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">Assign New Task</h2>
                                     <p className="text-xs md:text-sm text-zinc-500 mt-1">Deploy a task to a team member.</p>
@@ -128,7 +128,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                             </div>
 
                             {/* Form */}
-                            <form onSubmit={handleSubmit} className="space-y-6 md:space-y-7 pb-20 md:pb-0">
+                            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5 pb-4">
                                 {/* Row 1: ID + Title */}
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-5 md:gap-4">
                                     <div className="order-2 md:order-1">
@@ -151,7 +151,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                             value={title}
                                             onChange={(e) => setTitle(e.target.value)}
                                             placeholder="e.g. Update system architecture"
-                                            className="field-input h-14 md:h-auto w-full text-base md:text-sm"
+                                            className="field-input h-11 md:h-11 w-full text-base md:text-sm"
                                         />
                                     </div>
                                 </div>
@@ -168,12 +168,17 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                 required
                                                 value={assigneeId}
                                                 onChange={(e) => setAssigneeId(e.target.value)}
-                                                className="field-input h-14 md:h-auto w-full appearance-none cursor-pointer pr-10 text-base md:text-sm"
-                                                style={{ background: "var(--bg-elevated)" }}
+                                                className="field-input h-11 md:h-11 w-full appearance-none cursor-pointer pr-10 text-base md:text-sm selection:bg-neon-blue/30"
+                                                style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
-                                                <option value="" disabled>Select Employee</option>
+                                                <option value="" disabled className="text-zinc-500">Select Employee</option>
                                                 {employees.map((emp) => (
-                                                    <option key={emp.id} value={emp.id} style={{ background: "#0e0e12" }}>
+                                                    <option
+                                                        key={emp.id}
+                                                        value={emp.id}
+                                                        style={{ background: "#0e0e12" }}
+                                                        className="hover:bg-neon-blue/20"
+                                                    >
                                                         {emp.name || 'Unknown'}
                                                     </option>
                                                 ))}
@@ -190,8 +195,8 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                             <select
                                                 value={priority}
                                                 onChange={(e) => setPriority(e.target.value)}
-                                                className="field-input h-14 md:h-auto w-full appearance-none cursor-pointer pr-10 text-base md:text-sm"
-                                                style={{ background: "var(--bg-elevated)" }}
+                                                className="field-input h-11 md:h-11 w-full appearance-none cursor-pointer pr-10 text-base md:text-sm selection:bg-neon-blue/30"
+                                                style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="LOW" style={{ background: "#0e0e12" }}>Low</option>
                                                 <option value="MEDIUM" style={{ background: "#0e0e12" }}>Medium</option>
@@ -250,7 +255,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                             setDueDate(e.target.value);
                                                             setDateOption('custom');
                                                         }}
-                                                        className="field-input h-14 md:h-auto w-full text-base md:text-sm"
+                                                        className="field-input h-11 md:h-11 w-full text-base md:text-sm"
                                                         style={{ colorScheme: "dark" }}
                                                     />
                                                 </motion.div>
@@ -272,8 +277,8 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                             <select
                                                 value={companyType}
                                                 onChange={(e) => setCompanyType(e.target.value)}
-                                                className="field-input h-14 md:h-auto w-full appearance-none cursor-pointer pr-10 text-base md:text-sm"
-                                                style={{ background: "var(--bg-elevated)" }}
+                                                className="field-input h-11 md:h-11 w-full appearance-none cursor-pointer pr-10 text-base md:text-sm selection:bg-neon-blue/30"
+                                                style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
                                                 <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>Commerce Agents</option>
                                                 <option value="KNIGHT_WOLF" style={{ background: "#0e0e12" }}>Knight Wolf</option>
@@ -291,7 +296,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                         Description
                                     </label>
                                     <textarea
-                                        rows={4}
+                                        rows={2}
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Provide context and requirements..."
@@ -300,11 +305,11 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                 </div>
 
                                 {/* Submit Only (No Cancel as per request) */}
-                                <div className="pt-6 md:pt-2">
+                                <div className="pt-2 md:pt-1">
                                     <motion.button
                                         type="submit"
                                         disabled={isLoading}
-                                        className="w-full h-12 md:h-14 btn-primary text-sm md:text-lg font-black tracking-wider uppercase shadow-[0_0_20px_rgba(0,245,255,0.1)]"
+                                        className="w-full h-11 md:h-12 btn-primary text-sm md:text-base font-black tracking-wider uppercase"
                                         whileHover={{ scale: isLoading ? 1 : 1.01 }}
                                         whileTap={{ scale: isLoading ? 1 : 0.98 }}
                                     >
