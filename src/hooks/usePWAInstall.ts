@@ -16,10 +16,9 @@ export function usePWAInstall() {
         setIsStandalone(isStandaloneMode);
 
         const handler = (e: any) => {
-            // We NO LONGER preventDefault so the browser's native "Install" 
-            // option remains visible in the three-dot menu and address bar.
-
-            // Stash the event so it can be triggered by our custom buttons too.
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
             setDeferredPrompt(e);
             setIsInstallable(true);
         };
