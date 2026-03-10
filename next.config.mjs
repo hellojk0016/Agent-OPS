@@ -33,15 +33,16 @@ const withPWA = withPWAInit({
             },
         },
         {
-            // Cache JS/CSS - StaleWhileRevalidate
+            // Cache JS/CSS - NetworkFirst (to ensure latest version while allowing offline)
             urlPattern: /\.(?:js|css)$/i,
-            handler: 'StaleWhileRevalidate',
+            handler: 'NetworkFirst',
             options: {
                 cacheName: 'static-js-css-assets',
                 expiration: {
                     maxEntries: 32,
                     maxAgeSeconds: 24 * 60 * 60, // 24 hours
                 },
+                networkTimeoutSeconds: 5, // Fallback to cache after 5 seconds
             },
         },
         {
@@ -51,7 +52,7 @@ const withPWA = withPWAInit({
             options: {
                 cacheName: 'others',
                 expiration: {
-                    maxEntries: 32,
+                    maxEntries: 64,
                     maxAgeSeconds: 24 * 60 * 60, // 24 hours
                 },
                 networkTimeoutSeconds: 10,

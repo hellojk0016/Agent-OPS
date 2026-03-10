@@ -3,7 +3,7 @@
   "name": "Agent OPS",
   "short_name": "OPS",
   "description": "Multi-tenant Task Management \u2014 neon-powered PWA",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
   "display_override": [
@@ -12,7 +12,7 @@
     "minimal-ui"
   ],
   "orientation": "portrait",
-  "background_color": "#000000",
+  "background_color": "#0d0d12",
   "theme_color": "#00F5FF",
   "categories": [
     "productivity",
