@@ -211,7 +211,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                 </button>
                                             </div>
                                             <p className="ml-1 mt-1.5 text-[11px] text-zinc-600">
-                                                🔒 Share this PIN with the employee — save it, it won't be shown again
+                                                🔒 Share this PIN with the employee — save it, it won&apos;t be shown again
                                             </p>
                                         </div>
 

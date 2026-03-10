@@ -25,6 +25,7 @@ export default function LoginPage() {
     const [showPin, setShowPin] = useState(false);
     const [step, setStep] = useState<Step>("phone");
     const [isLoading, setIsLoading] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
 
@@ -54,6 +55,7 @@ export default function LoginPage() {
                 setError("Number not registered. Contact your admin.");
                 return;
             }
+            setIsAdmin(data.role === "ADMIN");
             setStep("pin");
         } catch {
             setError("Network error. Try again.");
@@ -406,14 +408,16 @@ export default function LoginPage() {
                                         Change number
                                     </button>
 
-                                    <button
-                                        type="button"
-                                        onClick={handleForgotPin}
-                                        disabled={isLoading}
-                                        className="text-xs font-semibold text-zinc-500 hover:text-neon-blue transition-colors text-center py-2"
-                                    >
-                                        Forgot PIN?
-                                    </button>
+                                    {isAdmin && (
+                                        <button
+                                            type="button"
+                                            onClick={handleForgotPin}
+                                            disabled={isLoading}
+                                            className="text-xs font-semibold text-zinc-500 hover:text-neon-blue transition-colors text-center py-2"
+                                        >
+                                            Forgot PIN?
+                                        </button>
+                                    )}
                                 </div>
                             </form>
                         </motion.div>
