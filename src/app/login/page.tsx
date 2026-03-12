@@ -84,7 +84,7 @@ export default function LoginPage() {
                     setStep("reset-pin");
                 } else {
                     setStep("success");
-                    setTimeout(() => router.push("/dashboard"), 900);
+                    setTimeout(() => router.push("/dashboard"), 400);
                 }
             }
         } catch {
@@ -159,7 +159,7 @@ export default function LoginPage() {
             if (!res.ok) throw new Error(data.error || "Failed to reset PIN");
 
             setStep("success");
-            setTimeout(() => router.push("/dashboard"), 1500);
+            setTimeout(() => router.push("/dashboard"), 600);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -205,8 +205,7 @@ export default function LoginPage() {
                     />
                 </div>
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold tracking-tight text-white">Agents OPS</h1>
-                    <p className="mt-0.5 text-xs text-zinc-500">Secure team task management</p>
+                    <h1 className="text-3xl font-black tracking-tight text-white uppercase tracking-[0.15em]">Agent Ops</h1>
                 </div>
             </motion.div>
 

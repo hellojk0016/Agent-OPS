@@ -7,6 +7,7 @@ import {
     AlignLeft, Hash, CheckCircle2, Clock, Zap, Circle, Eye as EyeIcon,
     Loader2, Rocket,
 } from "lucide-react";
+import Portal from "./Portal";
 
 interface Task {
     id: string;
@@ -63,15 +64,16 @@ const COMPANY_LABELS: Record<string, string> = {
 
 function Field({ icon: Icon, label, children }: { icon: any; label: string; children: React.ReactNode }) {
     return (
-        <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-1.5">
-                <Icon className="w-3 h-3" style={{ color: "rgba(0,245,255,0.45)" }} />
-                <span className="text-[10px] font-bold uppercase tracking-[0.16em]"
-                    style={{ color: "rgba(0,245,255,0.4)" }}>
+        <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center w-5 h-5 rounded-md bg-[#00F5FF]/10 border border-[#00F5FF]/20">
+                    <Icon className="w-3 h-3 text-[#00F5FF]" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00F5FF]">
                     {label}
                 </span>
             </div>
-            <div>{children}</div>
+            <div className="pl-7">{children}</div>
         </div>
     );
 }
@@ -112,9 +114,10 @@ export default function TaskDetailsModal({
         : false;
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center md:p-4">
+        <Portal>
+            <AnimatePresence>
+                {isOpen && (
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-zinc-950 md:bg-black/40 md:p-4 touch-none">
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -130,14 +133,15 @@ export default function TaskDetailsModal({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.93, y: 20 }}
                         transition={{ type: "spring", stiffness: 360, damping: 30 }}
-                        className="relative w-full md:max-w-lg overflow-hidden rounded-none md:rounded-2xl h-full md:h-auto md:max-h-[90vh] flex flex-col"
+                        className="relative w-full h-[100dvh] md:h-auto md:max-h-[85vh] md:max-w-xl overflow-hidden rounded-none md:rounded-3xl flex flex-col"
                         style={{
                             background: "rgba(10, 10, 14, 0.98)",
-                            border: "1px solid rgba(0, 245, 255, 0.14)",
-                            boxShadow:
-                                "0 0 0 1px rgba(0,0,0,0.5), 0 30px 80px rgba(0,245,255,0.1), 0 8px 32px rgba(0,0,0,0.7)",
+                            border: "none",
+                            boxShadow: "none",
                         }}
                     >
+                        {/* Desktop Only Borders and Shadows */}
+                        <div className="hidden md:block absolute inset-0 pointer-events-none rounded-3xl border border-white/10 shadow-[0_0_80px_rgba(0,245,255,0.1)]" />
                         {/* Top accent line */}
                         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-60" />
 
@@ -145,23 +149,22 @@ export default function TaskDetailsModal({
                         <div className="pointer-events-none absolute right-0 top-0 -mr-24 -mt-24 h-48 w-48 rounded-full bg-[#00F5FF]/[0.05] blur-3xl" />
 
                         {/* Scrollable content */}
-                        <div className="overflow-y-auto custom-scrollbar" style={{ maxHeight: "calc(90vh - 2px)" }}>
-                            <div className="p-6">
+                        <div className="overflow-y-auto custom-scrollbar flex-1">
+                            <div className="p-6 md:p-8">
 
                                 {/* ── Header ─────────────────────────────── */}
                                 <div className="mb-4 flex items-start justify-between gap-4">
                                     <div className="flex-1 min-w-0">
                                         {/* Task ID */}
                                         {task.displayId && (
-                                            <div className="mb-1.5 flex items-center gap-1.5">
-                                                <Hash className="w-3 h-3" style={{ color: "rgba(0,245,255,0.35)" }} />
-                                                <span className="font-mono text-[11px] font-bold uppercase tracking-widest"
-                                                    style={{ color: "rgba(0,245,255,0.4)" }}>
+                                            <div className="mb-2 flex items-center gap-1.5">
+                                                <Hash className="w-3.5 h-3.5 text-[#00F5FF]/60" />
+                                                <span className="font-mono text-[12px] font-black uppercase tracking-[0.25em] text-[#00F5FF]">
                                                     {task.displayId}
                                                 </span>
                                             </div>
                                         )}
-                                        <h2 className="text-xl font-bold leading-tight text-white">{task.title}</h2>
+                                        <h2 className="text-2xl font-black leading-tight text-white tracking-tight">{task.title}</h2>
                                     </div>
                                     <button
                                         onClick={onClose}
@@ -205,22 +208,17 @@ export default function TaskDetailsModal({
 
                                 {/* ── Detail fields grid ────────────────── */}
                                 <div
-                                    className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4 rounded-2xl p-5 md:p-6"
-                                    style={{
-                                        background: "rgba(255,255,255,0.02)",
-                                        border: "1px solid rgba(255,255,255,0.05)",
-                                    }}
+                                    className="mb-6 grid grid-cols-2 gap-y-8 gap-x-4 rounded-3xl p-6 border border-white/5 bg-zinc-900/40"
                                 >
                                     {/* Assigned To */}
                                     <Field icon={User} label="Assigned To">
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2.5">
                                             <div
-                                                className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-[9px] font-bold"
-                                                style={{ background: "rgba(0,245,255,0.1)", color: "#00F5FF" }}
+                                                className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-[10px] font-black bg-[#00F5FF]/20 border border-[#00F5FF]/30 text-[#00F5FF] shadow-[0_0_10px_rgba(0,245,255,0.1)]"
                                             >
                                                 {task.assignee?.name?.[0]?.toUpperCase() ?? "?"}
                                             </div>
-                                            <span className="text-sm font-semibold text-zinc-200">
+                                            <span className="text-[15px] font-bold text-white tracking-tight">
                                                 {task.assignee?.name ?? "Open Pool"}
                                             </span>
                                         </div>
@@ -230,30 +228,27 @@ export default function TaskDetailsModal({
                                     <Field icon={Calendar} label="Due Date">
                                         {dueDateStr ? (
                                             <span
-                                                className="text-sm font-semibold"
-                                                style={{ color: isOverdue ? "#FF4D6A" : "var(--text-secondary)" }}
+                                                className="text-[15px] font-bold tracking-tight text-white"
+                                                style={{ color: isOverdue ? "#FF4D6A" : undefined }}
                                             >
                                                 {dueDateStr}
-                                                {isOverdue && (
-                                                    <span className="ml-1.5 text-[10px] font-bold text-red-400">Overdue</span>
-                                                )}
                                             </span>
                                         ) : (
-                                            <span className="text-sm text-zinc-600">No due date</span>
+                                            <span className="text-[15px] font-bold text-zinc-500">No due date</span>
                                         )}
                                     </Field>
 
                                     {/* Company Focus */}
                                     <Field icon={Building2} label="Company Focus">
-                                        <span className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>
+                                        <span className="text-[15px] font-bold tracking-tight text-white">
                                             {task.companyType ? COMPANY_LABELS[task.companyType] ?? task.companyType : "—"}
                                         </span>
                                     </Field>
 
-                                    {/* Priority (text fallback) */}
+                                    {/* Priority */}
                                     <Field icon={Tag} label="Priority">
                                         <span
-                                            className="text-sm font-semibold"
+                                            className="text-[15px] font-bold tracking-tight uppercase"
                                             style={{ color: priority ? priority.color : "var(--text-muted)" }}
                                         >
                                             {priority?.label ?? "Not set"}
@@ -294,17 +289,17 @@ export default function TaskDetailsModal({
                                             <motion.button
                                                 onClick={handleStatusAction}
                                                 disabled={isUpdating || !onStatusUpdate}
-                                                className={`w-full h-16 rounded-2xl font-bold text-base flex items-center justify-center gap-3 transition-all btn-primary shadow-[0_0_30px_rgba(0,245,255,0.25)] ${isUpdating ? "opacity-80" : ""
+                                                className={`w-full h-16 rounded-2xl font-black text-lg uppercase tracking-[0.1em] flex items-center justify-center gap-3 transition-all bg-[#00F5FF] text-zinc-950 shadow-[0_10px_40px_rgba(0,245,255,0.3)] ${isUpdating ? "opacity-80" : ""
                                                     }`}
                                                 whileHover={!isUpdating ? { scale: 1.02, translateY: -2 } : {}}
                                                 whileTap={!isUpdating ? { scale: 0.98 } : {}}
                                             >
                                                 {isUpdating ? (
-                                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                                    <Loader2 className="w-6 h-6 animate-spin" />
                                                 ) : (
-                                                    <Rocket className="w-5 h-5" />
+                                                    <Rocket className="w-6 h-6" />
                                                 )}
-                                                {isUpdating ? "Updating Status..." : flow.label}
+                                                {isUpdating ? "Updating..." : flow.label}
                                             </motion.button>
                                         </div>
                                     );
@@ -332,5 +327,6 @@ export default function TaskDetailsModal({
                 </div>
             )}
         </AnimatePresence>
-    );
+    </Portal>
+);
 }

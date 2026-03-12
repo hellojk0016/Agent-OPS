@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import TaskCard from "./TaskCard";
 import { Circle, Zap, Eye, CheckCircle2, ChevronDown, User, Users, Filter, X, UserCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -51,6 +51,9 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
     const [filterEmployee, setFilterEmployee] = useState<string>("all");
     const [filterOpen, setFilterOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const scrollVelocityRef = useRef<number>(0);
+    const requestRef = useRef<number | null>(null);
 
     useEffect(() => {
         setTasks(initialTasks);
@@ -97,32 +100,11 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
 
     const handleDrop = async (e: React.DragEvent, targetStatus: string) => {
         e.preventDefault();
-        // Guard: employees cannot drop into DONE
-        if (!isAdmin && targetStatus === "DONE") return;
-
         const taskId = e.dataTransfer.getData('text/plain') || draggedTaskId;
         setDragOverColumn(null);
         setDraggedTaskId(null);
         if (!taskId) return;
-
-        const task = tasks.find(t => t.id === taskId);
-        if (!task || task.status === targetStatus) return;
-
-        const originalStatus = task.status;
-        setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: targetStatus } : t));
-
-        try {
-            const res = await fetch("/api/tasks", {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: taskId, status: targetStatus }),
-            });
-            if (!res.ok) throw new Error("Status update failed");
-            router.refresh();
-        } catch (error) {
-            console.error("Status update error:", error);
-            setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: originalStatus } : t));
-        }
+        handleDropLogic(taskId, targetStatus);
     };
 
     const handleDeletedTask = (id: string) =>
@@ -160,6 +142,138 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
     const filterLabel = filterEmployee === "all"
         ? "All Members"
         : (employees.find(e => e.id === filterEmployee)?.name ?? "Unknown");
+
+    // ── Touch handlers for mobile ──────────────────────────────────────────
+    const handleTouchStart = (e: React.TouchEvent, taskId: string) => {
+        setDraggedTaskId(taskId);
+        // We don't preventDefault here to allow tap vs drag distinction by the browser
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!draggedTaskId) return;
+
+        const touch = e.touches[0];
+        const { clientX, clientY } = touch;
+
+        // ── Pointer-Event Bypassing ──
+        // We need to temporarily disable pointer events on the dragged element
+        // so elementFromPoint hits the column underneath.
+        const draggedEl = document.getElementById(`task-${draggedTaskId}`);
+        let targetElement: Element | null = null;
+        
+        if (draggedEl) {
+            const originalPointerEvents = draggedEl.style.pointerEvents;
+            draggedEl.style.pointerEvents = 'none';
+            targetElement = document.elementFromPoint(clientX, clientY);
+            draggedEl.style.pointerEvents = originalPointerEvents;
+        } else {
+            targetElement = document.elementFromPoint(clientX, clientY);
+        }
+
+        const columnElement = targetElement?.closest('[data-column-id]');
+        
+        if (columnElement) {
+            const columnId = columnElement.getAttribute('data-column-id');
+            if (columnId) {
+                if (!isAdmin && columnId === "DONE") {
+                    setDragOverColumn(null);
+                } else {
+                    setDragOverColumn(columnId);
+                }
+            }
+        } else {
+            setDragOverColumn(null);
+        }
+
+        // ── Edge Scrolling ──
+        const scrollThreshold = 60;
+        const maxScrollSpeed = 15;
+        const { innerWidth } = window;
+
+        if (clientX < scrollThreshold) {
+            scrollVelocityRef.current = -maxScrollSpeed * (1 - clientX / scrollThreshold);
+        } else if (clientX > innerWidth - scrollThreshold) {
+            scrollVelocityRef.current = maxScrollSpeed * (1 - (innerWidth - clientX) / scrollThreshold);
+        } else {
+            scrollVelocityRef.current = 0;
+        }
+
+        if (scrollVelocityRef.current !== 0 && !requestRef.current) {
+            const animateScroll = () => {
+                if (scrollContainerRef.current && scrollVelocityRef.current !== 0) {
+                    scrollContainerRef.current.scrollLeft += scrollVelocityRef.current;
+                    requestRef.current = requestAnimationFrame(animateScroll);
+                } else {
+                    requestRef.current = null;
+                }
+            };
+            requestRef.current = requestAnimationFrame(animateScroll);
+        }
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (!draggedTaskId) return;
+
+        // Stop edge scrolling
+        scrollVelocityRef.current = 0;
+        if (requestRef.current) {
+            cancelAnimationFrame(requestRef.current);
+            requestRef.current = null;
+        }
+
+        const touch = e.changedTouches[0];
+        const { clientX, clientY } = touch;
+
+        // Detect column at drop point
+        const draggedEl = document.getElementById(`task-${draggedTaskId}`);
+        let targetElement: Element | null = null;
+        
+        if (draggedEl) {
+            draggedEl.style.pointerEvents = 'none';
+            targetElement = document.elementFromPoint(clientX, clientY);
+            draggedEl.style.pointerEvents = '';
+        } else {
+            targetElement = document.elementFromPoint(clientX, clientY);
+        }
+
+        const columnElement = targetElement?.closest('[data-column-id]');
+        const targetStatus = columnElement?.getAttribute('data-column-id');
+
+        if (targetStatus && targetStatus !== dragOverColumn) {
+            // Drop logic will check isAdmin and status
+        }
+
+        if (targetStatus) {
+            handleDropLogic(draggedTaskId, targetStatus);
+        }
+
+        setDraggedTaskId(null);
+        setDragOverColumn(null);
+    };
+
+    // Refactored drop logic to be shared between mouse and touch
+    const handleDropLogic = async (taskId: string, targetStatus: string) => {
+        if (!isAdmin && targetStatus === "DONE") return;
+
+        const task = tasks.find(t => t.id === taskId);
+        if (!task || task.status === targetStatus) return;
+
+        const originalStatus = task.status;
+        setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: targetStatus } : t));
+
+        try {
+            const res = await fetch("/api/tasks", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: taskId, status: targetStatus }),
+            });
+            if (!res.ok) throw new Error("Status update failed");
+            router.refresh();
+        } catch (error) {
+            console.error("Status update error:", error);
+            setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: originalStatus } : t));
+        }
+    };
 
     return (
         <div className="flex flex-col h-full overflow-hidden gap-3">
@@ -250,7 +364,10 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
             )}
 
             {/* ── Kanban columns ─────────────────────────────────────────── */}
-            <div className="flex flex-row gap-6 md:gap-4 overflow-x-auto md:overflow-x-hidden md:overflow-y-hidden h-full custom-scrollbar pb-20 md:pb-0 snap-x snap-mandatory scroll-smooth px-4 md:px-0">
+            <div 
+                ref={scrollContainerRef}
+                className="flex flex-row gap-6 md:gap-4 overflow-x-auto md:overflow-x-hidden md:overflow-y-hidden h-full custom-scrollbar pb-20 md:pb-0 snap-x snap-mandatory scroll-smooth px-4 md:px-0"
+            >
                 {COLUMNS.map((col) => {
                     const columnTasks = getTasksByStatus(col.id);
                     const isDragOver = dragOverColumn === col.id;
@@ -281,6 +398,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                 onDragOver={e => handleDragOver(e, col.id)}
                                 onDragLeave={handleDragLeave}
                                 onDrop={e => handleDrop(e, col.id)}
+                                data-column-id={col.id}
                                 className="flex-1 flex flex-col gap-3 p-2.5 rounded-2xl transition-all duration-200 overflow-y-auto min-h-0 custom-scrollbar"
                                 style={colStyle}
                             >
@@ -291,8 +409,19 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                         draggable
                                         onDragStart={e => handleDragStart(e, task.id)}
                                         onDragEnd={e => handleDragEnd(e, task.id)}
-                                        style={{ borderRadius: 16, cursor: "grab" }}
-                                        className="relative transition-opacity"
+                                        onTouchStart={e => handleTouchStart(e, task.id)}
+                                        onTouchMove={handleTouchMove}
+                                        onTouchEnd={handleTouchEnd}
+                                        style={{ 
+                                            borderRadius: 16, 
+                                            cursor: "grab", 
+                                            touchAction: "none",
+                                            userSelect: "none",
+                                            zIndex: draggedTaskId === task.id ? 1000 : 1,
+                                            transform: draggedTaskId === task.id ? "scale(1.02)" : "scale(1)",
+                                            boxShadow: draggedTaskId === task.id ? "0 20px 40px rgba(0,245,255,0.2)" : "none"
+                                        }}
+                                        className={`relative transition-all duration-200 ${draggedTaskId === task.id ? "opacity-40" : "opacity-100"}`}
                                     >
                                         <TaskCard
                                             task={task}

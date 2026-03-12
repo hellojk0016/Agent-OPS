@@ -64,12 +64,12 @@ export async function POST(request: Request) {
         });
 
         const mailOptions = {
-            from: `"Agents OPS Security" <${process.env.EMAIL_USER}>`,
+            from: `"Secure Workspace" <${process.env.EMAIL_USER}>`,
             to: user.email,
-            subject: 'Agents OPS - Security Verification Code',
+            subject: 'Security Verification Code',
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
-                    <h2 style="color: #00F5FF; font-size: 24px; text-align: center; background-color: #09090b; padding: 10px; border-radius: 8px;">Agents OPS</h2>
+                    <h2 style="color: #00F5FF; font-size: 20px; text-align: center; background-color: #09090b; padding: 12px; border-radius: 12px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px;">Identity Verification</h2>
                     <p style="font-size: 16px; color: #333;">Hi ${user.name || 'User'},</p>
                     <p style="font-size: 16px; color: #333;">You requested a code to reset your PIN. Please enter the following 6-digit code:</p>
                     <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0;">

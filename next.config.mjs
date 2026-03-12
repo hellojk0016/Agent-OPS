@@ -45,16 +45,15 @@ const withPWA = withPWAInit({
             },
         },
         {
-            // Everything else - NetworkFirst
+            // Everything else - StaleWhileRevalidate for better perceived speed
             urlPattern: /^https?.*/,
-            handler: 'NetworkFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
                 cacheName: 'others',
                 expiration: {
-                    maxEntries: 32,
+                    maxEntries: 48,
                     maxAgeSeconds: 24 * 60 * 60, // 24 hours
                 },
-                networkTimeoutSeconds: 10,
             },
         },
     ],

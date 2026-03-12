@@ -150,23 +150,16 @@ export default function TaskCard({
     return (
         <>
             <div
-                className="group relative flex flex-col rounded-2xl transition-all duration-200"
+                className={`group relative flex flex-col transition-all duration-300 card ${isDone ? "opacity-65" : "opacity-100"}`}
                 style={{
-                    background: "var(--bg-elevated)",
-                    border: `1px solid ${isDone ? "rgba(0, 245, 255, 0.07)" : "var(--border-muted)"}`,
                     padding: isKanban ? "14px 16px" : "20px 22px",
                     gap: isKanban ? 12 : 16,
-                    opacity: isDone ? 0.65 : 1,
                     cursor: "pointer",
+                    border: isDone ? "1px solid rgba(0, 245, 255, 0.07)" : undefined
                 }}
-                onClick={() => setDetailsOpen(true)}
-                onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = "rgba(0, 245, 255, 0.2)";
-                    e.currentTarget.style.boxShadow = "0 4px 20px rgba(0, 245, 255, 0.06)";
-                }}
-                onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = isDone ? "rgba(0, 245, 255, 0.07)" : "var(--border-muted)";
-                    e.currentTarget.style.boxShadow = "";
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setDetailsOpen(true);
                 }}
             >
                 {/* Header row */}

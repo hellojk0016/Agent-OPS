@@ -6,7 +6,7 @@ import { useToast } from "./ToastContext";
 import {
     X, Loader2, UserPlus, UserCheck, Users, Shield,
     Building, Store, Layers, Phone, Lock, Eye, EyeOff,
-    RefreshCw, Copy, CheckCircle2,
+    RefreshCw, Copy, CheckCircle2, ChevronDown,
 } from "lucide-react";
 
 interface AddEmployeeModalProps {
@@ -105,15 +105,15 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center md:p-4">
+                <div className="fixed inset-0 z-[2000] flex items-center justify-center md:p-4">
                     <motion.div
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                         onClick={createdEmployee ? undefined : onClose}
-                        className="absolute inset-0 bg-black/70 backdrop-blur-md"
+                        className="absolute inset-0 bg-black/80 backdrop-blur-xl"
                     />
                     <motion.div
                         transition={{ type: "spring", stiffness: 340, damping: 28 }}
-                        className="relative w-full md:max-w-md overflow-hidden rounded-none md:rounded-2xl h-full md:h-auto md:max-h-[90vh] flex flex-col"
+                        className="relative w-full md:max-w-md overflow-hidden rounded-none md:rounded-2xl h-[100dvh] md:h-auto md:max-h-[90vh] flex flex-col"
                         style={cardStyle}
                     >
                         <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#00F5FF] to-transparent opacity-60" />
@@ -202,30 +202,35 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                         {/* Role */}
                                         <div>
                                             <label className="field-label"><Shield className="h-3 w-3" />System Role</label>
-                                            <div className="grid grid-cols-1 gap-3">
-                                                {[{ val: "MEMBER", label: "Member", Icon: Users }, { val: "ADMIN", label: "Admin", Icon: Shield }].map(({ val, label, Icon }) => (
-                                                    <button key={val} type="button" onClick={() => setRole(val)}
-                                                        className={`select-btn h-14 text-base ${role === val ? "active" : ""}`}>
-                                                        <Icon className="h-5 w-5" />{label}
-                                                    </button>
-                                                ))}
+                                            <div className="relative">
+                                                <select
+                                                    value={role}
+                                                    onChange={(e) => setRole(e.target.value)}
+                                                    className="field-input h-14 w-full appearance-none pr-12 text-base"
+                                                    style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
+                                                >
+                                                    <option value="MEMBER" className="bg-[#0e0e12]">Member</option>
+                                                    <option value="ADMIN" className="bg-[#0e0e12]">Admin</option>
+                                                </select>
+                                                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/40 pointer-events-none" />
                                             </div>
                                         </div>
 
                                         {/* Company */}
                                         <div>
                                             <label className="field-label"><Building className="h-3 w-3" />Company Access</label>
-                                            <div className="grid grid-cols-1 gap-3">
-                                                {[
-                                                    { val: "KNIGHT_WOLF", label: "KNIGHT WOLF", Icon: Building },
-                                                    { val: "COMMERCE_AGENT", label: "COMMERCE", Icon: Store },
-                                                    { val: "BOTH", label: "BOTH", Icon: Layers },
-                                                ].map(({ val, label, Icon }) => (
-                                                    <button key={val} type="button" onClick={() => setCompanyType(val)}
-                                                        className={`select-btn h-14 text-sm font-bold tracking-wider ${companyType === val ? "active" : ""}`}>
-                                                        <Icon className="h-4 w-4" />{label}
-                                                    </button>
-                                                ))}
+                                            <div className="relative">
+                                                <select
+                                                    value={companyType}
+                                                    onChange={(e) => setCompanyType(e.target.value)}
+                                                    className="field-input h-14 w-full appearance-none pr-12 text-base"
+                                                    style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
+                                                >
+                                                    <option value="KNIGHT_WOLF" className="bg-[#0e0e12]">Knight Wolf</option>
+                                                    <option value="COMMERCE_AGENT" className="bg-[#0e0e12]">Commerce Agent</option>
+                                                    <option value="BOTH" className="bg-[#0e0e12]">Both Companies</option>
+                                                </select>
+                                                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/40 pointer-events-none" />
                                             </div>
                                         </div>
 
