@@ -42,3 +42,21 @@ dev.db
 dev.db-journal
 *.db
 *.db-journal
+
+# debug and tunnel logs
+*.log
+*.txt
+saas_dashboard.html
+*_verification.json
+
+# scratch scripts
+check_*.js
+debug_*.js
+extract_*.js
+link_*.js
+update_*.js
+set-admin-pin.js
+find_admin.js
+add_companies_script.js
+generate-icons.js
+start_tunnel_v2.js
