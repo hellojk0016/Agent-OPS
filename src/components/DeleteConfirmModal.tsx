@@ -92,15 +92,6 @@ export default function DeleteConfirmModal({
                                 </div>
                             </div>
 
-                            {/* Close Icon (Top Right) */}
-                            {!isDeleting && (
-                                <button
-                                    onClick={onClose}
-                                    className="absolute right-4 top-4 p-1 opacity-60 hover:opacity-100 transition-opacity"
-                                >
-                                    <X className="h-4 w-4" style={{ color: "#00F5FF" }} />
-                                </button>
-                            )}
                         </motion.div>
                     </div>
                 )}
