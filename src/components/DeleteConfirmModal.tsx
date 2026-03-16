@@ -55,22 +55,22 @@ export default function DeleteConfirmModal({
                                     <AlertTriangle className="h-6 w-6 text-[#FF4D6A]" />
                                 </div>
 
-                                <h3 className="mb-2 text-lg font-bold text-white tracking-tight">
+                                <h3 className="mb-2 text-lg font-bold text-white tracking-tight uppercase">
                                     {title}
                                 </h3>
-                                <p className="mb-10 text-base leading-relaxed text-zinc-400 max-w-[280px]">
+                                <p className="mb-10 text-base leading-relaxed text-zinc-400 max-w-[280px] uppercase">
                                     {message}
                                 </p>
 
                                 <div className="flex gap-3 w-full">
-                                    <button
-                                        onClick={onClose}
-                                        disabled={isDeleting}
-                                        className="btn-surface flex-1 text-base font-bold opacity-70 hover:opacity-100 transition-opacity rounded-2xl"
-                                        style={{ height: 52, background: "rgba(255,255,255,0.03)" }}
-                                    >
-                                        Cancel
-                                    </button>
+                                        <button
+                                            onClick={onClose}
+                                            disabled={isDeleting}
+                                            className="btn-surface flex-1 text-base font-bold opacity-70 hover:opacity-100 transition-opacity rounded-2xl uppercase"
+                                            style={{ height: 52, background: "rgba(255,255,255,0.03)" }}
+                                        >
+                                            Cancel
+                                        </button>
                                     <motion.button
                                         onClick={onConfirm}
                                         disabled={isDeleting}
@@ -83,11 +83,11 @@ export default function DeleteConfirmModal({
                                         whileTap={{ scale: 0.98 }}
                                     >
                                         {isDeleting ? (
-                                            <div className="flex items-center justify-center gap-2">
+                                            <div className="flex items-center justify-center gap-2 uppercase">
                                                 <div className="w-3.5 h-3.5 border-2 border-t-transparent border-white rounded-full animate-spin" />
                                                 <span>Deleting...</span>
                                             </div>
-                                        ) : "Delete"}
+                                        ) : "DELETE"}
                                     </motion.button>
                                 </div>
                             </div>
