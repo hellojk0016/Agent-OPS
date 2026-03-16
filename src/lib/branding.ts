@@ -34,3 +34,9 @@ export function getCompanyName(name: string | null | undefined): string {
     }
     return upperName;
 }
+
+export function isPlatformBrand(name: string | null | undefined): boolean {
+    if (!name) return true;
+    const normalized = getCompanyName(name).toUpperCase();
+    return normalized === "AGENT OPS" || normalized === "OPS LOGO" || normalized === "AGENTS OPS";
+}
