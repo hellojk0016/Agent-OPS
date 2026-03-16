@@ -53,26 +53,13 @@ export default function TaskCard({
     const [localTask, setLocalTask] = useState<Task>(task);
     const [isStatusLoading, setIsStatusLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(false);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-    const menuRef = useRef<HTMLDivElement>(null);
     const { showToast } = useToast();
 
     const canUpdate = userRole === 'ADMIN' || (userRole === 'MEMBER' && task.assigneeId === userId);
     const isAdmin = userRole === 'ADMIN';
-
-    // Close menu when clicking outside
-    useEffect(() => {
-        const handler = (e: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-                setMenuOpen(false);
-            }
-        };
-        if (menuOpen) document.addEventListener("mousedown", handler);
-        return () => document.removeEventListener("mousedown", handler);
-    }, [menuOpen]);
 
     const handleStatusUpdate = async (newStatus?: string) => {
         if (!canUpdate || isStatusLoading) return;
@@ -114,7 +101,6 @@ export default function TaskCard({
     };
 
     const handleDelete = async () => {
-        setMenuOpen(false);
         setIsConfirmDeleteOpen(true);
     };
 
@@ -205,77 +191,27 @@ export default function TaskCard({
                         </h3>
                     </div>
 
-                    {/* Three-dot menu (Admin only) — stopPropagation so card click doesn't also fire */}
+                    {/* Direct Actions (Admin only) */}
                     {isAdmin && (
-                        <div className="relative flex-shrink-0" ref={menuRef}>
+                        <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
-                                onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }}
-                                className="btn-surface opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
+                                onClick={(e) => { e.stopPropagation(); setEditOpen(true); }}
+                                className="btn-surface rounded-lg flex items-center justify-center transition-all hover:text-[#00F5FF] hover:bg-[#00F5FF]/10"
+                                style={{ height: 28, width: 28, padding: 0 }}
+                            >
+                                <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleDelete(); }}
+                                className="btn-surface rounded-lg flex items-center justify-center transition-all hover:text-[#FF4D6A] hover:bg-[#FF4D6A]/10"
                                 style={{ height: 28, width: 28, padding: 0 }}
                                 disabled={isDeleting}
                             >
                                 {isDeleting
                                     ? <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#00F5FF" }} />
-                                    : <MoreVertical className="w-3.5 h-3.5" />
+                                    : <Trash2 className="w-3.5 h-3.5" />
                                 }
                             </button>
-
-                            {/* Dropdown */}
-                            <AnimatePresence>
-                                {menuOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.92, y: -4 }}
-                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.92, y: -4 }}
-                                        transition={{ duration: 0.15, ease: "easeOut" }}
-                                        className="absolute right-0 top-full mt-1 z-50 min-w-[148px] rounded-xl overflow-hidden"
-                                        style={{
-                                            background: "rgba(16, 16, 20, 0.98)",
-                                            border: "1px solid rgba(0, 245, 255, 0.15)",
-                                            boxShadow: "0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.4)",
-                                        }}
-                                    >
-                                        {/* Edit */}
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); setMenuOpen(false); setEditOpen(true); }}
-                                            className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium transition-all"
-                                            style={{ color: "var(--text-secondary)" }}
-                                            onMouseEnter={(e) => {
-                                                e.currentTarget.style.background = "rgba(0,245,255,0.07)";
-                                                e.currentTarget.style.color = "#00F5FF";
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.currentTarget.style.background = "";
-                                                e.currentTarget.style.color = "var(--text-secondary)";
-                                            }}
-                                        >
-                                            <Pencil className="w-3.5 h-3.5" />
-                                            Edit Task
-                                        </button>
-
-                                        {/* Divider */}
-                                        <div style={{ height: 1, background: "rgba(0,245,255,0.08)" }} />
-
-                                        {/* Delete */}
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); handleDelete(); }}
-                                            className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium transition-all"
-                                            style={{ color: "var(--text-secondary)" }}
-                                            onMouseEnter={(e) => {
-                                                e.currentTarget.style.background = "rgba(0,245,255,0.07)";
-                                                e.currentTarget.style.color = "#00F5FF";
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.currentTarget.style.background = "";
-                                                e.currentTarget.style.color = "var(--text-secondary)";
-                                            }}
-                                        >
-                                            <Trash2 className="w-3.5 h-3.5" />
-                                            Delete Task
-                                        </button>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
                         </div>
                     )}
                 </div>
