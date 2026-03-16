@@ -51,12 +51,12 @@ export default function LoginPage() {
             const res = await fetch(`/api/check-phone?phone=${digits}`);
             const data = await res.json();
             if (!data.exists) {
-                setError("Number not registered. Contact your admin.");
+                setError("NUMBER NOT REGISTERED. CONTACT YOUR ADMIN.");
                 return;
             }
             setStep("pin");
         } catch {
-            setError("Network error. Try again.");
+            setError("NETWORK ERROR. TRY AGAIN.");
         } finally {
             setIsLoading(false);
         }
@@ -65,7 +65,7 @@ export default function LoginPage() {
     // ── Step 2: phone + PIN login ───────────────────────────────────────────
     const handlePinSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (pin.length < 4) { setError("Enter your PIN (min 4 digits)"); return; }
+        if (pin.length < 4) { setError("ENTER YOUR PIN (MIN 4 DIGITS)"); return; }
         setIsLoading(true);
         setError("");
         try {
@@ -75,7 +75,7 @@ export default function LoginPage() {
                 pin,
             });
             if (result?.error) {
-                setError("Incorrect PIN. Please try again.");
+                setError("INCORRECT PIN. PLEASE TRY AGAIN.");
                 setPin("");
             } else {
                 // Check if they need a mandatory PIN reset
@@ -226,8 +226,8 @@ export default function LoginPage() {
                         >
                             {accentLine}
                             <div className="mb-6">
-                                <h2 className="text-lg font-bold text-white">Sign In</h2>
-                                <p className="mt-0.5 text-sm text-zinc-500">Enter your registered phone number</p>
+                                <h2 className="text-lg font-bold text-white uppercase">SIGN IN</h2>
+                                <p className="mt-0.5 text-sm uppercase text-zinc-500">ENTER YOUR REGISTERED PHONE NUMBER</p>
                             </div>
 
                             <form onSubmit={handlePhoneSubmit} className="space-y-4">
@@ -266,8 +266,8 @@ export default function LoginPage() {
                                         {/* Focus glow border */}
                                         <div className="absolute inset-0 border-px border-[#00F5FF]/0 group-focus-within:border-[#00F5FF]/40 transition-all rounded-2xl pointer-events-none" />
                                     </div>
-                                    <p className="ml-1 mt-1.5 text-[11px]" style={{ color: "var(--text-muted)" }}>
-                                        10-digit Indian number only
+                                    <p className="ml-1 mt-1.5 text-[11px] uppercase" style={{ color: "var(--text-muted)" }}>
+                                        10-DIGIT INDIAN NUMBER ONLY
                                     </p>
                                 </div>
 
@@ -292,7 +292,7 @@ export default function LoginPage() {
                                     {isLoading
                                         ? <Loader2 className="h-5 w-5 animate-spin" />
                                         : <div className="flex items-center gap-3">
-                                            <span className="text-sm font-bold uppercase tracking-[0.2em]">Continue</span>
+                                            <span className="text-sm font-bold uppercase tracking-[0.2em]">CONTINUE</span>
                                             <ArrowLeft className="h-5 w-5 rotate-180" />
                                         </div>}
                                 </motion.button>
@@ -320,10 +320,10 @@ export default function LoginPage() {
                                     >
                                         <KeyRound className="h-4 w-4" style={{ color: "#00F5FF" }} />
                                     </div>
-                                    <h2 className="text-lg font-bold text-white">Enter PIN</h2>
+                                    <h2 className="text-lg font-bold text-white uppercase">ENTER PIN</h2>
                                 </div>
-                                <p className="text-sm text-zinc-500">
-                                    Signing in as{" "}
+                                <p className="text-sm text-zinc-500 uppercase">
+                                    SIGNING IN AS{" "}
                                     <span className="font-semibold" style={{ color: "#00F5FF" }}>
                                         +91 {formatDisplay(digits)}
                                     </span>
@@ -347,7 +347,7 @@ export default function LoginPage() {
                                         <input
                                             type={showPin ? "text" : "password"}
                                             inputMode="numeric"
-                                            placeholder="Enter your PIN"
+                                            placeholder="ENTER YOUR PIN"
                                             value={pin}
                                             onChange={e => { setPin(e.target.value.replace(/\D/g, "")); setError(""); }}
                                             className="flex-1 border-0 bg-transparent py-4 pl-5 pr-12 text-base font-medium tracking-[0.4em] text-white caret-[#00F5FF] outline-none placeholder:text-zinc-700 placeholder:tracking-normal"
@@ -402,7 +402,7 @@ export default function LoginPage() {
                                         style={{ height: 36, border: 'none' }}
                                     >
                                         <ArrowLeft className="h-3.5 w-3.5" />
-                                        Change number
+                                        CHANGE NUMBER
                                     </button>
 
                                     <button
@@ -411,7 +411,7 @@ export default function LoginPage() {
                                         disabled={isLoading}
                                         className="text-xs font-semibold text-zinc-500 hover:text-neon-blue transition-colors text-center py-2"
                                     >
-                                        Forgot PIN?
+                                        FORGOT PIN?
                                     </button>
                                 </div>
                             </form>
@@ -431,15 +431,15 @@ export default function LoginPage() {
                         >
                             {accentLine}
                             <div className="mb-6">
-                                <h2 className="text-lg font-bold text-white">Verify Code</h2>
-                                <p className="text-sm text-zinc-500">
-                                    Enter the 6-digit OTP sent to the email address registered for <span className="text-neon-blue">+91 {formatDisplay(digits)}</span>
+                                <h2 className="text-lg font-bold text-white uppercase">VERIFY CODE</h2>
+                                <p className="text-sm text-zinc-500 uppercase">
+                                    ENTER THE 6-DIGIT OTP SENT TO THE EMAIL ADDRESS REGISTERED FOR <span className="text-neon-blue uppercase">+91 {formatDisplay(digits)}</span>
                                 </p>
                             </div>
 
                             <form onSubmit={handleVerifyOtp} className="space-y-4">
                                 <div>
-                                    <label className="field-label">OTP Code</label>
+                                    <label className="field-label uppercase">OTP CODE</label>
                                     <div className="group relative flex items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
                                         <input
                                             type="tel"
@@ -463,7 +463,7 @@ export default function LoginPage() {
                                     className="btn-primary w-full"
                                     style={{ height: 56, borderRadius: '16px' }}
                                 >
-                                    {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "Verify OTP"}
+                                    {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "VERIFY OTP"}
                                 </motion.button>
 
                                 <button
@@ -471,7 +471,7 @@ export default function LoginPage() {
                                     onClick={() => setStep("pin")}
                                     className="w-full text-xs text-zinc-500 hover:text-white py-2"
                                 >
-                                    Back to Login
+                                    BACK TO LOGIN
                                 </button>
                             </form>
                         </motion.div>
@@ -490,13 +490,13 @@ export default function LoginPage() {
                         >
                             {accentLine}
                             <div className="mb-6">
-                                <h2 className="text-lg font-bold text-white">Reset PIN</h2>
-                                <p className="text-sm text-zinc-500">Set a new secure PIN for your account</p>
+                                <h2 className="text-lg font-bold text-white uppercase">RESET PIN</h2>
+                                <p className="text-sm text-zinc-500 uppercase">SET A NEW SECURE PIN FOR YOUR ACCOUNT</p>
                             </div>
 
                             <form onSubmit={handleResetPin} className="space-y-4">
                                 <div>
-                                    <label className="field-label">New PIN (4-8 digits)</label>
+                                    <label className="field-label uppercase">NEW PIN (4-8 DIGITS)</label>
                                     <div className="group relative flex items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
                                         <input
                                             type="password"
@@ -512,7 +512,7 @@ export default function LoginPage() {
                                 </div>
 
                                 <div>
-                                    <label className="field-label">Confirm PIN</label>
+                                    <label className="field-label uppercase">CONFIRM PIN</label>
                                     <div className="group relative flex items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
                                         <input
                                             type="password"
@@ -534,7 +534,7 @@ export default function LoginPage() {
                                     className="btn-primary w-full shadow-[0_0_20px_rgba(0,245,255,0.3)]"
                                     style={{ height: 56, borderRadius: '16px' }}
                                 >
-                                    {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "Save & Login"}
+                                    {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "SAVE & LOGIN"}
                                 </motion.button>
                             </form>
                         </motion.div>
@@ -554,8 +554,8 @@ export default function LoginPage() {
                             >
                                 <CheckCircle2 className="h-8 w-8" style={{ color: "#00F5FF" }} />
                             </div>
-                            <p className="text-lg font-bold text-white">Signed in!</p>
-                            <p className="text-sm text-zinc-500">Redirecting to dashboard…</p>
+                            <p className="text-lg font-bold text-white uppercase">SIGNED IN!</p>
+                            <p className="text-sm text-zinc-500 uppercase">REDIRECTING TO DASHBOARD…</p>
                         </motion.div>
                     )}
 

@@ -54,7 +54,7 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 pb-6 border-b border-[var(--border-muted)] gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-white tracking-tight uppercase">Team Members</h1>
+                    <h1 className="text-2xl font-bold text-white tracking-tight uppercase">TEAM MEMBERS</h1>
                     <p className="text-sm text-zinc-500 mt-1 flex items-center gap-1.5 uppercase tracking-wider">
                         <Users className="w-3.5 h-3.5 text-neon-blue/50" />
                         Manage personnel and system access
@@ -62,10 +62,10 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                 </div>
                 <button
                     onClick={() => setIsAddModalOpen(true)}
-                    className="hidden md:flex btn-primary"
+                    className="hidden md:flex btn-primary uppercase"
                 >
                     <PlusCircle className="w-4 h-4" />
-                    Add Employee
+                    ADD EMPLOYEE
                 </button>
             </div>
 
@@ -99,7 +99,7 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                                                 style={{ background: "rgba(0, 245, 255, 0.08)", border: "1px solid rgba(0, 245, 255, 0.15)" }}>
                                                 <UserCircle className="w-5 h-5 text-neon-blue" />
                                             </div>
-                                            <span className="font-semibold text-zinc-100 text-sm">{emp.name}</span>
+                                            <span className="font-semibold text-zinc-100 text-sm uppercase">{emp.name}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-sm text-zinc-400 font-mono tracking-wider">
@@ -111,7 +111,7 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                                     <td className="px-6 py-4">
                                         <div className="flex flex-wrap gap-1.5">
                                     {emp.companies.filter(c => c !== "OPS logo").map((c) => (
-                                                <span key={c} className="inline-flex items-center gap-1 text-[10px] font-medium px-2.5 py-1 rounded-lg"
+                                                <span key={c} className="inline-flex items-center gap-1 text-[10px] font-medium px-2.5 py-1 rounded-lg uppercase"
                                                     style={{ background: "rgba(0, 245, 255, 0.06)", border: "1px solid rgba(0, 245, 255, 0.12)", color: "rgba(0, 245, 255, 0.7)" }}>
                                                     <Building className="w-3 h-3" />
                                                     {c}
@@ -153,7 +153,7 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                                     <UserCircle className="w-7 h-7 text-neon-blue" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-white text-lg">{emp.name}</h3>
+                                    <h3 className="font-bold text-white text-lg uppercase">{emp.name}</h3>
                                     <p className="text-[10px] font-bold uppercase tracking-widest text-neon-blue/60">{emp.role}</p>
                                 </div>
                             </div>
@@ -174,18 +174,18 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
 
                         <div className="space-y-3 pt-4 border-t border-white/5">
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Employee ID</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">EMPLOYEE ID</span>
                                 <span className="text-xs font-mono text-zinc-400">{emp.id.slice(0, 8)}...</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Phone Number</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">PHONE NUMBER</span>
                                 <span className="text-xs font-mono text-zinc-300 tracking-wider">+91 {emp.phone}</span>
                             </div>
                             <div className="flex flex-col gap-2">
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Workspaces</span>
                                 <div className="flex flex-wrap gap-2 pt-1">
                                     {emp.companies.filter(c => c !== "OPS logo").map((c) => (
-                                        <span key={c} className="inline-flex items-center gap-1 text-[10px] font-bold px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300">
+                                        <span key={c} className="inline-flex items-center gap-1 text-[10px] font-bold px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300 uppercase">
                                             <Building className="w-3 h-3" />
                                             {c}
                                         </span>
@@ -200,8 +200,7 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
             {employees.length === 0 && (
                 <div className="px-6 py-16 text-center glass-panel rounded-3xl border border-dashed border-[var(--border-muted)] mt-4">
                     <Users className="w-10 h-10 text-neon-blue/20 mx-auto mb-4" />
-                    <p className="text-sm text-zinc-500 uppercase font-bold tracking-widest">No members found</p>
-                    <p className="text-xs text-zinc-600 mt-1">Invite team members to get started.</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mt-2">INVITE TEAM MEMBERS TO GET STARTED.</p>
                 </div>
             )}
 
@@ -212,7 +211,7 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                     className="w-full max-w-sm h-14 btn-primary text-sm font-black uppercase tracking-widest shadow-[0_0_30px_rgba(0,245,255,0.15)] active:scale-[0.98] transition-all border border-[#00F5FF]/20"
                 >
                     <UserPlus className="w-5 h-5 mr-3 text-neon-blue" />
-                    Add Employee
+                    ADD EMPLOYEE
                 </button>
             </div>
 
@@ -231,8 +230,8 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                 onClose={() => setConfirmDeleteId(null)}
                 onConfirm={performDelete}
                 isDeleting={!!isDeleting}
-                title="Remove Member"
-                message="Are you sure you want to remove this employee? They will lose all access to the system."
+                title="REMOVE MEMBER"
+                message="ARE YOU SURE YOU WANT TO REMOVE THIS EMPLOYEE? THEY WILL LOSE ALL ACCESS TO THE SYSTEM."
             />
         </div>
     );

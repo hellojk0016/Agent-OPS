@@ -72,9 +72,9 @@ export default function DashboardLayout({
     useEffect(() => {
         const companyName = activeCompany?.companyName;
         if (companyName) {
-            document.title = `${companyName} | Agent OPS`;
+            document.title = `${companyName.toUpperCase()} | AGENT OPS`;
         } else {
-            document.title = "Dashboard | Agent OPS";
+            document.title = "DASHBOARD | AGENT OPS";
         }
     }, [activeCompany?.companyName]);
 
@@ -82,9 +82,9 @@ export default function DashboardLayout({
     // but allow the shell to render with skeletons if status is "loading"
 
     const navItems = [
-        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+        { name: "DASHBOARD", href: "/dashboard", icon: LayoutDashboard },
         ...(session?.user?.role === "ADMIN"
-            ? [{ name: "Employees", href: "/dashboard/employees", icon: Users }]
+            ? [{ name: "EMPLOYEES", href: "/dashboard/employees", icon: Users }]
             : []),
     ];
 
@@ -109,7 +109,7 @@ export default function DashboardLayout({
                                         <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
                                             <img
                                                 src={logoSrc}
-                                                alt={activeCompany?.companyName || "Logo"}
+                                                alt={getCompanyName(activeCompany?.companyName)}
                                                 key={logoSrc}
                                                 className="w-full h-full object-cover"
                                             />
@@ -161,7 +161,7 @@ export default function DashboardLayout({
 
                 {/* Nav */}
                 <nav className="flex-1 px-4 py-5 space-y-1 overflow-y-auto">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-3">Navigation</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-3">NAVIGATION</p>
                     {navItems.map((item) => {
                         const isActive = pathname === item.href;
                         return (
@@ -193,7 +193,7 @@ export default function DashboardLayout({
                                 className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-neon-blue bg-neon-blue/10 border border-neon-blue/30 rounded-xl hover:bg-neon-blue/20 transition-all shadow-[0_0_15px_rgba(0,245,255,0.1)]"
                             >
                                 <Download className="w-4.5 h-4.5" />
-                                Install Project
+                                INSTALL PROJECT
                             </button>
                         </div>
                     )}
@@ -201,7 +201,7 @@ export default function DashboardLayout({
                     {/* Assign Task (Admin only) */}
                     {session?.user?.role === "ADMIN" && (
                         <div className="pt-4">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-3">Quick Actions</p>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-3">QUICK ACTIONS</p>
                             <button
                                 onClick={() => setIsModalOpen(true)}
                                 className="btn-primary w-full text-sm font-semibold justify-start px-4 gap-3"
@@ -234,7 +234,7 @@ export default function DashboardLayout({
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-zinc-100 truncate">{session?.user?.name}</p>
+                                    <p className="text-sm font-semibold text-zinc-100 truncate uppercase">{session?.user?.name}</p>
                                     <div className="flex items-center gap-1.5 mt-0.5">
                                         <Zap className="w-3 h-3" style={{ color: "#00F5FF" }} />
                                         <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-neon-blue/60">
@@ -266,7 +266,7 @@ export default function DashboardLayout({
                                 }}
                             >
                                 <LogOut className="w-4.5 h-4.5 flex-shrink-0" style={{ width: 18, height: 18 }} />
-                                Sign Out
+                                SIGN OUT
                             </button>
                         </>
                     )}
@@ -314,7 +314,7 @@ export default function DashboardLayout({
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-base font-black text-white truncate tracking-tight">{session?.user?.name || "Guest"}</p>
+                                        <p className="text-base font-black text-white truncate tracking-tight uppercase">{session?.user?.name || "GUEST"}</p>
                                         <div className="flex items-center gap-1.5 mt-1">
                                             <motion.div
                                                 animate={{ opacity: [0.4, 1, 0.4] }}
@@ -353,7 +353,7 @@ export default function DashboardLayout({
                                         className="nav-item h-14 bg-[#00F5FF]/5 border border-[#00F5FF]/10 text-[#00F5FF]"
                                     >
                                         <PlusSquare className="w-5 h-5" />
-                                        <span className="text-base font-bold tracking-wide">Add Task</span>
+                                        <span className="text-base font-bold tracking-wide uppercase">ADD TASK</span>
                                     </Link>
                                 )}
                             </nav>
@@ -364,7 +364,7 @@ export default function DashboardLayout({
                                         setIsDrawerOpen(false);
                                         setIsLogoutModalOpen(true);
                                     }}
-                                    className="flex w-full items-center justify-start gap-3 px-4 h-14 text-base font-bold tracking-wide transition-all rounded-xl text-red-400 bg-red-500/5 border border-red-500/20"
+                                    className="flex w-full items-center justify-start gap-3 px-4 h-14 text-base font-bold tracking-wide transition-all rounded-xl text-red-400 bg-red-500/5 border border-red-500/20 uppercase"
                                 >
                                     <LogOut className="w-5 h-5" />
                                     Sign Out
@@ -428,7 +428,7 @@ export default function DashboardLayout({
                         {status === "loading" ? (
                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950/20 backdrop-blur-sm z-50">
                                <div className="w-10 h-10 border-2 border-neon-blue border-t-transparent rounded-full animate-spin" />
-                               <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-neon-blue/40 mt-4">Syncing</span>
+                               <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-neon-blue/40 mt-4">SYNCING</span>
                            </div>
                         ) : (
                            children

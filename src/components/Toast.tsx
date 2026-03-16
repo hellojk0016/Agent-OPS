@@ -58,7 +58,7 @@ export default function Toast({ message, type, onClose }: ToastProps) {
             </div>
 
             <p className="text-sm font-medium tracking-wide text-zinc-100 min-w-[140px]">
-                {message}
+                {message.toUpperCase()}
             </p>
 
             <button

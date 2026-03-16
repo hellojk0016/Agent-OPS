@@ -147,8 +147,8 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                             {/* Header */}
                             <div className="flex items-start justify-between mb-4">
                                 <div>
-                                    <h2 className="text-xl font-bold text-white tracking-tight">Edit Task</h2>
-                                    <p className="text-sm text-zinc-500 mt-0.5">Update task details below.</p>
+                                    <h2 className="text-xl font-bold text-white tracking-tight uppercase">EDIT TASK</h2>
+                                    <p className="text-sm text-zinc-500 mt-0.5 uppercase">UPDATE TASK DETAILS BELOW.</p>
                                 </div>
                                 <button
                                     onClick={onClose}
@@ -170,7 +170,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 {/* Task Name */}
                                 <div>
-                                    <label className="field-label">
+                                    <label className="field-label uppercase">
                                         <Type className="w-3 h-3" />
                                         Task Name
                                     </label>
@@ -179,7 +179,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         required
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
-                                        placeholder="Task name..."
+                                        placeholder="TASK NAME..."
                                         className="field-input w-full selection:bg-neon-blue/30 h-14 px-4 text-base"
                                         style={{ colorScheme: "dark" }}
                                     />
@@ -188,7 +188,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                 {/* Assign + Priority */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
                                     <div>
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <UserPlus className="w-3 h-3" />
                                             Assign To
                                         </label>
@@ -199,7 +199,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                                 className="field-input w-full appearance-none cursor-pointer pr-12 selection:bg-neon-blue/30 h-14 text-base"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
-                                                <option value="" style={{ background: "#0e0e12" }}>Unassigned</option>
+                                                <option value="" style={{ background: "#0e0e12" }}>UNASSIGNED</option>
                                                 {employees.map((emp) => (
                                                     <option key={emp.id} value={emp.id} style={{ background: "#0e0e12" }}>
                                                         {emp.name || "Unknown"}
@@ -210,7 +210,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <Flag className="w-3 h-3" />
                                             Priority
                                         </label>
@@ -233,7 +233,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                 {/* Due Date + Company Type */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
                                     <div>
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <Calendar className="w-3 h-3" />
                                             Due Date
                                         </label>
@@ -246,7 +246,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         />
                                     </div>
                                     <div>
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <Briefcase className="w-3 h-3" />
                                             Company Focus
                                         </label>
@@ -276,7 +276,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         rows={2}
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
-                                        placeholder="Add context or requirements..."
+                                        placeholder="ADD CONTEXT OR REQUIREMENTS..."
                                         className="field-input w-full resize-none selection:bg-neon-blue/30 py-5 px-4 text-base"
                                         style={{ colorScheme: "dark" }}
                                     />
@@ -289,7 +289,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         onClick={onClose}
                                         className="btn-ghost w-full md:flex-1 h-14 text-base"
                                     >
-                                        Cancel
+                                        CANCEL
                                     </button>
                                     <motion.button
                                         type="submit"
@@ -303,7 +303,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                         ) : (
                                             <SaveAll className="w-4 h-4" />
                                         )}
-                                        {isLoading ? "Saving..." : "Save Changes"}
+                                        {isLoading ? "SAVING..." : "SAVE CHANGES"}
                                     </motion.button>
                                 </div>
                             </form>

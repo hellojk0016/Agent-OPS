@@ -35,7 +35,7 @@ export default function WorkspaceSwitcher() {
                     )}
                 </div>
                 <div className="flex flex-col min-w-0">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Workspace</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">WORKSPACE</span>
                     <span className="text-sm font-bold text-zinc-100 truncate">{activeMembership?.companyName || 'My Team'}</span>
                 </div>
             </div>
@@ -80,7 +80,7 @@ export default function WorkspaceSwitcher() {
                         )}
                     </div>
                     <div className="flex flex-col items-start min-w-0">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 group-hover:text-zinc-500 transition-colors">Workspace</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 group-hover:text-zinc-500 transition-colors">WORKSPACE</span>
                         <span className="text-sm font-bold text-zinc-100 truncate">{activeMembership?.companyName}</span>
                     </div>
                 </div>
@@ -107,7 +107,7 @@ export default function WorkspaceSwitcher() {
                             className="absolute left-0 mt-3 min-w-[240px] w-max max-w-[280px] z-50 overflow-hidden rounded-2xl bg-zinc-950/95 backdrop-blur-xl border border-zinc-800/50 shadow-2xl p-1.5"
                         >
                             <div className="px-3 py-2 border-b border-zinc-800/50 mb-1 flex items-center justify-between">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Switch Workspace</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">SWITCH WORKSPACE</span>
                                 <ArrowLeftRight className="w-3 h-3 text-neon-blue" />
                             </div>
 

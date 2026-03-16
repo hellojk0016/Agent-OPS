@@ -295,7 +295,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                 }}
                             >
                                 <div className="px-3 py-2 border-b border-white/5 mb-1">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-neon-blue/60">Team Filter</p>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-neon-blue/60">TEAM FILTER</p>
                                 </div>
                                 <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
                                     {/* All Members */}
@@ -310,9 +310,22 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                         <span>ALL MEMBERS</span>
                                     </button>
 
-                                    {employees.map(emp => (
-                                            <span className="truncate uppercase">{emp.name}</span>
-                                    ))}
+                                    {employees.map(emp => {
+                                        const isSelected = filterEmployee === emp.id;
+                                        return (
+                                            <button
+                                                key={emp.id}
+                                                onClick={() => { setFilterEmployee(emp.id); setFilterOpen(false); }}
+                                                className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-xs font-semibold transition-all hover:bg-neon-blue/10 group"
+                                                style={{ color: isSelected ? "#00F5FF" : "var(--text-secondary)" }}
+                                            >
+                                                <div className={`flex h-7 w-7 items-center justify-center rounded-lg border transition-all ${isSelected ? "bg-neon-blue/20 border-neon-blue/40" : "bg-white/5 border-white/5"}`}>
+                                                    <UserCircle className="h-3.5 w-3.5" />
+                                                </div>
+                                                <span className="truncate uppercase">{emp.name}</span>
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </motion.div>
                         )}
@@ -369,7 +382,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                     {col.title}
                                 </h3>
                                 {isLocked && (
-                                    <span className="text-[8px] font-bold uppercase tracking-widest text-red-500/40">Admin only</span>
+                                    <span className="text-[8px] font-bold uppercase tracking-widest text-red-500/40">ADMIN ONLY</span>
                                 )}
                                 <span
                                     className="flex items-center justify-center rounded-full text-[9px] font-bold"
@@ -425,7 +438,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                 {columnTasks.length === 0 && !isDragOver && (
                                     <div className="flex flex-1 flex-col items-center justify-center py-10 opacity-30">
                                         <col.icon style={{ width: 20, height: 20, color: "#00F5FF", marginBottom: 8 }} />
-                                        <p className="text-[9px] font-bold uppercase tracking-[0.2em]" style={{ color: "#00F5FF" }}>Idle</p>
+                                        <p className="text-[9px] font-bold uppercase tracking-[0.2em]" style={{ color: "#00F5FF" }}>IDLE</p>
                                     </div>
                                 )}
 
@@ -436,7 +449,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                         style={{ border: "2px dashed rgba(0,245,255,0.4)", background: "rgba(0,245,255,0.04)" }}
                                     >
                                         <span className="text-[9px] font-bold uppercase tracking-[0.15em]" style={{ color: "rgba(0,245,255,0.5)" }}>
-                                            Drop Here
+                                            DROP HERE
                                         </span>
                                     </div>
                                 )}

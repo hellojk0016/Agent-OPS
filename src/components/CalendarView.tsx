@@ -263,7 +263,7 @@ export default function CalendarView({ tasks, userId, userRole, employees = [] }
                                 className="flex flex-col items-center justify-center p-10 text-center glass-panel rounded-2xl border border-white/5 h-48"
                             >
                                 <CalendarIcon className="w-8 h-8 text-zinc-700 mb-3" />
-                                <p className="text-sm font-semibold text-zinc-500">Free Day!</p>
+                                <p className="text-sm font-semibold text-zinc-500 uppercase">FREE DAY!</p>
                                 <p className="text-xs text-zinc-600 mt-1 max-w-[200px]">
                                     No tasks are scheduled for this date.
                                 </p>

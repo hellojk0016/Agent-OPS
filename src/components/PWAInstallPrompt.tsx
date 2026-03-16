@@ -30,14 +30,14 @@ export default function PWAInstallPrompt() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
             <div className="w-full max-w-[320px] bg-zinc-900 rounded-[24px] overflow-hidden shadow-2xl border border-white/5 animate-in zoom-in-95 duration-300">
                 <div className="p-6">
-                    <h2 className="text-white text-xl font-semibold mb-6">Install app</h2>
+                    <h2 className="text-white text-xl font-semibold mb-6 uppercase">INSTALL APP</h2>
                     
                     <div className="flex items-center gap-4 mb-8">
                         <div className="w-14 h-14 bg-zinc-800 rounded-2xl flex items-center justify-center border border-white/5 shadow-inner">
                             <img src="/ops-logo.png" alt="Agent OPS" className="w-10 h-10 object-contain rounded-lg" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-white text-lg font-medium leading-tight">Agent OPS</h3>
+                            <h3 className="text-white text-lg font-medium leading-tight uppercase">AGENT OPS</h3>
                             <p className="text-zinc-500 text-sm">agentops.com</p>
                         </div>
                     </div>
@@ -52,7 +52,7 @@ export default function PWAInstallPrompt() {
                         
                         {isIOS ? (
                             <div className="flex items-center gap-2 text-[#34d399] uppercase tracking-wide opacity-50 cursor-not-allowed">
-                                <span>Share</span>
+                                <span className="uppercase">SHARE</span>
                                 <Share2 size={16} />
                             </div>
                         ) : (
@@ -70,7 +70,7 @@ export default function PWAInstallPrompt() {
                     <div className="px-6 pb-6 pt-0">
                         <div className="p-4 bg-zinc-800/50 rounded-2xl border border-white/5">
                             <p className="text-xs text-zinc-400 leading-relaxed">
-                                To install this app on your iPhone: tap the <span className="text-[#34d399] font-bold inline-flex items-center gap-1 mx-0.5">Share <Share2 size={12} /></span> button in the browser bar and select <span className="text-white font-bold">"Add to Home Screen"</span>.
+                                TO INSTALL THIS APP ON YOUR IPHONE: TAP THE <span className="text-[#34d399] font-bold inline-flex items-center gap-1 mx-0.5 uppercase">SHARE <Share2 size={12} /></span> BUTTON IN THE BROWSER BAR AND SELECT <span className="text-white font-bold uppercase">"ADD TO HOME SCREEN"</span>.
                             </p>
                         </div>
                     </div>

@@ -79,7 +79,7 @@ export default function NewTaskClient({ employees }: NewTaskClientProps) {
             {/* Header */}
             <div className="flex items-center justify-between mb-8 pb-6 border-b border-[var(--border-muted)] px-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-white tracking-tight">Add New Task</h1>
+                    <h1 className="text-2xl font-bold text-white tracking-tight uppercase">ADD NEW TASK</h1>
                     <p className="text-sm text-zinc-500 mt-1 flex items-center gap-1.5 font-medium">
                         <PlusCircle className="w-4 h-4 text-neon-blue/60" />
                         Quick Assignment
@@ -177,9 +177,9 @@ export default function NewTaskClient({ employees }: NewTaskClientProps) {
                                 className="field-input w-full h-14 appearance-none pr-12 text-base"
                                 style={{ background: "var(--bg-elevated)" }}
                             >
-                                <option value="LOW" className="bg-[#0e0e12]">Low</option>
-                                <option value="MEDIUM" className="bg-[#0e0e12]">Medium</option>
-                                <option value="HIGH" className="bg-[#0e0e12]">High</option>
+                                <option value="LOW" className="bg-[#0e0e12]">LOW</option>
+                                <option value="MEDIUM" className="bg-[#0e0e12]">MEDIUM</option>
+                                <option value="HIGH" className="bg-[#0e0e12]">HIGH</option>
                             </select>
                             <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/40 pointer-events-none" />
                         </div>
@@ -252,9 +252,9 @@ export default function NewTaskClient({ employees }: NewTaskClientProps) {
                                 className="field-input w-full h-14 appearance-none pr-12 text-base"
                                 style={{ background: "var(--bg-elevated)" }}
                             >
-                                <option value="COMMERCE_AGENT" className="bg-[#0e0e12]">Commerce Agents</option>
-                                <option value="KNIGHT_WOLF" className="bg-[#0e0e12]">Knight Wolf</option>
-                                <option value="BOTH" className="bg-[#0e0e12]">Both Companies</option>
+                                <option value="COMMERCE_AGENT" className="bg-[#0e0e12]">COMMERCE AGENTS</option>
+                                <option value="KNIGHT_WOLF" className="bg-[#0e0e12]">KNIGHT WOLF</option>
+                                <option value="BOTH" className="bg-[#0e0e12]">BOTH COMPANIES</option>
                             </select>
                             <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/40 pointer-events-none" />
                         </div>

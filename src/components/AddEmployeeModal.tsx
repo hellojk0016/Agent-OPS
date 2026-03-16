@@ -133,8 +133,8 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                 <UserPlus className="h-5 w-5 text-[#00F5FF]" />
                                             </div>
                                             <div>
-                                                <h2 className="text-lg font-bold tracking-tight text-white">Add Member</h2>
-                                                <p className="text-xs text-zinc-500">Phone + PIN login access</p>
+                                                <h2 className="text-lg font-bold tracking-tight text-white uppercase">ADD MEMBER</h2>
+                                                <p className="text-xs text-zinc-500 uppercase">PHONE + PIN LOGIN ACCESS</p>
                                             </div>
                                         </div>
                                         <button onClick={onClose} className="btn-surface" style={{ height: 36, width: 36, padding: 0 }}>
@@ -151,15 +151,15 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
 
                                         {/* Name */}
                                         <div>
-                                            <label className="field-label"><Users className="h-3 w-3" />Full Name</label>
-                                            <input type="text" placeholder="John Doe" value={name}
+                                            <label className="field-label uppercase"><Users className="h-3 w-3" />FULL NAME</label>
+                                            <input type="text" placeholder="JOHN DOE" value={name}
                                                 onChange={e => setName(e.target.value)}
                                                 className="field-input w-full h-14 text-base px-4" autoFocus />
                                         </div>
 
                                         {/* Phone */}
                                         <div>
-                                            <label className="field-label"><Phone className="h-3 w-3" />Mobile Number</label>
+                                            <label className="field-label uppercase"><Phone className="h-3 w-3" />MOBILE NUMBER</label>
                                             <div className="flex items-center overflow-hidden rounded-xl transition-all"
                                                 style={{ background: "var(--bg-elevated)", border: "1.5px solid var(--border-default)" }}>
                                                 <span className="select-none whitespace-nowrap pl-4 pr-1 text-sm font-semibold text-zinc-300">🇮🇳 +91</span>
@@ -172,13 +172,13 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
 
                                         {/* PIN */}
                                         <div>
-                                            <label className="field-label"><Lock className="h-3 w-3" />Temporary PIN</label>
+                                            <label className="field-label uppercase"><Lock className="h-3 w-3" />TEMPORARY PIN</label>
                                             <div className="flex gap-2">
                                                 <div className="relative flex-1">
                                                     <input
                                                         type={showPin ? "text" : "password"}
                                                         inputMode="numeric"
-                                                        placeholder="Min. 4 digits"
+                                                        placeholder="MIN. 4 DIGITS"
                                                         value={pin}
                                                         onChange={e => { setPin(e.target.value.replace(/\D/g, "").slice(0, 8)); setError(""); }}
                                                         className="field-input w-full pr-12 h-14 text-base px-4"
@@ -193,7 +193,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                 <button type="button" onClick={handleGenerate}
                                                     className="btn-surface flex items-center gap-1.5 whitespace-nowrap px-4 text-xs font-bold"
                                                     style={{ height: 56, flexShrink: 0 }}>
-                                                    <RefreshCw className="h-4 w-4" />Gen
+                                                    <RefreshCw className="h-4 w-4" />GEN
                                                 </button>
                                             </div>
                                             <p className="ml-1 mt-1.5 text-[11px] text-zinc-600">
@@ -203,7 +203,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
 
                                         {/* Role */}
                                         <div>
-                                            <label className="field-label"><Shield className="h-3 w-3" />System Role</label>
+                                            <label className="field-label uppercase"><Shield className="h-3 w-3" />SYSTEM ROLE</label>
                                             <div className="relative">
                                                 <select
                                                     value={role}
@@ -211,8 +211,8 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                     className="field-input h-14 w-full appearance-none pr-12 text-base"
                                                     style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                                 >
-                                                    <option value="MEMBER" className="bg-[#0e0e12]">Member</option>
-                                                    <option value="ADMIN" className="bg-[#0e0e12]">Admin</option>
+                                                    <option value="MEMBER" className="bg-[#0e0e12]">MEMBER</option>
+                                                    <option value="ADMIN" className="bg-[#0e0e12]">ADMIN</option>
                                                 </select>
                                                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/40 pointer-events-none" />
                                             </div>
@@ -220,7 +220,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
 
                                         {/* Company */}
                                         <div>
-                                            <label className="field-label"><Building className="h-3 w-3" />Company Access</label>
+                                            <label className="field-label uppercase"><Building className="h-3 w-3" />COMPANY ACCESS</label>
                                             <div className="relative">
                                                 <select
                                                     value={companyType}
@@ -228,9 +228,9 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                     className="field-input h-14 w-full appearance-none pr-12 text-base"
                                                     style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                                 >
-                                                    <option value="KNIGHT_WOLF" className="bg-[#0e0e12]">Knight Wolf</option>
-                                                    <option value="COMMERCE_AGENT" className="bg-[#0e0e12]">Commerce Agent</option>
-                                                    <option value="BOTH" className="bg-[#0e0e12]">Both Companies</option>
+                                                    <option value="KNIGHT_WOLF" className="bg-[#0e0e12]">KNIGHT WOLF</option>
+                                                    <option value="COMMERCE_AGENT" className="bg-[#0e0e12]">COMMERCE AGENT</option>
+                                                    <option value="BOTH" className="bg-[#0e0e12]">BOTH COMPANIES</option>
                                                 </select>
                                                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/40 pointer-events-none" />
                                             </div>
@@ -241,7 +241,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                             whileHover={{ scale: isLoading ? 1 : 1.01 }}
                                             whileTap={{ scale: isLoading ? 1 : 0.98 }}>
                                             {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <UserCheck className="h-5 w-5" />}
-                                            {isLoading ? "Adding…" : "Add Member"}
+                                            {isLoading ? "ADDING…" : "ADD MEMBER"}
                                         </motion.button>
                                     </form>
                                 </>
@@ -260,9 +260,9 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                     </div>
 
                                     <div>
-                                        <h2 className="text-lg font-bold text-white">Member Added!</h2>
+                                        <h2 className="text-lg font-bold text-white uppercase">MEMBER ADDED!</h2>
                                         <p className="mt-0.5 text-sm text-zinc-500">
-                                            <span className="font-semibold text-zinc-300">{createdEmployee.name}</span> can now log in with their phone + PIN
+                                            <span className="font-semibold text-zinc-300">{createdEmployee.name}</span> CAN NOW LOG IN WITH THEIR PHONE + PIN
                                         </p>
                                     </div>
 
@@ -281,17 +281,17 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                 className="btn-primary flex items-center gap-1.5 px-4 text-sm"
                                                 style={{ height: 38 }}>
                                                 {copied ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                                                {copied ? "Copied!" : "Copy"}
+                                                {copied ? "COPIED!" : "COPY"}
                                             </button>
                                         </div>
                                     </div>
 
                                     <p className="text-xs text-zinc-600">
-                                        ⚠️ This PIN will not be shown again. Save it before closing.
+                                        ⚠️ THIS PIN WILL NOT BE SHOWN AGAIN. SAVE IT BEFORE CLOSING.
                                     </p>
 
                                     <button onClick={handleDone} className="btn-ghost w-full text-sm" style={{ height: 40 }}>
-                                        Done — Close
+                                        DONE — CLOSE
                                     </button>
                                 </motion.div>
                             )}

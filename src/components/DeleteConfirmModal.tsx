@@ -69,7 +69,7 @@ export default function DeleteConfirmModal({
                                             className="btn-surface flex-1 text-base font-bold opacity-70 hover:opacity-100 transition-opacity rounded-2xl uppercase"
                                             style={{ height: 52, background: "rgba(255,255,255,0.03)" }}
                                         >
-                                            Cancel
+                                            CANCEL
                                         </button>
                                     <motion.button
                                         onClick={onConfirm}
@@ -85,7 +85,7 @@ export default function DeleteConfirmModal({
                                         {isDeleting ? (
                                             <div className="flex items-center justify-center gap-2 uppercase">
                                                 <div className="w-3.5 h-3.5 border-2 border-t-transparent border-white rounded-full animate-spin" />
-                                                <span>Deleting...</span>
+                                                <span>DELETING...</span>
                                             </div>
                                         ) : "DELETE"}
                                     </motion.button>

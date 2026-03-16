@@ -33,33 +33,33 @@ interface TaskDetailsModalProps {
 }
 
 const PRIORITY_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-    HIGH: { label: "High", color: "#FF4D6A", bg: "rgba(255,77,106,0.1)" },
-    MEDIUM: { label: "Medium", color: "#F59E0B", bg: "rgba(245,158,11,0.1)" },
-    LOW: { label: "Low", color: "#00F5FF", bg: "rgba(0,245,255,0.08)" },
+    HIGH: { label: "HIGH", color: "#FF4D6A", bg: "rgba(255,77,106,0.1)" },
+    MEDIUM: { label: "MEDIUM", color: "#F59E0B", bg: "rgba(245,158,11,0.1)" },
+    LOW: { label: "LOW", color: "#00F5FF", bg: "rgba(0,245,255,0.08)" },
 };
 
 const STATUS_FLOW: Record<string, { label: string; next: string | null }> = {
-    TODO: { label: "Move to In Progress", next: "IN_PROGRESS" },
-    IN_PROGRESS: { label: "Move to Review", next: "REVIEW" },
-    REVIEW: { label: "Move to Done", next: "DONE" },
-    DONE: { label: "Task Completed", next: null },
+    TODO: { label: "MOVE TO IN PROGRESS", next: "IN_PROGRESS" },
+    IN_PROGRESS: { label: "MOVE TO REVIEW", next: "REVIEW" },
+    REVIEW: { label: "MOVE TO DONE", next: "DONE" },
+    DONE: { label: "TASK COMPLETED", next: null },
 };
 
 const STATUS_CONFIG: Record<string, { label: string; Icon: any; color: string }> = {
-    TODO: { label: "To Do", Icon: Circle, color: "rgba(113,113,122,0.8)" },
-    IN_PROGRESS: { label: "In Progress", Icon: Clock, color: "#F59E0B" },
-    REVIEW: { label: "Review", Icon: EyeIcon, color: "#A78BFA" },
-    DONE: { label: "Done", Icon: CheckCircle2, color: "#00F5FF" },
+    TODO: { label: "TO DO", Icon: Circle, color: "rgba(113,113,122,0.8)" },
+    IN_PROGRESS: { label: "IN PROGRESS", Icon: Clock, color: "#F59E0B" },
+    REVIEW: { label: "REVIEW", Icon: EyeIcon, color: "#A78BFA" },
+    DONE: { label: "DONE", Icon: CheckCircle2, color: "#00F5FF" },
 };
 
 const COMPANY_LABELS: Record<string, string> = {
-    "KNIGHT_WOLF": "Knight Wolf",
-    "COMMERCE_AGENT": "Commerce Agent",
-    "BOTH": "Both Companies",
+    "KNIGHT_WOLF": "KNIGHT WOLF",
+    "COMMERCE_AGENT": "COMMERCE AGENT",
+    "BOTH": "BOTH COMPANIES",
     // Migration fallbacks
-    "Knight Wolf": "Knight Wolf",
-    "Commerce Agent": "Commerce Agent",
-    "Both": "Both Companies",
+    "Knight Wolf": "KNIGHT WOLF",
+    "Commerce Agent": "COMMERCE AGENT",
+    "Both": "BOTH COMPANIES",
 };
 
 function Field({ icon: Icon, label, children }: { icon: any; label: string; children: React.ReactNode }) {
@@ -164,7 +164,7 @@ export default function TaskDetailsModal({
                                                 </span>
                                             </div>
                                         )}
-                                        <h2 className="text-2xl font-black leading-tight text-white tracking-tight">{task.title}</h2>
+                                        <h2 className="text-2xl font-black leading-tight text-white tracking-tight uppercase">{task.title}</h2>
                                     </div>
                                     <button
                                         onClick={onClose}
@@ -201,7 +201,7 @@ export default function TaskDetailsModal({
                                             }}
                                         >
                                             <Zap className="w-3 h-3" />
-                                            {priority.label} Priority
+                                            {priority.label} PRIORITY
                                         </div>
                                     )}
                                 </div>
@@ -219,7 +219,7 @@ export default function TaskDetailsModal({
                                                 {task.assignee?.name?.[0]?.toUpperCase() ?? "?"}
                                             </div>
                                             <span className="text-[15px] font-bold text-white tracking-tight">
-                                                {task.assignee?.name ?? "Open Pool"}
+                                                {task.assignee?.name ?? "OPEN POOL"}
                                             </span>
                                         </div>
                                     </Field>
@@ -234,7 +234,7 @@ export default function TaskDetailsModal({
                                                 {dueDateStr}
                                             </span>
                                         ) : (
-                                            <span className="text-[15px] font-bold text-zinc-500">No due date</span>
+                                            <span className="text-[15px] font-bold text-zinc-500 uppercase">No due date</span>
                                         )}
                                     </Field>
 
@@ -251,7 +251,7 @@ export default function TaskDetailsModal({
                                             className="text-[15px] font-bold tracking-tight uppercase"
                                             style={{ color: priority ? priority.color : "var(--text-muted)" }}
                                         >
-                                            {priority?.label ?? "Not set"}
+                                            {priority?.label ?? "NOT SET"}
                                         </span>
                                     </Field>
                                 </div>
@@ -269,7 +269,7 @@ export default function TaskDetailsModal({
                                                     whiteSpace: "pre-wrap",
                                                 }}
                                             >
-                                                {task.description}
+                                                {task.description.toUpperCase()}
                                             </p>
                                         </Field>
                                     </div>
@@ -317,7 +317,7 @@ export default function TaskDetailsModal({
                                             whileTap={{ scale: 0.98 }}
                                         >
                                             <Pencil className="h-4 w-4" />
-                                            Edit Task
+                                            EDIT TASK
                                         </motion.button>
                                     </div>
                                 )}

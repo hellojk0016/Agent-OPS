@@ -89,12 +89,12 @@ export default function TaskCard({
                 const updatedTask = { ...localTask, status: nextStatus };
                 setStatus(nextStatus);
                 setLocalTask(updatedTask);
-                showToast(`Task moved to ${nextStatus.replace('_', ' ')}`);
+                showToast(`TASK MOVED TO ${nextStatus.replace('_', ' ').toUpperCase()}`);
                 onUpdated?.(updatedTask);
             }
         } catch (err) {
             console.error('Status update failed:', err);
-            showToast("Failed to update status", "error");
+            showToast("FAILED TO UPDATE STATUS", "error");
         } finally {
             setIsStatusLoading(false);
         }
@@ -110,12 +110,12 @@ export default function TaskCard({
         try {
             const res = await fetch(`/api/tasks?id=${task.id}`, { method: 'DELETE' });
             if (res.ok) {
-                showToast("Task deleted successfully");
+                showToast("TASK DELETED SUCCESSFULLY");
                 onDeleted?.(task.id);
             }
         } catch (err) {
             console.error('Delete failed:', err);
-            showToast("Failed to delete task", "error");
+            showToast("FAILED TO DELETE TASK", "error");
         } finally {
             setIsDeleting(false);
         }

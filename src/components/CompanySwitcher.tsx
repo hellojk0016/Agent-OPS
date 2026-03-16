@@ -156,7 +156,7 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                             "font-bold text-white truncate w-full leading-tight",
                             compact ? "text-xs" : "text-sm"
                         )}>
-                            {activeMembership ? getCompanyName(activeMembership.companyName) : 'Select Company'}
+                            {activeMembership ? getCompanyName(activeMembership.companyName) : 'SELECT COMPANY'}
                         </span>
                     </div>
                 </div>

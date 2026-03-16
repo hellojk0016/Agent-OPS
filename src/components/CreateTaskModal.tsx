@@ -117,8 +117,8 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                             {/* Header */}
                             <div className="flex items-start justify-between mb-4 md:mb-5">
                                 <div>
-                                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">Assign New Task</h2>
-                                    <p className="text-xs md:text-sm text-zinc-500 mt-1">Deploy a task to a team member.</p>
+                                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight uppercase">ASSIGN NEW TASK</h2>
+                                    <p className="text-xs md:text-sm text-zinc-500 mt-1 uppercase">DEPLOY A TASK TO A TEAM MEMBER.</p>
                                 </div>
                                 <button
                                     onClick={onClose}
@@ -134,7 +134,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                 {/* Row 1: ID + Title */}
                                 <div className="grid grid-cols-1 gap-5 md:gap-4">
                                     <div>
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <Hash className="w-3.5 h-3.5" />
                                             Task ID
                                         </label>
@@ -143,7 +143,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <Type className="w-3 h-3" />
                                             Task Name
                                         </label>
@@ -152,7 +152,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                             required
                                             value={title}
                                             onChange={(e) => setTitle(e.target.value)}
-                                            placeholder="e.g. Update system architecture"
+                                            placeholder="E.G. UPDATE SYSTEM ARCHITECTURE"
                                             className="field-input h-14 w-full text-base"
                                         />
                                     </div>
@@ -161,7 +161,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                 {/* Row 2: Assign + Priority */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
                                     <div>
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <UserPlus className="w-3.5 h-3.5" />
                                             Assign To
                                         </label>
@@ -173,7 +173,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                 className="field-input h-14 w-full appearance-none cursor-pointer pr-12 text-base selection:bg-neon-blue/30"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
-                                                <option value="" disabled className="text-zinc-500">Select Employee</option>
+                                                <option value="" disabled className="text-zinc-500">SELECT EMPLOYEE</option>
                                                 {employees.map((emp) => (
                                                     <option
                                                         key={emp.id}
@@ -189,7 +189,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <Flag className="w-3.5 h-3.5" />
                                             Priority
                                         </label>
@@ -200,9 +200,9 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                 className="field-input h-14 w-full appearance-none cursor-pointer pr-12 text-base selection:bg-neon-blue/30"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
-                                                <option value="LOW" style={{ background: "#0e0e12" }}>Low</option>
-                                                <option value="MEDIUM" style={{ background: "#0e0e12" }}>Medium</option>
-                                                <option value="HIGH" style={{ background: "#0e0e12" }}>High</option>
+                                                <option value="LOW" style={{ background: "#0e0e12" }}>LOW</option>
+                                                <option value="MEDIUM" style={{ background: "#0e0e12" }}>MEDIUM</option>
+                                                <option value="HIGH" style={{ background: "#0e0e12" }}>HIGH</option>
                                             </select>
                                             <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/50 pointer-events-none" />
                                         </div>
@@ -212,7 +212,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                 {/* Row 3: Due Date + Company */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4">
                                     <div className="col-span-1">
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <Calendar className="w-3.5 h-3.5" />
                                             Due Date
                                         </label>
@@ -236,7 +236,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                         : "text-zinc-500 hover:text-zinc-300 hover:bg-white/5"
                                                         }`}
                                                 >
-                                                    {opt}
+                                                    {opt.toUpperCase()}
                                                 </button>
                                             ))}
                                         </div>
@@ -271,7 +271,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                         )}
                                     </div>
                                     <div>
-                                        <label className="field-label">
+                                        <label className="field-label uppercase">
                                             <Briefcase className="w-3.5 h-3.5" />
                                             Company Focus
                                         </label>
@@ -282,9 +282,9 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                 className="field-input h-14 w-full appearance-none cursor-pointer pr-12 text-base selection:bg-neon-blue/30"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
-                                                <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>Commerce Agents</option>
-                                                <option value="KNIGHT_WOLF" style={{ background: "#0e0e12" }}>Knight Wolf</option>
-                                                <option value="BOTH" style={{ background: "#0e0e12" }}>Both Companies</option>
+                                                <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>COMMERCE AGENTS</option>
+                                                <option value="KNIGHT_WOLF" style={{ background: "#0e0e12" }}>KNIGHT WOLF</option>
+                                                <option value="BOTH" style={{ background: "#0e0e12" }}>BOTH COMPANIES</option>
                                             </select>
                                             <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/50 pointer-events-none" />
                                         </div>
@@ -293,7 +293,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
 
                                 {/* Description */}
                                 <div className="space-y-2">
-                                    <label className="field-label">
+                                    <label className="field-label uppercase">
                                         <AlignLeft className="w-3.5 h-3.5" />
                                         Description
                                     </label>
@@ -301,7 +301,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                         rows={2}
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
-                                        placeholder="Provide context and requirements..."
+                                        placeholder="PROVIDE CONTEXT AND REQUIREMENTS..."
                                         className="field-input w-full resize-none text-base py-5 px-4"
                                     />
                                 </div>
@@ -319,7 +319,7 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                         ) : (
                                             <Rocket className="w-5 h-5" />
                                         )}
-                                        {isLoading ? "Publishing..." : "Publish Task"}
+                                        {isLoading ? "PUBLISHING..." : "PUBLISH TASK"}
                                     </motion.button>
                                 </div>
                             </form>

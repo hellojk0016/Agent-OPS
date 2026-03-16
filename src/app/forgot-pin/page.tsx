@@ -147,8 +147,8 @@ function ForgotPinContent() {
                     <ShieldAlert className="h-7 w-7" style={{ color: "#00F5FF" }} />
                 </div>
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold tracking-tight text-white">Reset Admin PIN</h1>
-                    <p className="mt-0.5 text-xs text-zinc-500">Secure recovery via OTP</p>
+                    <h1 className="text-2xl font-bold tracking-tight text-white uppercase">RESET ADMIN PIN</h1>
+                    <p className="mt-0.5 text-xs text-zinc-500 uppercase">SECURE RECOVERY VIA OTP</p>
                 </div>
             </motion.div>
 
@@ -213,8 +213,8 @@ function ForgotPinContent() {
                         >
                             {accentLine}
                             <div className="mb-6">
-                                <h2 className="text-lg font-bold text-white">Verify OTP</h2>
-                                <p className="text-sm text-zinc-500">Sent to {phoneParam}</p>
+                                <h2 className="text-lg font-bold text-white uppercase">VERIFY OTP</h2>
+                                <p className="text-sm text-zinc-500 uppercase">SENT TO {phoneParam}</p>
                             </div>
 
                             <form onSubmit={handleVerifyOtp} className="space-y-4">
@@ -263,13 +263,13 @@ function ForgotPinContent() {
                                     <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ background: "rgba(0,245,255,0.09)", border: "1px solid rgba(0,245,255,0.18)" }}>
                                         <KeyRound className="h-4 w-4" style={{ color: "#00F5FF" }} />
                                     </div>
-                                    <h2 className="text-lg font-bold text-white">Create New PIN</h2>
+                                    <h2 className="text-lg font-bold text-white uppercase">CREATE NEW PIN</h2>
                                 </div>
                             </div>
 
                             <form onSubmit={handleResetPin} className="space-y-4">
                                 <div>
-                                    <label className="field-label">New PIN (Min 4 digits)</label>
+                                    <label className="field-label uppercase">NEW PIN (MIN 4 DIGITS)</label>
                                     <input
                                         type="password"
                                         inputMode="numeric"
@@ -282,7 +282,7 @@ function ForgotPinContent() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="field-label">Confirm New PIN</label>
+                                    <label className="field-label uppercase">CONFIRM NEW PIN</label>
                                     <input
                                         type="password"
                                         inputMode="numeric"
@@ -320,7 +320,7 @@ function ForgotPinContent() {
                                 <CheckCircle2 className="h-8 w-8" style={{ color: "#00F5FF" }} />
                             </div>
                             <p className="text-lg font-bold text-white">PIN Reset Successfully!</p>
-                            <p className="text-sm text-zinc-500">Redirecting to login…</p>
+                            <p className="text-sm text-zinc-500 uppercase">REDIRECTING TO LOGIN…</p>
                         </motion.div>
                     )}
                 </AnimatePresence>

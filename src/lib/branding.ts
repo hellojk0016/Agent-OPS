@@ -32,5 +32,5 @@ export function getCompanyName(name: string | null | undefined): string {
     if (BRANDING_OVERRIDES.names[upperName as keyof typeof BRANDING_OVERRIDES.names]) {
         return BRANDING_OVERRIDES.names[upperName as keyof typeof BRANDING_OVERRIDES.names];
     }
-    return name.toUpperCase();
+    return upperName;
 }

@@ -52,11 +52,11 @@ export default function LogoutConfirmModal({
                                     <LogOut className="h-6 w-6 text-[#FF4D6A]" />
                                 </div>
 
-                                <h3 className="mb-3 text-xl font-bold text-white tracking-tight">
-                                    Confirm Sign Out
+                                <h3 className="mb-3 text-xl font-bold text-white tracking-tight uppercase">
+                                    CONFIRM SIGN OUT
                                 </h3>
-                                <p className="mb-8 text-sm leading-relaxed text-zinc-400 font-medium italic">
-                                    Are you sure you want to sign out?
+                                <p className="mb-8 text-sm leading-relaxed text-zinc-400 font-medium uppercase">
+                                    ARE YOU SURE YOU WANT TO SIGN OUT?
                                 </p>
 
                                 <div className="flex gap-4">
@@ -64,7 +64,7 @@ export default function LogoutConfirmModal({
                                         onClick={onClose}
                                         className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-all border border-white/5"
                                     >
-                                        Cancel
+                                        CANCEL
                                     </button>
                                     <motion.button
                                         onClick={onConfirm}
@@ -72,7 +72,7 @@ export default function LogoutConfirmModal({
                                         whileHover={{ scale: 1.02, filter: "brightness(1.1)" }}
                                         whileTap={{ scale: 0.98 }}
                                     >
-                                        Sign Out
+                                        SIGN OUT
                                     </motion.button>
                                 </div>
                             </div>

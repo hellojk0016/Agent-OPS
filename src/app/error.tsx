@@ -21,7 +21,7 @@ export default function Error({
                 <AlertTriangle className="w-10 h-10 text-red-500" />
             </div>
 
-            <h1 className="text-3xl font-bold text-white mb-2">Something went wrong</h1>
+            <h1 className="text-3xl font-bold text-white mb-2 uppercase">SOMETHING WENT WRONG</h1>
             <p className="text-zinc-400 max-w-md mb-8">
                 We've encountered an unexpected error. This might be due to a lost connection or a temporary server issue.
             </p>
