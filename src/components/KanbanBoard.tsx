@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import TaskCard from "./TaskCard";
-import { Circle, Zap, Eye, CheckCircle2, ChevronDown, User, Users, Filter, X, UserCircle } from "lucide-react";
+import { Circle, Zap, Eye, CheckCircle2, ChevronDown, User, Users, Filter, X, UserCircle, Sparkles, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -51,6 +51,9 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
     const [filterEmployee, setFilterEmployee] = useState<string>("all");
     const [filterOpen, setFilterOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [isDraggingTask, setIsDraggingTask] = useState(false);
+    const [dragOverActionZone, setDragOverActionZone] = useState(false);
+    const [actionResultTask, setActionResultTask] = useState<Task | null>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const scrollVelocityRef = useRef<number>(0);
     const requestRef = useRef<number | null>(null);
@@ -146,6 +149,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
     // ── Touch handlers for mobile ──────────────────────────────────────────
     const handleTouchStart = (e: React.TouchEvent, taskId: string) => {
         setDraggedTaskId(taskId);
+        setIsDraggingTask(true);
         // We don't preventDefault here to allow tap vs drag distinction by the browser
     };
 
@@ -171,8 +175,13 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
         }
 
         const columnElement = targetElement?.closest('[data-column-id]');
+        const actionZoneElement = targetElement?.closest('[data-action-zone]');
         
-        if (columnElement) {
+        if (actionZoneElement) {
+            setDragOverActionZone(true);
+            setDragOverColumn(null);
+        } else if (columnElement) {
+            setDragOverActionZone(false);
             const columnId = columnElement.getAttribute('data-column-id');
             if (columnId) {
                 if (!isAdmin && columnId === "DONE") {
@@ -183,6 +192,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
             }
         } else {
             setDragOverColumn(null);
+            setDragOverActionZone(false);
         }
 
         // ── Edge Scrolling ──
@@ -237,18 +247,24 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
         }
 
         const columnElement = targetElement?.closest('[data-column-id]');
+        const actionZoneElement = targetElement?.closest('[data-action-zone]');
         const targetStatus = columnElement?.getAttribute('data-column-id');
 
-        if (targetStatus && targetStatus !== dragOverColumn) {
-            // Drop logic will check isAdmin and status
-        }
-
-        if (targetStatus) {
+        if (actionZoneElement && draggedTaskId) {
+            const task = tasks.find(t => t.id === draggedTaskId);
+            if (task) {
+                setActionResultTask(task);
+                // Automatically hide after 4s
+                setTimeout(() => setActionResultTask(null), 4000);
+            }
+        } else if (targetStatus) {
             handleDropLogic(draggedTaskId, targetStatus);
         }
 
         setDraggedTaskId(null);
         setDragOverColumn(null);
+        setDragOverActionZone(false);
+        setIsDraggingTask(false);
     };
 
     // Refactored drop logic to be shared between mouse and touch
@@ -363,6 +379,82 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
             )}
 
             {/* ── Kanban columns ─────────────────────────────────────────── */}
+            {/* ── Mobile Action Zone ── */}
+            <AnimatePresence>
+                {isDraggingTask && (
+                    <motion.div
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 100, opacity: 0 }}
+                        data-action-zone="true"
+                        className={`md:hidden fixed bottom-6 left-6 right-6 h-20 z-[200] rounded-3xl flex items-center justify-center gap-3 transition-all duration-300 ${
+                            dragOverActionZone 
+                                ? "bg-[#00F5FF]/15 border-2 border-[#00F5FF] shadow-[0_0_30px_rgba(0,245,255,0.3)] scale-[1.02]" 
+                                : "bg-zinc-900/90 backdrop-blur-xl border border-white/10 shadow-2xl"
+                        }`}
+                        style={{ pointerEvents: "auto" }}
+                    >
+                        <div className={`p-2.5 rounded-xl transition-colors ${dragOverActionZone ? "bg-[#00F5FF] text-zinc-950" : "bg-white/5 text-[#00F5FF]"}`}>
+                            <Sparkles className="w-5 h-5 animate-pulse" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${dragOverActionZone ? "text-[#00F5FF]" : "text-zinc-500"}`}>
+                                {dragOverActionZone ? "RELEASE TO INSPECT" : "DRAG HERE TO INSPECT"}
+                            </span>
+                            <span className="text-[9px] font-bold text-zinc-600 uppercase">QUICK TASK OVERVIEW</span>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* ── Action Result Box (The "New Box") ── */}
+            <AnimatePresence>
+                {actionResultTask && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="fixed inset-x-6 top-1/2 -translate-y-1/2 z-[300] md:hidden glass-strong p-6 rounded-[32px] border-2 border-[#00F5FF]/30 shadow-[0_0_50px_rgba(0,0,0,0.8),0_0_30px_rgba(0,245,255,0.1)]"
+                    >
+                        <div className="flex items-center justify-between mb-5">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#00F5FF]/10 border border-[#00F5FF]/20">
+                                <Info className="h-6 w-6 text-[#00F5FF]" />
+                            </div>
+                            <button onClick={() => setActionResultTask(null)} className="p-2 rounded-xl bg-white/5 border border-white/10">
+                                <X className="h-4 w-4 text-zinc-500" />
+                            </button>
+                        </div>
+                        <h3 className="text-xl font-black text-white uppercase mb-2 tracking-tight">
+                            {actionResultTask.title}
+                        </h3>
+                        <div className="space-y-4 pt-4 border-t border-white/5">
+                            <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">Status</span>
+                                <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#00F5FF]/10 text-[#00F5FF] uppercase">
+                                    {actionResultTask.status.replace('_', ' ')}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black tracking-widest text-zinc-500 uppercase">Assignee</span>
+                                <span className="text-xs font-bold text-white uppercase">{actionResultTask.assignee?.name || "OPEN POOL"}</span>
+                            </div>
+                            <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                                <p className="text-[10px] font-black text-[#00F5FF] uppercase tracking-widest mb-1.5">Description</p>
+                                <p className="text-sm text-zinc-400 leading-relaxed uppercase">
+                                    {actionResultTask.description || "NO DESCRIPTION PROVIDED"}
+                                </p>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={() => setActionResultTask(null)}
+                            className="btn-primary w-full mt-6 h-14 font-black text-base uppercase tracking-widest"
+                        >
+                            CLOSE OVERVIEW
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <div 
                 ref={scrollContainerRef}
                 className="flex flex-row gap-6 md:gap-4 overflow-x-auto md:overflow-x-hidden md:overflow-y-hidden h-full custom-scrollbar pb-20 md:pb-0 snap-x snap-mandatory scroll-smooth px-4 md:px-0"
