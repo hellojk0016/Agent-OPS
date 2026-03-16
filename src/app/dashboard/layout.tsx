@@ -71,9 +71,9 @@ export default function DashboardLayout({
     useEffect(() => {
         const companyName = activeCompany?.companyName;
         if (companyName) {
-            document.title = `${companyName} | Agent OPS`;
+            document.title = `${companyName} | Knight Wolf`;
         } else {
-            document.title = "Dashboard | Agent OPS";
+            document.title = "Dashboard | Knight Wolf";
         }
     }, [activeCompany?.companyName]);
 

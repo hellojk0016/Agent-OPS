@@ -1,7 +1,7 @@
 {
   "id": "agent-ops-pwa",
-  "name": "Agent OPS",
-  "short_name": "OPS",
+  "name": "Knight Wolf",
+  "short_name": "KW",
   "description": "Multi-tenant Task Management \u2014 neon-powered PWA",
   "start_url": "/",
   "scope": "/",
