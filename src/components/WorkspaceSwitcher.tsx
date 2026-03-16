@@ -7,6 +7,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { getCompanyName } from "@/lib/branding";
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -36,7 +37,7 @@ export default function WorkspaceSwitcher() {
                 </div>
                 <div className="flex flex-col min-w-0">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">WORKSPACE</span>
-                    <span className="text-sm font-bold text-zinc-100 truncate">{activeMembership?.companyName || 'My Team'}</span>
+                    <span className="text-sm font-bold text-zinc-100 truncate">{getCompanyName(activeMembership?.companyName) || 'My Team'}</span>
                 </div>
             </div>
         );
@@ -81,7 +82,7 @@ export default function WorkspaceSwitcher() {
                     </div>
                     <div className="flex flex-col items-start min-w-0">
                         <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 group-hover:text-zinc-500 transition-colors">WORKSPACE</span>
-                        <span className="text-sm font-bold text-zinc-100 truncate">{activeMembership?.companyName}</span>
+                        <span className="text-sm font-bold text-zinc-100 truncate">{getCompanyName(activeMembership?.companyName)}</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-1.5 pr-1">
@@ -137,7 +138,7 @@ export default function WorkspaceSwitcher() {
                                                 )}
                                             </div>
                                              <div className="flex flex-col items-start min-w-0 flex-1 pr-4">
-                                                 <span className="text-[11px] font-bold uppercase tracking-tight text-white leading-tight truncate">{membership.companyName}</span>
+                                                  <span className="text-[11px] font-bold uppercase tracking-tight text-white leading-tight truncate">{getCompanyName(membership.companyName)}</span>
                                              </div>
                                             {isSelected && (
                                                 <Check className="w-4 h-4 text-neon-blue" />

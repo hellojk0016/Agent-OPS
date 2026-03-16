@@ -203,13 +203,13 @@ export default function TaskCard({
                             </button>
                             <button
                                 onClick={(e) => { e.stopPropagation(); handleDelete(); }}
-                                className="btn-surface rounded-lg flex items-center justify-center transition-all hover:text-[#FF4D6A] hover:bg-[#FF4D6A]/10"
+                                className="btn-surface rounded-lg flex items-center justify-center transition-all hover:text-[#FF4D6A] hover:bg-[#FF4D6A]/15 hover:border-[#FF4D6A]/60 hover:shadow-[0_0_15px_rgba(255,77,106,0.2)]"
                                 style={{ height: 28, width: 28, padding: 0 }}
                                 disabled={isDeleting}
                             >
                                 {isDeleting
                                     ? <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#00F5FF" }} />
-                                    : <Trash2 className="w-3.5 h-3.5" />
+                                    : <Trash2 className="w-3.5 h-3.5" style={{ color: "#FF4D6A" }} />
                                 }
                             </button>
                         </div>

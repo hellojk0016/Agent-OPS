@@ -10,8 +10,8 @@ export const BRANDING_OVERRIDES = {
         'AGENT OPS': '/images/ops-logo.png',
     },
     names: {
-        'AGENTS OPS': 'OPS LOGO',
-        'AGENT OPS': 'OPS LOGO',
+        'AGENTS OPS': 'AGENT OPS',
+        'AGENT OPS': 'AGENT OPS',
     }
 };
 

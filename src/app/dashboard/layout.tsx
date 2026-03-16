@@ -99,33 +99,13 @@ export default function DashboardLayout({
                     <div className="flex items-center gap-3">
                         <div className="relative">
                             <div className="absolute inset-0 rounded-xl bg-[#00F5FF]/20 blur-md" />
-                            {(() => {
-                                const logoSrc = getCompanyLogo({ 
-                                    name: activeCompany?.companyName || "", 
-                                    logo: activeCompany?.companyLogo || null 
-                                });
-                                if (logoSrc) {
-                                    return (
-                                        <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
-                                            <img
-                                                src={logoSrc}
-                                                alt={getCompanyName(activeCompany?.companyName)}
-                                                key={logoSrc}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                    );
-                                }
-                                return (
-                                    <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
-                                        <img
-                                            src="/images/ops-logo.png"
-                                            alt="OPS logo"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                );
-                            })()}
+                            <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.14)]">
+                                <img
+                                    src="/images/ops-logo.png"
+                                    alt="AGENT OPS"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
                         </div>
                         <div className="flex flex-col min-w-0 flex-1">
                             {status === "loading" ? (
@@ -136,7 +116,7 @@ export default function DashboardLayout({
                             ) : (
                                 <>
                                     <span className="text-lg font-bold tracking-tight text-white truncate uppercase">
-                                        {getCompanyName(activeCompany?.companyName)}
+                                        AGENT OPS
                                     </span>
                                     <div className="flex items-center gap-1 mt-0.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-[#00F5FF] animate-pulse" />

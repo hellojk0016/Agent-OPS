@@ -296,9 +296,10 @@
   }
 
   .btn-danger:hover:not(:disabled) {
-    color: #00F5FF;
-    background: rgba(0, 245, 255, 0.08);
-    border-color: rgba(0, 245, 255, 0.2);
+    color: #FF4D6A;
+    background: rgba(255, 77, 106, 0.12);
+    border-color: rgba(255, 77, 106, 0.5);
+    box-shadow: 0 0 15px rgba(255, 77, 106, 0.15);
   }
 
   .btn-danger:disabled {
