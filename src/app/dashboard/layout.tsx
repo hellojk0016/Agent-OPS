@@ -98,25 +98,13 @@ export default function DashboardLayout({
                     <div className="flex items-center gap-3">
                         <div className="relative">
                             <div className="absolute inset-0 rounded-xl bg-[#00F5FF]/20 blur-md" />
-                            {status === "loading" ? (
-                                <div className="relative w-12 h-12 rounded-xl bg-zinc-900/50 animate-pulse border border-white/5" />
-                            ) : activeCompany?.companyLogo ? (
+                            <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
                                 <img
-                                    src={activeCompany.companyLogo}
-                                    alt={activeCompany?.companyName || "Logo"}
-                                    key={activeCompany?.companyLogo} // Force re-render on logo change
-                                    loading="eager"
-                                    className="relative w-12 h-12 object-cover rounded-xl border border-[#00F5FF]/20 bg-zinc-900"
+                                    src="/images/ops-logo.png"
+                                    alt="Agents OPS"
+                                    className="w-10 h-10 object-contain"
                                 />
-                            ) : (
-                                <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
-                                    <img
-                                        src="/ops-logo.png"
-                                        alt="Agents OPS"
-                                        className="w-10 h-10 object-contain"
-                                    />
-                                </div>
-                            )}
+                            </div>
                         </div>
                         <div className="flex flex-col min-w-0 flex-1">
                             {status === "loading" ? (
@@ -381,17 +369,9 @@ export default function DashboardLayout({
                         <div className="flex items-center gap-2">
                             <div className="relative">
                                 <div className="absolute inset-0 rounded-lg bg-[#00F5FF]/20 blur-sm" />
-                                {activeCompany?.companyLogo ? (
-                                    <img
-                                        src={activeCompany.companyLogo}
-                                        alt={activeCompany.companyName}
-                                        className="relative w-8 h-8 object-cover rounded-lg border border-[#00F5FF]/20 bg-zinc-900"
-                                    />
-                                ) : (
-                                    <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
-                                        <img src="/ops-logo.png" alt="Agents OPS" className="w-6 h-6 object-contain" />
-                                    </div>
-                                )}
+                                <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
+                                    <img src="/images/ops-logo.png" alt="Agents OPS" className="w-6 h-6 object-contain" />
+                                </div>
                             </div>
                             <span className="text-sm font-black tracking-tight text-white uppercase truncate max-w-[100px]">
                                 {activeCompany?.companyName || "Agents OPS"}
