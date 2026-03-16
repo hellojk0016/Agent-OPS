@@ -62,21 +62,21 @@ export default function DeleteConfirmModal({
                                     {message}
                                 </p>
 
-                                <div className="flex gap-3">
+                                <div className="flex gap-3 w-full">
                                     <button
                                         onClick={onClose}
                                         disabled={isDeleting}
                                         className="btn-surface flex-1 text-base font-bold opacity-70 hover:opacity-100 transition-opacity rounded-2xl"
-                                        style={{ height: 56, background: "rgba(255,255,255,0.03)" }}
+                                        style={{ height: 52, background: "rgba(255,255,255,0.03)" }}
                                     >
                                         Cancel
                                     </button>
                                     <motion.button
                                         onClick={onConfirm}
                                         disabled={isDeleting}
-                                        className="flex-1 text-base font-black uppercase tracking-widest text-white rounded-2xl transition-all shadow-[0_4px_20px_rgba(255,77,106,0.3)]"
+                                        className="flex-1 text-base font-bold text-white rounded-2xl transition-all shadow-[0_4px_20px_rgba(255,77,106,0.2)]"
                                         style={{
-                                            height: 56,
+                                            height: 52,
                                             background: "#FF4D6A",
                                         }}
                                         whileHover={{ scale: 1.02, background: "#FF3555" }}
