@@ -120,7 +120,7 @@ export default function DashboardLayout({
                                     <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
                                         <img
                                             src="/images/ops-logo.png"
-                                            alt="Agents OPS"
+                                            alt="OPS logo"
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
@@ -136,7 +136,7 @@ export default function DashboardLayout({
                             ) : (
                                 <>
                                     <span className="text-lg font-bold tracking-tight text-white truncate">
-                                        {activeCompany?.companyName || "Agents OPS"}
+                                        {activeCompany?.companyName || "OPS logo"}
                                     </span>
                                     <div className="flex items-center gap-1 mt-0.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-[#00F5FF] animate-pulse" />
@@ -294,9 +294,9 @@ export default function DashboardLayout({
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 shadow-[0_0_15px_rgba(0,245,255,0.1)] overflow-hidden">
-                                        <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />
+                                        <img src="/images/ops-logo.png" alt="OPS logo" className="w-full h-full object-cover" />
                                     </div>
-                                    <span className="font-bold text-white tracking-tight uppercase">Agents Ops</span>
+                                    <span className="font-bold text-white tracking-tight uppercase">OPS logo</span>
                                 </div>
                                 <button onClick={() => setIsDrawerOpen(false)} className="p-2 rounded-xl bg-white/5 border border-white/10">
                                     <CloseIcon className="w-5 h-5 text-neon-blue" />
@@ -404,13 +404,13 @@ export default function DashboardLayout({
                                     }
                                     return (
                                         <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
-                                            <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />
+                                            <img src="/images/ops-logo.png" alt="OPS logo" className="w-full h-full object-cover" />
                                         </div>
                                     );
                                 })()}
                             </div>
                             <span className="text-sm font-black tracking-tight text-white uppercase truncate max-w-[100px]">
-                                {activeCompany?.companyName || "Agents OPS"}
+                                {activeCompany?.companyName || "OPS logo"}
                             </span>
                         </div>
                     </div>

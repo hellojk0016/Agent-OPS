@@ -110,7 +110,7 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex flex-wrap gap-1.5">
-                                    {emp.companies.filter(c => c !== "Agents OPS").map((c) => (
+                                    {emp.companies.filter(c => c !== "OPS logo").map((c) => (
                                                 <span key={c} className="inline-flex items-center gap-1 text-[10px] font-medium px-2.5 py-1 rounded-lg"
                                                     style={{ background: "rgba(0, 245, 255, 0.06)", border: "1px solid rgba(0, 245, 255, 0.12)", color: "rgba(0, 245, 255, 0.7)" }}>
                                                     <Building className="w-3 h-3" />
@@ -184,7 +184,7 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
                             <div className="flex flex-col gap-2">
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Workspaces</span>
                                 <div className="flex flex-wrap gap-2 pt-1">
-                                    {emp.companies.filter(c => c !== "Agents OPS").map((c) => (
+                                    {emp.companies.filter(c => c !== "OPS logo").map((c) => (
                                         <span key={c} className="inline-flex items-center gap-1 text-[10px] font-bold px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-zinc-300">
                                             <Building className="w-3 h-3" />
                                             {c}
