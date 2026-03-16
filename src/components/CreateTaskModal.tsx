@@ -18,6 +18,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "./ToastContext";
 import { useRouter } from "next/navigation";
+import Portal from "./Portal";
 
 interface CreateTaskModalProps {
     isOpen: boolean;
@@ -80,7 +81,8 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
     };
 
     return (
-        <AnimatePresence>
+        <Portal>
+            <AnimatePresence>
             {isOpen && (
                 <div className="fixed inset-0 z-[1000] flex items-center justify-center md:p-4">
                     {/* Backdrop */}
@@ -326,5 +328,6 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                 </div>
             )}
         </AnimatePresence>
+        </Portal>
     );
 }

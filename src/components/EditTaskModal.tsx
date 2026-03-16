@@ -15,6 +15,7 @@ import {
     ChevronDown,
     SaveAll,
 } from "lucide-react";
+import Portal from "./Portal";
 
 interface Employee {
     id: string;
@@ -111,7 +112,8 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
     };
 
     return (
-        <AnimatePresence>
+        <Portal>
+            <AnimatePresence>
             {isOpen && task && (
                 <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4">
                     {/* Backdrop */}
@@ -309,6 +311,7 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                     </motion.div>
                 </div>
             )}
-        </AnimatePresence>
+            </AnimatePresence>
+        </Portal>
     );
 }

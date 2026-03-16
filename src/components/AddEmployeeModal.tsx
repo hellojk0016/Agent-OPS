@@ -8,6 +8,7 @@ import {
     Building, Store, Layers, Phone, Lock, Eye, EyeOff,
     RefreshCw, Copy, CheckCircle2, ChevronDown,
 } from "lucide-react";
+import Portal from "./Portal";
 
 interface AddEmployeeModalProps {
     isOpen: boolean;
@@ -103,7 +104,8 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
     };
 
     return (
-        <AnimatePresence>
+        <Portal>
+            <AnimatePresence>
             {isOpen && (
                 <div className="fixed inset-0 z-[2000] flex items-center justify-center md:p-4">
                     <motion.div
@@ -298,5 +300,6 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                 </div>
             )}
         </AnimatePresence>
+        </Portal>
     );
 }
