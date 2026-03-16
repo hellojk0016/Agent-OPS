@@ -22,6 +22,7 @@ import LogoutConfirmModal from "@/components/LogoutConfirmModal";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { getCompanyLogo } from "@/lib/branding";
 
 export default function DashboardLayout({
     children,
@@ -98,13 +99,33 @@ export default function DashboardLayout({
                     <div className="flex items-center gap-3">
                         <div className="relative">
                             <div className="absolute inset-0 rounded-xl bg-[#00F5FF]/20 blur-md" />
-                            <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
-                                <img
-                                    src="/images/ops-logo.png"
-                                    alt="Agents OPS"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
+                            {(() => {
+                                const logoSrc = getCompanyLogo({ 
+                                    name: activeCompany?.companyName || "", 
+                                    logo: activeCompany?.companyLogo || null 
+                                });
+                                if (logoSrc) {
+                                    return (
+                                        <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
+                                            <img
+                                                src={logoSrc}
+                                                alt={activeCompany?.companyName || "Logo"}
+                                                key={logoSrc}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    );
+                                }
+                                return (
+                                    <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
+                                        <img
+                                            src="/images/ops-logo.png"
+                                            alt="Agents OPS"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                );
+                            })()}
                         </div>
                         <div className="flex flex-col min-w-0 flex-1">
                             {status === "loading" ? (
@@ -369,9 +390,24 @@ export default function DashboardLayout({
                         <div className="flex items-center gap-2">
                             <div className="relative">
                                 <div className="absolute inset-0 rounded-lg bg-[#00F5FF]/20 blur-sm" />
-                                <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
-                                    <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />
-                                </div>
+                                {(() => {
+                                    const logoSrc = getCompanyLogo({ 
+                                        name: activeCompany?.companyName || "", 
+                                        logo: activeCompany?.companyLogo || null 
+                                    });
+                                    if (logoSrc) {
+                                        return (
+                                            <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
+                                                <img src={logoSrc} alt={activeCompany?.companyName || "Logo"} className="w-full h-full object-cover" />
+                                            </div>
+                                        );
+                                    }
+                                    return (
+                                        <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
+                                            <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />
+                                        </div>
+                                    );
+                                })()}
                             </div>
                             <span className="text-sm font-black tracking-tight text-white uppercase truncate max-w-[100px]">
                                 {activeCompany?.companyName || "Agents OPS"}

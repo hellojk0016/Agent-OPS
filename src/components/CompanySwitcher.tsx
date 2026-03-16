@@ -7,6 +7,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { getCompanyLogo } from "@/lib/branding";
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -142,15 +143,13 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                         "border-neon-blue/20 bg-neon-blue/5 group-hover:border-neon-blue/40",
                         compact ? "h-6 w-6 rounded-lg" : "h-8 w-8"
                     )}>
-                        {activeMembership?.companyLogo ? (
-                            <img 
-                                src={activeMembership.companyLogo} 
-                                alt={activeMembership.companyName} 
-                                className="w-full h-full object-cover" 
-                            />
-                        ) : (
-                            <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />
-                        )}
+                        {(() => {
+                            const logoSrc = getCompanyLogo({ name: activeMembership?.companyName, logo: activeMembership?.companyLogo });
+                            if (logoSrc) {
+                                return <img src={logoSrc} alt={activeMembership.companyName} className="w-full h-full object-cover" />;
+                            }
+                            return <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />;
+                        })()}
                     </div>
                     <div className="flex flex-col items-start min-w-0">
                         <span className={cn(
@@ -198,11 +197,13 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                                                  "h-8 w-8 rounded-lg flex items-center justify-center transition-all overflow-hidden border shrink-0",
                                                  isActive ? "border-neon-blue/40" : "border-white/5 bg-zinc-900"
                                              )}>
-                                                 {membership.companyLogo ? (
-                                                     <img src={membership.companyLogo} alt={membership.companyName} className="w-full h-full object-cover" />
-                                                 ) : (
-                                                     <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" />
-                                                 )}
+                                                 {(() => {
+                                                     const logoSrc = getCompanyLogo({ name: membership.companyName, logo: membership.companyLogo });
+                                                     if (logoSrc) {
+                                                         return <img src={logoSrc} alt={membership.companyName} className="w-full h-full object-cover" />;
+                                                     }
+                                                     return <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" />;
+                                                 })()}
                                              </div>
                                              <span className="text-[11px] font-semibold truncate uppercase tracking-wider text-white">
                                                  {membership.companyName}
