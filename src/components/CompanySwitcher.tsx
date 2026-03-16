@@ -7,7 +7,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { getCompanyLogo } from "@/lib/branding";
+import { getCompanyLogo, getCompanyName } from "@/lib/branding";
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -156,7 +156,7 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                             "font-bold text-white truncate w-full leading-tight",
                             compact ? "text-xs" : "text-sm"
                         )}>
-                            {activeMembership?.companyName || 'Select Company'}
+                            {activeMembership ? getCompanyName(activeMembership.companyName) : 'Select Company'}
                         </span>
                     </div>
                 </div>
@@ -206,7 +206,7 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                                                  })()}
                                              </div>
                                              <span className="text-[11px] font-semibold truncate uppercase tracking-wider text-white">
-                                                 {membership.companyName}
+                                                 {getCompanyName(membership.companyName)}
                                              </span>
                                          </div>
                                         {isActive && <Check className="h-4 w-4 shrink-0" />}
