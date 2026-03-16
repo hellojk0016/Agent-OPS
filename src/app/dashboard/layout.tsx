@@ -102,7 +102,7 @@ export default function DashboardLayout({
                                 <img
                                     src="/images/ops-logo.png"
                                     alt="Agents OPS"
-                                    className="w-10 h-10 object-contain"
+                                    className="w-full h-full object-cover"
                                 />
                             </div>
                         </div>
@@ -273,7 +273,7 @@ export default function DashboardLayout({
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 shadow-[0_0_15px_rgba(0,245,255,0.1)] overflow-hidden">
-                                        <img src="/ops-logo.png" alt="Agents OPS" className="w-8 h-8 object-contain" />
+                                        <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />
                                     </div>
                                     <span className="font-bold text-white tracking-tight uppercase">Agents Ops</span>
                                 </div>
@@ -370,7 +370,7 @@ export default function DashboardLayout({
                             <div className="relative">
                                 <div className="absolute inset-0 rounded-lg bg-[#00F5FF]/20 blur-sm" />
                                 <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
-                                    <img src="/images/ops-logo.png" alt="Agents OPS" className="w-6 h-6 object-contain" />
+                                    <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />
                                 </div>
                             </div>
                             <span className="text-sm font-black tracking-tight text-white uppercase truncate max-w-[100px]">

@@ -149,7 +149,7 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                                 className="w-full h-full object-cover" 
                             />
                         ) : (
-                            <img src="/images/ops-logo.png" alt="Agents OPS" className={cn("object-contain", compact ? "h-4 w-4" : "h-6 w-6")} />
+                            <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />
                         )}
                     </div>
                     <div className="flex flex-col items-start min-w-0">
@@ -201,7 +201,7 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                                                  {membership.companyLogo ? (
                                                      <img src={membership.companyLogo} alt={membership.companyName} className="w-full h-full object-cover" />
                                                  ) : (
-                                                     <img src="/images/ops-logo.png" alt="Agents OPS" className="h-5 w-5 object-contain opacity-50 group-hover:opacity-80 transition-opacity" />
+                                                     <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" />
                                                  )}
                                              </div>
                                              <span className="text-[11px] font-semibold truncate uppercase tracking-wider text-white">
