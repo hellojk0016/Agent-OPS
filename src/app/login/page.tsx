@@ -205,7 +205,7 @@ export default function LoginPage() {
                     />
                 </div>
                 <div className="text-center">
-                    <h1 className="text-3xl font-black tracking-tight text-white uppercase tracking-[0.15em]">Agent Ops</h1>
+                    <h1 className="text-3xl font-black tracking-tight text-white uppercase tracking-[0.15em]">OPS logo</h1>
                 </div>
             </motion.div>
 

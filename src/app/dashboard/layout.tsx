@@ -22,7 +22,7 @@ import LogoutConfirmModal from "@/components/LogoutConfirmModal";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { getCompanyLogo } from "@/lib/branding";
+import { getCompanyLogo, getCompanyName } from "@/lib/branding";
 
 export default function DashboardLayout({
     children,
@@ -136,7 +136,7 @@ export default function DashboardLayout({
                             ) : (
                                 <>
                                     <span className="text-lg font-bold tracking-tight text-white truncate">
-                                        {activeCompany?.companyName || "OPS logo"}
+                                        {getCompanyName(activeCompany?.companyName)}
                                     </span>
                                     <div className="flex items-center gap-1 mt-0.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-[#00F5FF] animate-pulse" />
@@ -410,7 +410,7 @@ export default function DashboardLayout({
                                 })()}
                             </div>
                             <span className="text-sm font-black tracking-tight text-white uppercase truncate max-w-[100px]">
-                                {activeCompany?.companyName || "OPS logo"}
+                                {getCompanyName(activeCompany?.companyName)}
                             </span>
                         </div>
                     </div>
