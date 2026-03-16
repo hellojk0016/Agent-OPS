@@ -237,7 +237,7 @@ export default function TaskCard({
                                     >
                                         {/* Edit */}
                                         <button
-                                            onClick={() => { setMenuOpen(false); setEditOpen(true); }}
+                                            onClick={(e) => { e.stopPropagation(); setMenuOpen(false); setEditOpen(true); }}
                                             className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium transition-all"
                                             style={{ color: "var(--text-secondary)" }}
                                             onMouseEnter={(e) => {
@@ -258,7 +258,7 @@ export default function TaskCard({
 
                                         {/* Delete */}
                                         <button
-                                            onClick={handleDelete}
+                                            onClick={(e) => { e.stopPropagation(); handleDelete(); }}
                                             className="w-full flex items-center gap-2.5 px-4 py-3 text-sm font-medium transition-all"
                                             style={{ color: "var(--text-secondary)" }}
                                             onMouseEnter={(e) => {
@@ -354,7 +354,7 @@ export default function TaskCard({
                 onConfirm={performDelete}
                 isDeleting={isDeleting}
                 title="Delete Task"
-                message={`Are you sure you want to delete "${localTask.title}"? This action cannot be undone.`}
+                message="Are you sure you want to delete this task?"
             />
         </>
     );
