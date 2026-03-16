@@ -135,7 +135,7 @@ export default function DashboardLayout({
                                 </>
                             ) : (
                                 <>
-                                    <span className="text-lg font-bold tracking-tight text-white truncate">
+                                    <span className="text-lg font-bold tracking-tight text-white truncate uppercase">
                                         {getCompanyName(activeCompany?.companyName)}
                                     </span>
                                     <div className="flex items-center gap-1 mt-0.5">
@@ -204,7 +204,7 @@ export default function DashboardLayout({
                             <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-3">Quick Actions</p>
                             <button
                                 onClick={() => setIsModalOpen(true)}
-                                className="btn-primary w-full text-sm font-semibold justify-start px-4 gap-3 normal-case"
+                                className="btn-primary w-full text-sm font-semibold justify-start px-4 gap-3"
                             >
                                 <PlusSquare className="w-4.5 h-4.5" />
                                 Assign Task
@@ -296,7 +296,7 @@ export default function DashboardLayout({
                                     <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 shadow-[0_0_15px_rgba(0,245,255,0.1)] overflow-hidden">
                                         <img src="/images/ops-logo.png" alt="OPS logo" className="w-full h-full object-cover" />
                                     </div>
-                                    <span className="font-bold text-white tracking-tight uppercase">OPS logo</span>
+                                    <span className="font-bold text-white tracking-tight uppercase">OPS LOGO</span>
                                 </div>
                                 <button onClick={() => setIsDrawerOpen(false)} className="p-2 rounded-xl bg-white/5 border border-white/10">
                                     <CloseIcon className="w-5 h-5 text-neon-blue" />

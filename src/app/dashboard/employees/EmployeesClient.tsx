@@ -54,8 +54,8 @@ export default function EmployeesClient({ initialEmployees }: { initialEmployees
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 pb-6 border-b border-[var(--border-muted)] gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-white tracking-tight">Team Members</h1>
-                    <p className="text-sm text-zinc-500 mt-1 flex items-center gap-1.5">
+                    <h1 className="text-2xl font-bold text-white tracking-tight uppercase">Team Members</h1>
+                    <p className="text-sm text-zinc-500 mt-1 flex items-center gap-1.5 uppercase tracking-wider">
                         <Users className="w-3.5 h-3.5 text-neon-blue/50" />
                         Manage personnel and system access
                     </p>

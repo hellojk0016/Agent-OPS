@@ -10,8 +10,8 @@ export const BRANDING_OVERRIDES = {
         'AGENT OPS': '/images/ops-logo.png',
     },
     names: {
-        'AGENTS OPS': 'OPS logo',
-        'AGENT OPS': 'OPS logo',
+        'AGENTS OPS': 'OPS LOGO',
+        'AGENT OPS': 'OPS LOGO',
     }
 };
 
@@ -27,10 +27,10 @@ export function getCompanyLogo(company: { name: string; logo: string | null } | 
 }
 
 export function getCompanyName(name: string | null | undefined): string {
-    if (!name) return "OPS logo";
+    if (!name) return "OPS LOGO";
     const upperName = name.trim().toUpperCase();
     if (BRANDING_OVERRIDES.names[upperName as keyof typeof BRANDING_OVERRIDES.names]) {
         return BRANDING_OVERRIDES.names[upperName as keyof typeof BRANDING_OVERRIDES.names];
     }
-    return name;
+    return name.toUpperCase();
 }

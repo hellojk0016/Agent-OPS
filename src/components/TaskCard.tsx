@@ -237,8 +237,8 @@ export default function TaskCard({
                             <span className="text-[8px] font-bold uppercase tracking-[0.15em]" style={{ color: "rgba(0,245,255,0.4)" }}>
                                 Assignee
                             </span>
-                            <span className="font-semibold truncate max-w-[90px]" style={{ fontSize: 10, color: "var(--text-secondary)" }}>
-                                {localTask.assignee?.name || 'Open Pool'}
+                            <span className="font-semibold truncate max-w-[90px] uppercase" style={{ fontSize: 10, color: "var(--text-secondary)" }}>
+                                {localTask.assignee?.name || 'OPEN POOL'}
                             </span>
                         </div>
                     </div>
@@ -254,7 +254,7 @@ export default function TaskCard({
                             }}
                         >
                             {isDone ? <CheckCircle2 className="w-2.5 h-2.5" /> : <Clock className="w-2.5 h-2.5" />}
-                            {status.replace('_', ' ')}
+                            {status.replace('_', ' ').toUpperCase()}
                         </div>
                     )}
 
@@ -289,8 +289,8 @@ export default function TaskCard({
                 onClose={() => setIsConfirmDeleteOpen(false)}
                 onConfirm={performDelete}
                 isDeleting={isDeleting}
-                title="Delete Task"
-                message="Are you sure you want to delete this task?"
+                title="DELETE TASK"
+                message="ARE YOU SURE YOU WANT TO DELETE THIS TASK?"
             />
         </>
     );

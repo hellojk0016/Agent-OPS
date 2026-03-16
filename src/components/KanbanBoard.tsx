@@ -33,10 +33,10 @@ interface KanbanBoardProps {
 }
 
 const COLUMNS = [
-    { id: 'TODO', title: 'To Do', icon: Circle, hue: "zinc" },
-    { id: 'IN_PROGRESS', title: 'In Progress', icon: Zap, hue: "neon" },
-    { id: 'REVIEW', title: 'Review', icon: Eye, hue: "neon" },
-    { id: 'DONE', title: 'Done', icon: CheckCircle2, hue: "neon-dim" },
+    { id: 'TODO', title: 'TO DO', icon: Circle, hue: "zinc" },
+    { id: 'IN_PROGRESS', title: 'IN PROGRESS', icon: Zap, hue: "neon" },
+    { id: 'REVIEW', title: 'REVIEW', icon: Eye, hue: "neon" },
+    { id: 'DONE', title: 'DONE', icon: CheckCircle2, hue: "neon-dim" },
 ];
 
 export default function KanbanBoard({ tasks: initialTasks, userId, userRole, employees = [] }: KanbanBoardProps) {
@@ -140,8 +140,8 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
 
     // ── Selected employee label for filter button ──────────────────────────
     const filterLabel = filterEmployee === "all"
-        ? "All Members"
-        : (employees.find(e => e.id === filterEmployee)?.name ?? "Unknown");
+        ? "ALL MEMBERS"
+        : (employees.find(e => e.id === filterEmployee)?.name ?? "UNKNOWN").toUpperCase();
 
     // ── Touch handlers for mobile ──────────────────────────────────────────
     const handleTouchStart = (e: React.TouchEvent, taskId: string) => {
@@ -307,25 +307,11 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                         <div className={`flex h-7 w-7 items-center justify-center rounded-lg border transition-all ${filterEmployee === "all" ? "bg-neon-blue/20 border-neon-blue/40" : "bg-white/5 border-white/5"}`}>
                                             <Users className="h-3.5 w-3.5" />
                                         </div>
-                                        <span>All Members</span>
+                                        <span>ALL MEMBERS</span>
                                     </button>
 
                                     {employees.map(emp => (
-                                        <button
-                                            key={emp.id}
-                                            onClick={() => { setFilterEmployee(emp.id); setFilterOpen(false); }}
-                                            className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-xs font-semibold transition-all hover:bg-neon-blue/10 group"
-                                            style={{ color: filterEmployee === emp.id ? "#00F5FF" : "var(--text-secondary)" }}
-                                        >
-                                            <div
-                                                className={`flex h-7 w-7 items-center justify-center rounded-lg border transition-all ${filterEmployee === emp.id ? "bg-neon-blue/20 border-neon-blue/40" : "bg-white/5 border-white/10"}`}
-                                            >
-                                                <span className="text-[10px] font-bold">
-                                                    {emp.name?.[0]?.toUpperCase() ?? "?"}
-                                                </span>
-                                            </div>
-                                            <span className="truncate">{emp.name}</span>
-                                        </button>
+                                            <span className="truncate uppercase">{emp.name}</span>
                                     ))}
                                 </div>
                             </motion.div>
