@@ -4,13 +4,13 @@
  */
 export const BRANDING_OVERRIDES = {
     logos: {
-        'KNIGHT WOLF': '/kw-logo.png',
-        'AGENTS OPS': '/logo-4.png',
+        'KNIGHT WOLF': '/images/kw-logo.png',
+        'COMMERCE AGENT': '/images/ca-logo.png',
     }
 };
 
 export function getCompanyLogo(company: { name: string; logo: string | null } | null | undefined): string | null {
-    if (!company) return '/logo-4.png';
+    if (!company) return null;
     
     // Check for hardcoded overrides first
     const upperName = company.name.trim().toUpperCase();
@@ -18,5 +18,5 @@ export function getCompanyLogo(company: { name: string; logo: string | null } | 
         return BRANDING_OVERRIDES.logos[upperName as keyof typeof BRANDING_OVERRIDES.logos];
     }
     
-    return company.logo || '/logo-4.png';
+    return company.logo;
 }
