@@ -204,7 +204,7 @@ export default function DashboardLayout({
                             <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 px-3 mb-3">Quick Actions</p>
                             <button
                                 onClick={() => setIsModalOpen(true)}
-                                className="btn-primary w-full text-sm font-semibold justify-start px-4 gap-3"
+                                className="btn-primary w-full text-sm font-semibold justify-start px-4 gap-3 normal-case"
                             >
                                 <PlusSquare className="w-4.5 h-4.5" />
                                 Assign Task
