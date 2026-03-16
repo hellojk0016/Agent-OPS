@@ -71,9 +71,9 @@ export default function DashboardLayout({
     useEffect(() => {
         const companyName = activeCompany?.companyName;
         if (companyName) {
-            document.title = `${companyName} | Knight Wolf`;
+            document.title = `${companyName} | Agent OPS`;
         } else {
-            document.title = "Dashboard | Knight Wolf";
+            document.title = "Dashboard | Agent OPS";
         }
     }, [activeCompany?.companyName]);
 
@@ -109,8 +109,12 @@ export default function DashboardLayout({
                                     className="relative w-12 h-12 object-cover rounded-xl border border-[#00F5FF]/20 bg-zinc-900"
                                 />
                             ) : (
-                                <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900">
-                                    <Zap className="w-6 h-6 text-neon-blue" />
+                                <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
+                                    <img
+                                        src="/ops-logo.png"
+                                        alt="Agents OPS"
+                                        className="w-10 h-10 object-contain"
+                                    />
                                 </div>
                             )}
                         </div>
@@ -280,8 +284,8 @@ export default function DashboardLayout({
                         >
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 shadow-[0_0_15px_rgba(0,245,255,0.1)]">
-                                        <Zap className="w-5 h-5 text-neon-blue" />
+                                    <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 shadow-[0_0_15px_rgba(0,245,255,0.1)] overflow-hidden">
+                                        <img src="/ops-logo.png" alt="Agents OPS" className="w-8 h-8 object-contain" />
                                     </div>
                                     <span className="font-bold text-white tracking-tight uppercase">Agents Ops</span>
                                 </div>
@@ -384,8 +388,8 @@ export default function DashboardLayout({
                                         className="relative w-8 h-8 object-cover rounded-lg border border-[#00F5FF]/20 bg-zinc-900"
                                     />
                                 ) : (
-                                    <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900">
-                                        <Zap className="w-4 h-4 text-neon-blue" />
+                                    <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
+                                        <img src="/ops-logo.png" alt="Agents OPS" className="w-6 h-6 object-contain" />
                                     </div>
                                 )}
                             </div>

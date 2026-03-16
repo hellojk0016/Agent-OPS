@@ -10,38 +10,32 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'Knight Wolf',
-  description: 'AI-Powered Agentic Project Management System',
+  title: 'Agent OPS',
+  description: 'Multi-tenant Task Management — neon-powered PWA',
   manifest: '/manifest.json',
-  applicationName: 'Knight Wolf',
+  applicationName: 'Agent OPS',
   keywords: ['task management', 'kanban', 'team', 'productivity', 'PWA'],
-  authors: [{ name: 'Knight Wolf' }],
+  authors: [{ name: 'Agent OPS' }],
 
   // Apple PWA meta
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
-    title: 'Knight Wolf',
-  },
-  formatDetection: {
-    telephone: false,
+    statusBarStyle: 'black-translucent',
+    title: 'Agent OPS',
+    startupImage: [
+      {
+        url: '/icon-512x512.png',
+        media: '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)',
+      },
+    ],
   },
 
   // Open Graph for social sharing
   openGraph: {
     type: 'website',
-    url: 'https://agent-ops.vercel.app',
-    title: 'Knight Wolf',
-    description: 'AI-Powered Agentic Project Management System',
-    siteName: 'Knight Wolf',
-    images: [
-      {
-        url: '/ops-logo.png',
-        width: 1200,
-        height: 630,
-        alt: 'Knight Wolf Logo',
-      },
-    ],
+    title: 'Agent OPS',
+    description: 'Multi-tenant Task Management',
+    siteName: 'Agent OPS',
   },
 
   icons: {
@@ -87,7 +81,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Knight Wolf" />
+        <meta name="apple-mobile-web-app-title" content="Agent OPS" />
         {/* MS Tile */}
         <meta name="msapplication-TileImage" content="/icon-144x144.png" />
         <meta name="msapplication-TileColor" content="#000000" />

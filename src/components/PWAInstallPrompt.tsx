@@ -34,10 +34,10 @@ export default function PWAInstallPrompt() {
                     
                     <div className="flex items-center gap-4 mb-8">
                         <div className="w-14 h-14 bg-zinc-800 rounded-2xl flex items-center justify-center border border-white/5 shadow-inner">
-                            <img src="/ops-logo.png" alt="Knight Wolf" className="w-10 h-10 object-contain rounded-lg" />
+                            <img src="/ops-logo.png" alt="Agent OPS" className="w-10 h-10 object-contain rounded-lg" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <h3 className="text-white text-lg font-medium leading-tight">Knight Wolf</h3>
+                        <div className="flex-1">
+                            <h3 className="text-white text-lg font-medium leading-tight">Agent OPS</h3>
                             <p className="text-zinc-500 text-sm">agentops.com</p>
                         </div>
                     </div>
