@@ -197,7 +197,7 @@ export default function LoginPage() {
                     className="h-24 w-24 rounded-3xl overflow-hidden border border-[#00F5FF]/30 shadow-[0_0_20px_rgba(0,245,255,0.15)]"
                 >
                     <Image
-                        src="/images/ops-logo.png"
+                        src="/logo-4.png"
                         alt="OPS Logo"
                         width={96}
                         height={96}

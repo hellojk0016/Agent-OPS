@@ -145,10 +145,7 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                     )}>
                         {(() => {
                             const logoSrc = getCompanyLogo({ name: activeMembership?.companyName, logo: activeMembership?.companyLogo });
-                            if (logoSrc) {
-                                return <img src={logoSrc} alt={activeMembership.companyName} className="w-full h-full object-cover" />;
-                            }
-                            return <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />;
+                            return <img src="/logo-4.png" alt="Agents OPS" className="w-full h-full object-cover" />;
                         })()}
                     </div>
                     <div className="flex flex-col items-start min-w-0">
@@ -202,7 +199,7 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                                                      if (logoSrc) {
                                                          return <img src={logoSrc} alt={membership.companyName} className="w-full h-full object-cover" />;
                                                      }
-                                                     return <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" />;
+                                                     return <img src="/logo-4.png" alt="Agents OPS" className="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" />;
                                                  })()}
                                              </div>
                                              <span className="text-[11px] font-semibold truncate uppercase tracking-wider text-white">

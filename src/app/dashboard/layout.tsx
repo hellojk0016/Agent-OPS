@@ -101,26 +101,15 @@ export default function DashboardLayout({
                             <div className="absolute inset-0 rounded-xl bg-[#00F5FF]/20 blur-md" />
                             {(() => {
                                 const logoSrc = getCompanyLogo({ 
-                                    name: activeCompany?.companyName || "", 
+                                    name: activeCompany?.companyName || "Agents OPS", 
                                     logo: activeCompany?.companyLogo || null 
                                 });
-                                if (logoSrc) {
-                                    return (
-                                        <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
-                                            <img
-                                                src={logoSrc}
-                                                alt={activeCompany?.companyName || "Logo"}
-                                                key={logoSrc}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                    );
-                                }
                                 return (
                                     <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.1)]">
                                         <img
-                                            src="/images/ops-logo.png"
-                                            alt="Agents OPS"
+                                            src={logoSrc || "/logo-4.png"}
+                                            alt={activeCompany?.companyName || "Agents OPS"}
+                                            key={logoSrc}
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
@@ -392,19 +381,12 @@ export default function DashboardLayout({
                                 <div className="absolute inset-0 rounded-lg bg-[#00F5FF]/20 blur-sm" />
                                 {(() => {
                                     const logoSrc = getCompanyLogo({ 
-                                        name: activeCompany?.companyName || "", 
+                                        name: activeCompany?.companyName || "Agents OPS", 
                                         logo: activeCompany?.companyLogo || null 
                                     });
-                                    if (logoSrc) {
-                                        return (
-                                            <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
-                                                <img src={logoSrc} alt={activeCompany?.companyName || "Logo"} className="w-full h-full object-cover" />
-                                            </div>
-                                        );
-                                    }
                                     return (
                                         <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
-                                            <img src="/images/ops-logo.png" alt="Agents OPS" className="w-full h-full object-cover" />
+                                            <img src={logoSrc || "/logo-4.png"} alt={activeCompany?.companyName || "Agents OPS"} className="w-full h-full object-cover" />
                                         </div>
                                     );
                                 })()}
