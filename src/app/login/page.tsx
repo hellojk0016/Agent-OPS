@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Phone, KeyRound, Loader2, ShieldCheck,
-    ArrowLeft, Eye, EyeOff, CheckCircle2,
+    ArrowLeft, Eye, EyeOff, CheckCircle2
 } from "lucide-react";
 
 type Step = "phone" | "pin" | "forgot-pin" | "reset-pin" | "success";
@@ -27,7 +27,6 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
-
     const isValidPhone = digits.replace(/\s/g, "").length === 10;
 
     const formatDisplay = (d: string) => {
@@ -198,14 +197,14 @@ export default function LoginPage() {
                 >
                     <Image
                         src="/images/ops-logo.png"
-                        alt="OPS Logo"
+                        alt="AGENTS OPS"
                         width={96}
                         height={96}
                         className="w-full h-full object-cover"
                     />
                 </div>
                 <div className="text-center">
-                    <h1 className="text-3xl font-black tracking-tight text-white uppercase tracking-[0.15em]">OPS LOGO</h1>
+                    <h1 className="text-3xl font-black tracking-tight text-white uppercase tracking-[0.15em]">AGENTS OPS</h1>
                 </div>
             </motion.div>
 
@@ -296,6 +295,8 @@ export default function LoginPage() {
                                             <ArrowLeft className="h-5 w-5 rotate-180" />
                                         </div>}
                                 </motion.button>
+
+
                             </form>
                         </motion.div>
                     )}

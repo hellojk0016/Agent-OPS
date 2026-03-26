@@ -16,6 +16,7 @@ import {
     SaveAll,
 } from "lucide-react";
 import Portal from "./Portal";
+import CustomDatePicker from "./CustomDatePicker";
 
 interface Employee {
     id: string;
@@ -150,13 +151,6 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                     <h2 className="text-xl font-bold text-white tracking-tight uppercase">EDIT TASK</h2>
                                     <p className="text-sm text-zinc-500 mt-0.5 uppercase">UPDATE TASK DETAILS BELOW.</p>
                                 </div>
-                                <button
-                                    onClick={onClose}
-                                    className="btn-surface rounded-lg"
-                                    style={{ height: 36, width: 36, padding: 0 }}
-                                >
-                                    <X className="w-4 h-4" style={{ color: "#00F5FF" }} />
-                                </button>
                             </div>
 
                             {/* Error */}
@@ -234,19 +228,6 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4">
                                     <div>
                                         <label className="field-label uppercase">
-                                            <Calendar className="w-3 h-3" />
-                                            Due Date
-                                        </label>
-                                        <input
-                                            type="date"
-                                            value={dueDate}
-                                            onChange={(e) => setDueDate(e.target.value)}
-                                            className="field-input w-full selection:bg-neon-blue/30 h-14 text-base"
-                                            style={{ colorScheme: "dark" }}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="field-label uppercase">
                                             <Briefcase className="w-3 h-3" />
                                             Company Focus
                                         </label>
@@ -257,23 +238,34 @@ export default function EditTaskModal({ isOpen, task, employees, onClose, onSave
                                                 className="field-input w-full appearance-none cursor-pointer pr-12 selection:bg-neon-blue/30 h-14 text-base"
                                                 style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                             >
-                                                <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>Commerce Agents</option>
-                                                <option value="KNIGHT_WOLF" style={{ background: "#0e0e12" }}>Knight Wolf</option>
+                                                <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>COMMERCE AGENTS</option>
+                                                <option value="KNIGHT_WOLF" style={{ background: "#0e0e12" }}>KNIGHTWOLF</option>
                                                 <option value="BOTH" style={{ background: "#0e0e12" }}>Both</option>
                                             </select>
                                             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neon-blue/50 pointer-events-none" />
                                         </div>
                                     </div>
+                                    <div>
+                                        <label className="field-label uppercase">
+                                            <Calendar className="w-3 h-3" />
+                                            Due Date
+                                        </label>
+                                        <CustomDatePicker
+                                            value={dueDate}
+                                            onChange={(date) => setDueDate(date)}
+                                            className="w-full"
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Description */}
-                                <div>
-                                    <label className="field-label">
+                                <div className="w-full">
+                                    <label className="field-label uppercase">
                                         <AlignLeft className="w-3 h-3" />
                                         Description
                                     </label>
                                     <textarea
-                                        rows={2}
+                                        rows={3}
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="ADD CONTEXT OR REQUIREMENTS..."

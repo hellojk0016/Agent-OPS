@@ -1,12 +1,17 @@
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-async function check() {
+async function main() {
   const companies = await prisma.company.findMany();
-  companies.forEach(c => {
-    console.log(`ID: ${c.id} | Name: ${c.name} | Logo: ${c.logo}`);
-  });
-  await prisma.$disconnect();
+  console.log(JSON.stringify(companies, null, 2));
 }
 
-check();
+main()
+  .catch(e => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

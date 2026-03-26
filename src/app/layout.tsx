@@ -10,46 +10,23 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'Agent OPS',
-  description: 'Multi-tenant Task Management — neon-powered PWA',
-  manifest: '/manifest.json',
-  applicationName: 'Agent OPS',
-  keywords: ['task management', 'kanban', 'team', 'productivity', 'PWA'],
-  authors: [{ name: 'Agent OPS' }],
+  title: 'AGENTS OPS',
+  description: 'Multi-tenant Task Management',
+  authors: [{ name: 'AGENTS OPS' }],
 
-  // Apple PWA meta
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'Agent OPS',
-    startupImage: [
-      {
-        url: '/icon-512x512.png',
-        media: '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)',
-      },
-    ],
-  },
+
 
   // Open Graph for social sharing
   openGraph: {
     type: 'website',
-    title: 'Agent OPS',
+    title: 'AGENTS OPS',
     description: 'Multi-tenant Task Management',
-    siteName: 'Agent OPS',
+    siteName: 'AGENTS OPS',
   },
 
   icons: {
     icon: [
-      { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/icon-96x96.png', sizes: '96x96', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/icon-152x152.png', sizes: '152x152', type: 'image/png' },
-      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
-    ],
-    other: [
-      { rel: 'mask-icon', url: '/icon-512x512.png', color: '#00F5FF' },
+      { url: '/favicon.ico' },
     ],
   },
 }
@@ -67,7 +44,6 @@ export const viewport: Viewport = {
 }
 
 import { ToastProvider } from '@/components/ToastContext'
-import PWAInstallPrompt from '@/components/PWAInstallPrompt'
 
 export default function RootLayout({
   children,
@@ -75,22 +51,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" style={{ colorScheme: 'dark' }}>
       <head>
-        {/* iOS Standalone PWA */}
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Agent OPS" />
-        {/* MS Tile */}
-        <meta name="msapplication-TileImage" content="/icon-144x144.png" />
-        <meta name="msapplication-TileColor" content="#000000" />
       </head>
       <body className={`${spaceGrotesk.variable} font-sans min-h-screen bg-zinc-950 text-zinc-100`}>
         <NextAuthProvider>
           <ToastProvider>
             {children}
-            <PWAInstallPrompt />
           </ToastProvider>
         </NextAuthProvider>
       </body>

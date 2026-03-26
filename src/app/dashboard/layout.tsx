@@ -19,7 +19,6 @@ import { useState, useEffect } from "react";
 import CompanySwitcher from "@/components/CompanySwitcher";
 import CreateTaskModal from "@/components/CreateTaskModal";
 import LogoutConfirmModal from "@/components/LogoutConfirmModal";
-import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { getCompanyLogo, getCompanyName } from "@/lib/branding";
@@ -36,8 +35,6 @@ export default function DashboardLayout({
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [employees, setEmployees] = useState<any[]>([]);
-    const { isInstallable, installPWA } = usePWAInstall();
-
     const activeCompany = session?.user?.memberships?.find(
         (m: any) => m.companyId === session?.user?.activeCompanyId
     );
@@ -72,9 +69,9 @@ export default function DashboardLayout({
     useEffect(() => {
         const companyName = activeCompany?.companyName;
         if (companyName) {
-            document.title = `${companyName.toUpperCase()} | AGENT OPS`;
+            document.title = `${companyName.toUpperCase()} | AGENTS OPS`;
         } else {
-            document.title = "DASHBOARD | AGENT OPS";
+            document.title = "DASHBOARD | AGENTS OPS";
         }
     }, [activeCompany?.companyName]);
 
@@ -102,7 +99,7 @@ export default function DashboardLayout({
                             <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden shadow-[0_0_15px_rgba(0,245,255,0.14)]">
                                 <img
                                     src="/images/ops-logo.png"
-                                    alt="AGENT OPS"
+                                    alt="AGENTS OPS"
                                     className="w-full h-full object-cover"
                                 />
                             </div>
@@ -116,7 +113,7 @@ export default function DashboardLayout({
                             ) : (
                                 <>
                                     <span className="text-lg font-bold tracking-tight text-white truncate uppercase">
-                                        AGENT OPS
+                                        AGENTS OPS
                                     </span>
                                     <div className="flex items-center gap-1 mt-0.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-[#00F5FF] animate-pulse" />
@@ -165,18 +162,7 @@ export default function DashboardLayout({
                         );
                     })}
 
-                    {/* Install App (Visible only if installable) */}
-                    {isInstallable && (
-                        <div className="pt-2">
-                            <button
-                                onClick={installPWA}
-                                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-neon-blue bg-neon-blue/10 border border-neon-blue/30 rounded-xl hover:bg-neon-blue/20 transition-all shadow-[0_0_15px_rgba(0,245,255,0.1)]"
-                            >
-                                <Download className="w-4.5 h-4.5" />
-                                INSTALL PROJECT
-                            </button>
-                        </div>
-                    )}
+
 
                     {/* Assign Task (Admin only) */}
                     {session?.user?.role === "ADMIN" && (
@@ -274,9 +260,9 @@ export default function DashboardLayout({
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 flex items-center justify-center rounded-xl border border-[#00F5FF]/20 bg-zinc-900 shadow-[0_0_15px_rgba(0,245,255,0.1)] overflow-hidden">
-                                        <img src="/images/ops-logo.png" alt="AGENT OPS" className="w-full h-full object-cover" />
+                                        <img src="/images/ops-logo.png" alt="AGENTS OPS" className="w-full h-full object-cover" />
                                     </div>
-                                    <span className="font-bold text-white tracking-tight uppercase">AGENT OPS</span>
+                                    <span className="font-bold text-white tracking-tight uppercase">AGENTS OPS</span>
                                 </div>
                                 <button onClick={() => setIsDrawerOpen(false)} className="p-2 rounded-xl bg-white/5 border border-white/10">
                                     <CloseIcon className="w-5 h-5 text-neon-blue" />
@@ -336,6 +322,8 @@ export default function DashboardLayout({
                                         <span className="text-base font-bold tracking-wide uppercase">ADD TASK</span>
                                     </Link>
                                 )}
+
+
                             </nav>
 
                             <div className="pt-6 border-t border-white/5">
@@ -371,16 +359,19 @@ export default function DashboardLayout({
                             <div className="relative">
                                 <div className="absolute inset-0 rounded-lg bg-[#00F5FF]/20 blur-sm" />
                                 <div className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-[#00F5FF]/20 bg-zinc-900 overflow-hidden">
-                                    <img src="/images/ops-logo.png" alt="AGENT OPS" className="w-full h-full object-cover" />
+                                    <img src="/images/ops-logo.png" alt="AGENTS OPS" className="w-full h-full object-cover" />
                                 </div>
                             </div>
                             <span className="text-sm font-black tracking-tight text-white uppercase truncate max-w-[100px]">
-                                AGENT OPS
+                                AGENTS OPS
                             </span>
                         </div>
                     </div>
-                    <div className="flex-1 max-w-[140px] ml-2">
-                        <CompanySwitcher compact />
+                    <div className="flex items-center gap-2">
+
+                        <div className="flex-1 max-w-[140px] ml-2">
+                            <CompanySwitcher compact />
+                        </div>
                     </div>
                 </header>
 

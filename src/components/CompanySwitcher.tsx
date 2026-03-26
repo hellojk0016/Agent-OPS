@@ -36,22 +36,24 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
         };
         document.addEventListener("mousedown", handleClickOutside);
         
-        // Fetch companies to ensure we have IDs for target names
-        fetch('/api/companies')
-            .then(res => res.ok ? res.json() : [])
-            .then(data => {
-                if (Array.isArray(data)) {
-                    const filtered = data.filter((c: any) => 
-                        TARGET_COMPANIES.includes(c.name.trim().toUpperCase())
-                    ).map(c => ({
-                        companyId: c.id,
-                        companyName: c.name,
-                        companyLogo: c.logo
-                    }));
-                    setAllTargetCompanies(filtered);
-                }
-            })
-            .catch(err => console.error("Error fetching companies:", err));
+        // Fetch companies to ensure we have IDs for target names - only if logged in
+        if (session?.user) {
+            fetch('/api/companies')
+                .then(res => res.ok ? res.json() : [])
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        const filtered = data.filter((c: any) => 
+                            TARGET_COMPANIES.includes(c.name.trim().toUpperCase())
+                        ).map(c => ({
+                            companyId: c.id,
+                            companyName: c.name,
+                            companyLogo: c.logo
+                        }));
+                        setAllTargetCompanies(filtered);
+                    }
+                })
+                .catch(err => console.error("Error fetching companies:", err));
+        }
 
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
@@ -148,7 +150,7 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                             if (logoSrc) {
                                 return <img src={logoSrc} alt={activeMembership.companyName} className="w-full h-full object-cover" />;
                             }
-                            return <img src="/images/ops-logo.png" alt="OPS logo" className="w-full h-full object-cover" />;
+                            return <img src="/images/ops-logo.png" alt="AGENTS OPS" className="w-full h-full object-cover" />;
                         })()}
                     </div>
                     <div className="flex flex-col items-start min-w-0">
@@ -202,7 +204,7 @@ export default function CompanySwitcher({ compact = false }: CompanySwitcherProp
                                                      if (logoSrc) {
                                                          return <img src={logoSrc} alt={membership.companyName} className="w-full h-full object-cover" />;
                                                      }
-                                                     return <img src="/images/ops-logo.png" alt="OPS logo" className="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" />;
+                                                     return <img src="/images/ops-logo.png" alt="AGENTS OPS" className="w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity" />;
                                                  })()}
                                              </div>
                                              <span className="text-[11px] font-semibold truncate uppercase tracking-wider text-white">

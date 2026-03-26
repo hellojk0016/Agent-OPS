@@ -45,7 +45,7 @@ const dummyActivities: ActivityItem[] = [
   { id: '1', type: 'completion', user: 'Knight Wolf', target: 'Project Alpha Deployment', time: '2m ago' },
   { id: '2', type: 'comment', user: 'Admin', target: 'Security Audit', time: '45m ago' },
   { id: '3', type: 'assignment', user: 'System', target: 'Weekly Sync', time: '1h ago' },
-  { id: '4', type: 'addition', user: 'Commerce Agent', target: 'New Sales Lead', time: '3h ago' },
+  { id: '4', type: 'addition', user: 'Commerce Agents', target: 'New Sales Lead', time: '3h ago' },
 ];
 
 export default function ActivityFeed() {

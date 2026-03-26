@@ -10,8 +10,10 @@ export const BRANDING_OVERRIDES = {
         'AGENT OPS': '/images/ops-logo.png',
     },
     names: {
-        'AGENTS OPS': 'AGENT OPS',
-        'AGENT OPS': 'AGENT OPS',
+        'AGENTS OPS': 'AGENTS OPS',
+        'AGENT OPS': 'AGENTS OPS',
+        'KNIGHT WOLF': 'KNIGHTWOLF',
+        'COMMERCE AGENT': 'COMMERCE AGENTS',
     }
 };
 
@@ -27,7 +29,7 @@ export function getCompanyLogo(company: { name: string; logo: string | null } | 
 }
 
 export function getCompanyName(name: string | null | undefined): string {
-    if (!name) return "OPS LOGO";
+    if (!name) return "AGENTS OPS";
     const upperName = name.trim().toUpperCase();
     if (BRANDING_OVERRIDES.names[upperName as keyof typeof BRANDING_OVERRIDES.names]) {
         return BRANDING_OVERRIDES.names[upperName as keyof typeof BRANDING_OVERRIDES.names];
@@ -38,5 +40,5 @@ export function getCompanyName(name: string | null | undefined): string {
 export function isPlatformBrand(name: string | null | undefined): boolean {
     if (!name) return true;
     const normalized = getCompanyName(name).toUpperCase();
-    return normalized === "AGENT OPS" || normalized === "OPS LOGO" || normalized === "AGENTS OPS";
+    return normalized === "AGENTS OPS";
 }

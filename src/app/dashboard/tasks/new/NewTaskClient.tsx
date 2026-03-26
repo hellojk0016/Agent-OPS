@@ -17,6 +17,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ToastContext";
+import CustomDatePicker from "@/components/CustomDatePicker";
 
 interface NewTaskClientProps {
     employees: { id: string; name: string | null }[];
@@ -223,16 +224,13 @@ export default function NewTaskClient({ employees }: NewTaskClientProps) {
                                     exit={{ opacity: 0, height: 0, y: -10 }}
                                     className="overflow-hidden"
                                 >
-                                    <input
-                                        type="date"
-                                        required
+                                    <CustomDatePicker
                                         value={dueDate}
-                                        onChange={(e) => {
-                                            setDueDate(e.target.value);
+                                        onChange={(date: string) => {
+                                            setDueDate(date);
                                             setDateOption('custom');
                                         }}
-                                        className="field-input w-full h-14 text-base"
-                                        style={{ colorScheme: "dark" }}
+                                        className="w-full"
                                     />
                                 </motion.div>
                             )}

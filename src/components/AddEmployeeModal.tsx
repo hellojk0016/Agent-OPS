@@ -229,7 +229,7 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess }: AddEmpl
                                                     style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
                                                 >
                                                     <option value="KNIGHT_WOLF" className="bg-[#0e0e12]">KNIGHT WOLF</option>
-                                                    <option value="COMMERCE_AGENT" className="bg-[#0e0e12]">COMMERCE AGENT</option>
+                                                    <option value="COMMERCE_AGENT" className="bg-[#0e0e12]">COMMERCE AGENTS</option>
                                                     <option value="BOTH" className="bg-[#0e0e12]">BOTH COMPANIES</option>
                                                 </select>
                                                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/40 pointer-events-none" />

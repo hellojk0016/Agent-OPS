@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "./ToastContext";
 import { useRouter } from "next/navigation";
 import Portal from "./Portal";
+import CustomDatePicker from "./CustomDatePicker";
 
 interface CreateTaskModalProps {
     isOpen: boolean;
@@ -207,10 +208,25 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                             <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/50 pointer-events-none" />
                                         </div>
                                     </div>
-                                </div>
-
-                                {/* Row 3: Due Date + Company */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-4">
+                                    <div>
+                                        <label className="field-label uppercase">
+                                            <Briefcase className="w-3.5 h-3.5" />
+                                            Company
+                                        </label>
+                                        <div className="relative">
+                                            <select
+                                                value={companyType}
+                                                onChange={(e) => setCompanyType(e.target.value)}
+                                                className="field-input h-14 w-full appearance-none cursor-pointer pr-12 text-base selection:bg-neon-blue/30"
+                                                style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
+                                            >
+                                                <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>COMMERCE AGENTS</option>
+                                                <option value="KNIGHT_WOLF" style={{ background: "#0e0e12" }}>KNIGHTWOLF</option>
+                                                <option value="BOTH" style={{ background: "#0e0e12" }}>BOTH COMPANIES</option>
+                                            </select>
+                                            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/50 pointer-events-none" />
+                                        </div>
+                                    </div>
                                     <div className="col-span-1">
                                         <label className="field-label uppercase">
                                             <Calendar className="w-3.5 h-3.5" />
@@ -249,16 +265,13 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                                     exit={{ opacity: 0, height: 0 }}
                                                     className="overflow-hidden"
                                                 >
-                                                    <input
-                                                        type="date"
-                                                        required
+                                                    <CustomDatePicker
                                                         value={dueDate}
-                                                        onChange={(e) => {
-                                                            setDueDate(e.target.value);
+                                                        onChange={(date: string) => {
+                                                            setDueDate(date);
                                                             setDateOption('custom');
                                                         }}
-                                                        className="field-input h-14 w-full text-base"
-                                                        style={{ colorScheme: "dark" }}
+                                                        className="w-full"
                                                     />
                                                 </motion.div>
                                             )}
@@ -270,39 +283,21 @@ export default function CreateTaskModal({ isOpen, onClose, employees }: CreateTa
                                             </div>
                                         )}
                                     </div>
-                                    <div>
-                                        <label className="field-label uppercase">
-                                            <Briefcase className="w-3.5 h-3.5" />
-                                            Company Focus
-                                        </label>
-                                        <div className="relative">
-                                            <select
-                                                value={companyType}
-                                                onChange={(e) => setCompanyType(e.target.value)}
-                                                className="field-input h-14 w-full appearance-none cursor-pointer pr-12 text-base selection:bg-neon-blue/30"
-                                                style={{ background: "var(--bg-elevated)", colorScheme: "dark" }}
-                                            >
-                                                <option value="COMMERCE_AGENT" style={{ background: "#0e0e12" }}>COMMERCE AGENTS</option>
-                                                <option value="KNIGHT_WOLF" style={{ background: "#0e0e12" }}>KNIGHT WOLF</option>
-                                                <option value="BOTH" style={{ background: "#0e0e12" }}>BOTH COMPANIES</option>
-                                            </select>
-                                            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue/50 pointer-events-none" />
-                                        </div>
-                                    </div>
                                 </div>
 
-                                {/* Description */}
-                                <div className="space-y-2">
+                                {/* Row 3: Description */}
+                                <div>
                                     <label className="field-label uppercase">
                                         <AlignLeft className="w-3.5 h-3.5" />
                                         Description
                                     </label>
                                     <textarea
-                                        rows={2}
+                                        rows={4}
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="PROVIDE CONTEXT AND REQUIREMENTS..."
                                         className="field-input w-full resize-none text-base py-5 px-4"
+                                        style={{ colorScheme: "dark" }}
                                     />
                                 </div>
 
