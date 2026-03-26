@@ -38,6 +38,7 @@ interface TaskCardProps {
     employees?: Employee[];
     onDeleted?: (id: string) => void;
     onUpdated?: (task: Task) => void;
+    onStatusUpdate?: (newStatus: string) => Promise<void>;
 }
 
 export default function TaskCard({
@@ -48,6 +49,7 @@ export default function TaskCard({
     employees = [],
     onDeleted,
     onUpdated,
+    onStatusUpdate,
 }: TaskCardProps) {
     const [status, setStatus] = useState(task.status);
     const [localTask, setLocalTask] = useState<Task>(task);
@@ -70,28 +72,32 @@ export default function TaskCard({
             else if (status === 'IN_PROGRESS') nextStatus = 'REVIEW';
             else if (status === 'REVIEW') {
                 if (isAdmin) nextStatus = 'DONE';
-                else nextStatus = 'TODO'; // Or just return if we want to stop
+                else nextStatus = 'TODO';
             }
             else nextStatus = 'TODO';
         }
 
-        // Final safety check for DONE status
         if (nextStatus === 'DONE' && !isAdmin) return;
 
         setIsStatusLoading(true);
         try {
-            const res = await fetch('/api/tasks', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: task.id, status: nextStatus }),
-            });
-            if (res.ok) {
-                const updatedTask = { ...localTask, status: nextStatus };
-                setStatus(nextStatus);
-                setLocalTask(updatedTask);
-                showToast(`TASK MOVED TO ${nextStatus.replace('_', ' ').toUpperCase()}`);
-                onUpdated?.(updatedTask);
+            if (onStatusUpdate) {
+                // Use unified parent logic
+                await onStatusUpdate(nextStatus);
+            } else {
+                // Fallback for non-Kanban usage or if not provided
+                const res = await fetch('/api/tasks', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: task.id, status: nextStatus }),
+                });
+                if (res.ok) {
+                    onUpdated?.({ ...localTask, status: nextStatus });
+                }
             }
+            setStatus(nextStatus);
+            setLocalTask(prev => ({ ...prev, status: nextStatus }));
+            showToast(`TASK MOVED TO ${nextStatus.replace('_', ' ').toUpperCase()}`);
         } catch (err) {
             console.error('Status update failed:', err);
             showToast("FAILED TO UPDATE STATUS", "error");

@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth.config";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
     const session = await getServerSession(authOptions);
@@ -137,6 +138,9 @@ export async function PATCH(req: Request) {
             data,
             include: { assignee: true },
         });
+
+        console.log(`[API] Task ${id} updated status to: ${status}`);
+        revalidatePath("/dashboard");
 
         return NextResponse.json(updatedTask);
     } catch (error) {

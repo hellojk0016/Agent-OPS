@@ -51,12 +51,18 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
     const [filterEmployee, setFilterEmployee] = useState<string>("all");
     const [filterOpen, setFilterOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const isUpdatingRef = useRef(false);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const scrollVelocityRef = useRef<number>(0);
     const requestRef = useRef<number | null>(null);
 
     useEffect(() => {
-        setTasks(initialTasks);
+        if (!isUpdatingRef.current) {
+            console.log("[Kanban] Syncing tasks from props:", initialTasks.length);
+            setTasks(initialTasks);
+        } else {
+            console.log("[Kanban] Update in progress, skipping prop sync");
+        }
         setIsMounted(true);
     }, [initialTasks]);
 
@@ -251,28 +257,54 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
         setDragOverColumn(null);
     };
 
-    // Refactored drop logic to be shared between mouse and touch
-    const handleDropLogic = async (taskId: string, targetStatus: string) => {
+    // Refactored status update logic to be shared between drag, touch, and button clicks
+    const handleStatusUpdate = async (taskId: string, targetStatus: string) => {
         if (!isAdmin && targetStatus === "DONE") return;
 
         const task = tasks.find(t => t.id === taskId);
         if (!task || task.status === targetStatus) return;
 
         const originalStatus = task.status;
+        
+        // Optimistic UI update
         setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: targetStatus } : t));
 
+        isUpdatingRef.current = true;
         try {
+            console.log(`[Kanban] Updating task ${taskId} to ${targetStatus}...`);
             const res = await fetch("/api/tasks", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: taskId, status: targetStatus }),
             });
-            if (!res.ok) throw new Error("Status update failed");
+            
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || "Status update failed");
+            }
+            
+            console.log(`[Kanban] Update successful for task ${taskId}`);
+            
+            // Trigger server refresh for other data
             router.refresh();
+            
+            // Keep isUpdatingRef true for a short window to let router.refresh settle
+            setTimeout(() => {
+                isUpdatingRef.current = false;
+            }, 2500);
+
         } catch (error) {
             console.error("Status update error:", error);
+            isUpdatingRef.current = false;
+            // Revert state on error
             setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: originalStatus } : t));
+            throw error; // Let the caller (e.g. TaskCard) handle UI error state
         }
+    };
+
+    // For drag-drop compatibility
+    const handleDropLogic = (taskId: string, targetStatus: string) => {
+        handleStatusUpdate(taskId, targetStatus).catch(() => {});
     };
 
     return (
@@ -430,6 +462,7 @@ export default function KanbanBoard({ tasks: initialTasks, userId, userRole, emp
                                             employees={employees}
                                             onDeleted={handleDeletedTask}
                                             onUpdated={handleUpdatedTask}
+                                            onStatusUpdate={(newStatus) => handleStatusUpdate(task.id, newStatus)}
                                         />
                                     </div>
                                 ))}
